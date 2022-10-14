@@ -1,0 +1,331 @@
+<app-titulo>
+    <span TitleNegritas>Información de la sabana de META4 </span>
+    <span TitleStd>vista sin guardar datos</span>
+</app-titulo>
+<div class="content-block">
+  <div class="dx-card responsive-paddings"  fxFlexAlign="center" id="P_AsientoContable">
+      <div fxLayout="row" fxLayoutAlign="space-around center">
+          <div class="dx-field">
+              <!-- <div class="dx-field-value">
+                  <dx-select-box label="Sucursal" [dataSource]="lstEmpresasPagadoras"  displayExpr="sucursal" valueExpr="workLocat"   placeholder="Seleciona sucursal" [showClearButton]="false" width="450px" (onValueChanged)="SucursalSelect($event)" [searchMode]="searchModeOption"  [searchEnabled]="true"></dx-select-box>
+              </div> -->
+              <div>
+                <dx-drop-down-box
+                [(value)]="gridBoxValue"
+                valueExpr="workLocat"
+                displayExpr="sucursal"
+                placeholder="Selecciona sucursales..."
+                [showClearButton]="true"
+                [dataSource]="lstEmpresasPagadoras"
+                [width]="400"
+                (onValueChanged)="onDropDownBoxValueChanged($event)"
+              >
+                <div *dxTemplate="let data of 'content'">
+                  <dx-data-grid
+                    [dataSource]="lstEmpresasPagadoras"
+                    [columns]="['sucursal']"
+                    [selection]="{ mode: 'multiple' }"
+                    [hoverStateEnabled]="true"
+                    [paging]="{ enabled: true, pageSize: 100 }"
+                    [filterRow]="{ visible: true }"
+                    [scrolling]="{ mode: 'virtual' }"
+                    [height]="500"
+                    [(selectedRowKeys)]="gridBoxValue"
+                  >
+                  </dx-data-grid>
+                </div>
+              </dx-drop-down-box>
+              </div>
+          </div>
+          <div class="dx-field">
+              <div class="dx-field-value">
+                  <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anioActual" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
+              </div>
+          </div>
+          <div class="dx-field">
+              <div class="dx-field-value">
+                  <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mesActual" [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
+              </div>
+          </div>
+          <div class="dx-field">
+              <div class="dx-field-value">
+                  <dx-select-box label="Periodo" [dataSource]="lstQuincenas"  displayExpr="paga" valueExpr="paga"  placeholder="Seleciona año" [showClearButton]="false" width="400px" (onValueChanged)="PeriodoSelected($event)"></dx-select-box>
+              </div>
+          </div>
+          <div class="dx-field">
+              <dx-button
+              stylingMode="contained"
+              text="Consultar"
+              type="default"
+              [width]="120"
+              (onClick)="SabanaMeta()"
+            >
+            </dx-button>
+          </div>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" *ngIf="verAsiento">
+          <div>Genera Pivote</div>
+          <div>
+            <dx-switch   [(value)]="generaPivote"
+            (onValueChanged)="switchValueChanged($event)">></dx-switch>
+          </div>
+      </div>
+
+      <div fxLayout="row" *ngIf="verAsiento && !generaPivote" style="height: 65vh; width: 80vw-60px;">
+
+          <dx-data-grid id="gridContainer" [showBorders]="true" [dataSource]="lstDatosSabana" (onContentReady)="onContentReady($event)" width="100%">
+              <dxo-filter-row [visible]="true"></dxo-filter-row>
+              <dxo-load-panel [enabled]="false"></dxo-load-panel>
+              <dxo-scrolling mode="virtual"></dxo-scrolling>
+              <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+              <dxi-column dataField="STD_ID_WORK_LOCAT_ESP"        caption="Lugar de trabajo" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxi-column dataField="SCO_ID_HR"        caption="Id RH" dataType="number" [width]="'auto'"[fixed]="true"></dxi-column>
+              <dxi-column dataField="STD_ID_WORK_UNIT" caption="Unidad Org" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxi-column dataField="STD_N_WORK_UNITESP" caption="Departamento" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxi-column dataField="centro_costos" caption="Centro de costos" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxi-column dataField="salario_base" caption="Salario base" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="septimo_dia" caption="Septimo día" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="permiso_sin_goce" caption="Permiso sin goce" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Inca_accid_trabaj" caption="Inca accidente trabajo" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Inca_accid_trayecto" caption="Inca accidente trayecto" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="ausencia_injustificada" caption="Ausencia injustificada" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="enf_gral_tot" caption="Enf Gral Total" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Enfermedad_Resto" caption="Enfermedad Resto" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Enfermedad_trabajo" caption="Enfermedad trabajo" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="incapacidad_maternidad" caption="Incapacidad Mater" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="retardo" caption="Retardo" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Descanso_trabajado" caption="Descanso trabajado" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="destajo" caption="Destajo" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="impuesto_estatal" caption="Impuestos df o estatal" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="credito_infonavit" caption="Infonavit 5%" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="cuotas_imss" caption="IMSS patronal" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="sar" caption="SAR" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="cotizacion_CYV" caption="Cotizacion CyV" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Comisiones" caption="Comisiones" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Vacaciones_variables" caption="Vacaciones variables" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="vacaciones_disfrutadas" caption="Vacaciones disfrutadas" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="finiquito_vacaciones" caption="Finiquito Vacaciones" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="prima_vac_exen_fini" caption="Prima Vac exen Fini" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Prima_vaca_exen" caption="Prima vac exen" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Prima_vac_grava_fini" caption="Prima vac grav fini" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Prima_Vaca_Grav" caption="Prima vac grav" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="prima_dominical" caption="Prima dominical" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="horas_dobles" caption="Horas dobles" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="horas_triples" caption="Horas triples" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Premio_puntualidad" caption="Premio puntualidad" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="premio_Asistecia" caption="Premio asistencia" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Gratificacion_Extraord" caption="Gratificacion extraordinaria" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Gratificacion_retiro" caption="Gratificacion retiro" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="aguinaldo_exce_fini" caption="Aguinaldo excento fini" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="aguinaldo_grav_fini" caption="Aguinaldo gravable fini" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="aguinaldo_excento" caption="Aguinaldo excento" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="aguinaldo_gravable" caption="Aguinaldo gravable" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="compensacion_B" caption="Compensacion B" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Compensacion" caption="Compensacion" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Festivos" caption="Festivos" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="festivos_laborados" caption="Festivos laborados" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="indemnisacion_antiguedad" caption="Indemnisacion antiguedad" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="indemnizacion_20dias" caption="Indemnizacion 20dias" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="indemnizacion_3meses" caption="Indemnizacion 3meses" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Bono_Productividad" caption="Bono productividad" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Bono_Resultados" caption="Bono resultados" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="otras_percepciones" caption="Otras percepciones" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Compensaciones_N" caption="Compensaciones N" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="vales_despensa" caption="Vales despensa" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="desc_vales" caption="Desc vales" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="vales_despensa_fin" caption="Vales despensa fin" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="fondo_ahorro_indi" caption="Fondo ahorro indi" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="Enfermedad_3_primeros_dias" caption="Enfermedad 3 prim dias" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="despensa_en_especie" caption="Despensa en especie" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="credito_al_Salario" caption="Credito al salario" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="impulso_eficiencia_retro" caption="Eficiencia retroactivo" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="fomento_cultural" caption="Fomento cultural" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="onomastico" caption="Onomastico" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="apoyo_transporte" caption="Apoyo transporte" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="impulso_eficiencia" caption="Impulso eficiencia" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="apoyo_alimentacion" caption="Apoyo alimentacion" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="suplencia" caption="Suplencia" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="apoyo_utiles_esco" caption="Apoyo utiles esco" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="estimulo_antiguedad" caption="Estimulo antiguedad" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="cuota_sindical" caption="Cuota sindical" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="fondo_ahorro_empre" caption="Fondo ahorro patron" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="credito_fonacot" caption="Credito fonacot" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="neto_conta" caption="Neto conta" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="isr" caption="ISR" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="INFONAVIT" caption="INFONAVIT" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="imss_trabajador" caption="IMSS trabajador" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="cyv_empleado" caption="CyV empleado" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="pension_alimen" caption="Pension alimenticia" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="descuento_acercate" caption="Descuento acercate" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="desc_vales_despensa" caption="Desc vales despensa" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="otras_deducciones" caption="Otras deducciones" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="desc_comedor" caption="Desc comedor" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="descuento_procapital" caption="Desc procapital" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="credito_mkt" caption="Credito MKT" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="descuento_depensa_especie" caption="Desc despensa especie" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="anticipo_sueldos" caption="Anticipo sueldos" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="descuento_adeudos" caption="Desc adeudos" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="aportaciones_vol_retiro" caption="Aport voluntarias retiro" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+              <dxi-column dataField="prestamo_banorte" caption="Prestamo BANORTE" dataType="number" [width]="'auto'" [customizeText]="customizeCurrency"></dxi-column>
+
+              <dxo-summary>
+              <dxi-total-item column="Salario base" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Septimo día" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Permiso sin goce" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Inca accidente trabajo" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Inca accidente trayecto" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Ausencia injustificada" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Enf Gral Total" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Enfermedad Resto" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Enfermedad trabajo" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Incapacidad Mater" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Retardo" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Descanso trabajado" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Destajo" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Impuestos df o estatal" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Infonavit 5%" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="IMSS patronal" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="SAR" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Cotizacion CyV" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Comisiones" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Vacaciones variables" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Vacaciones disfrutadas" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Finiquito Vacaciones" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Prima Vac exen Fini" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Prima vac exen" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Prima vac grav fini" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Prima vac grav" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Prima dominical" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Horas dobles" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Horas triples" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Premio puntualidad" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Premio asistencia" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Gratificacion extraordinaria" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Gratificacion retiro" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Aguinaldo excento fini" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Aguinaldo gravable fini" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Aguinaldo excento" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Aguinaldo gravable" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Compensacion B" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Compensacion" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Festivos" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Festivos laborados" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Indemnisacion antiguedad" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Indemnizacion 20dias" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Indemnizacion 3meses" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Bono productividad" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Bono resultados" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Otras percepciones" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Compensaciones N" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Vales despensa" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Desc vales" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Vales despensa fin" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Fondo ahorro indi" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Enfermedad 3 prim dias" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Despensa en especie" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Credito al salario" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Eficiencia retroactivo" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Fomento cultural" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Onomastico" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Apoyo transporte" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Impulso eficiencia" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Apoyo alimentacion" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Suplencia" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Apoyo utiles esco" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Estimulo antiguedad" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Cuota sindical" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Fondo ahorro patron" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Credito fonacot" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Neto conta" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="ISR" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="INFONAVIT" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="IMSS trabajador" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="CyV empleado" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Pension alimenticia" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Descuento acercate" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Desc vales despensa" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Otras deducciones" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Desc comedor" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Desc procapital" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Credito MKT" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Desc despensa especie" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Anticipo sueldos" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Desc adeudos" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Aport voluntarias retiro" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+              <dxi-total-item column="Prestamo BANORTE" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+
+              </dxo-summary>
+
+              <dxo-group-panel [visible]="true"></dxo-group-panel>
+              <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+              <dxo-export [enabled]="true"></dxo-export>
+          </dx-data-grid>
+      </div>
+
+      <div fxLayout="row" *ngIf="generaPivote" style="height: 65vh; width: 80vw-60px;">
+
+          <dx-pivot-grid
+          id="pivotgrid"
+          [allowSortingBySummary]="true"
+          [allowFiltering]="true"
+          [showBorders]="true"
+          [allowSortingBySummary]="true"
+          [showColumnGrandTotals]="false"
+          [showRowGrandTotals]="true"
+          [showRowTotals]="true"
+          [showColumnTotals]="false"
+          [dataSource]="pivotGridDataSource"
+          (onCellPrepared)="onCellPrepared($event)"
+          [allowExpandAll]="true"
+          (onCellClick)="onPivotCellClick($event)"
+        >
+          <dxo-export [enabled]="true"></dxo-export>
+          <dxo-field-chooser [enabled]="true"></dxo-field-chooser>
+
+        </dx-pivot-grid>
+
+      </div>
+
+  </div><!--  fin card -->
+</div>
+
+
+
+<dx-popup
+  [(visible)]="salesPopupVisible"
+  [title]="salesPopupTitle"
+  [showCloseButton]="true"
+  (onShown)="onPopupShown()"
+>
+<div class="dx-card responsive-paddings"  fxFlexAlign="center" id="gridPop">
+    <div *dxTemplate="let data of 'content'">
+    <dx-data-grid
+      #drillDownDataGrid
+      width="99%"
+      height="90%"
+      [dataSource]="drillDownDataSource"
+      [columns]="columnasDownDrill"
+    >
+    <dxo-filter-row [visible]="true"></dxo-filter-row>
+    <dxo-export [enabled]="true"></dxo-export>
+    <dxo-scrolling mode="virtual"></dxo-scrolling>
+    <dxo-group-panel [visible]="true"></dxo-group-panel>
+    <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+    </dx-data-grid>
+  </div>
+</div>
+
+</dx-popup>
+
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#P_AsientoContable' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+
+>
+</dx-load-panel>

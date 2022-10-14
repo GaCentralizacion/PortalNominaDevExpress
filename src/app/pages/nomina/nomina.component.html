@@ -1,0 +1,177 @@
+<app-titulo>
+  <span TitleNegritas>Generación de pólizas de nomina </span>
+  <span TitleStd>cierre de fecha paga</span>
+</app-titulo>
+
+<div class="content-block">
+  <div
+    class="dx-card responsive-paddings"
+    fxFlexAlign="center"
+    id="P_AsientoContable"
+  >
+    <div fxLayout="row" fxLayout.xs="column">
+    <div class="dx-fieldset" fxlflex="100">
+      <div class="dx-field">
+        <div class="dx-field-value">
+          <dx-select-box
+            label="Año"
+            [labelMode]="labelMode"
+            [dataSource]="lstAnios"
+            displayExpr="anio"
+            valueExpr="anio"
+            [value]="anioActual"
+            placeholder="Seleciona año"
+            [showClearButton]="false"
+            (onValueChanged)="AnioSelect($event)"
+          ></dx-select-box>
+        </div>
+      </div>
+    </div>
+    <div class="dx-fieldset" fxlflex="100">
+      <div class="dx-field">
+        <div class="dx-field-value">
+          <dx-select-box
+            label="Mes"
+            [labelMode]="labelMode"
+            [dataSource]="lstMeses"
+            displayExpr="text"
+            valueExpr="id"
+            [value]="mesActual"
+            placeholder="Seleciona mes"
+            [showClearButton]="false"
+            (onValueChanged)="MesSelect($event)"
+          ></dx-select-box>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="dx-fieldset" fxFlex="60">
+      <dx-data-grid
+        id="gridContainer"
+        [dataSource]="lstQuincenas"
+        [showBorders]="true"
+      >
+        <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+        <dxi-column
+          dataField="paga"
+          caption="Periodo"
+          dataType="string"
+          [width]="'auto'"
+        ></dxi-column>
+        <dxi-column
+          dataField="fechasPaga"
+          caption="Fecha Paga"
+          dataType="string"
+          [width]="'auto'"
+        ></dxi-column>
+        <dxi-column
+          dataField="semQuin"
+          caption="Numero"
+          [visible]="false"
+        ></dxi-column>
+        <dxi-column
+          dataField="frecuencia"
+          caption="Frecuencia"
+          [visible]="false"
+        ></dxi-column>
+        <dxi-column
+          dataField="tipo"
+          caption="Tipo"
+          [visible]="false"
+        ></dxi-column>
+        <dxi-column type="buttons" caption="Cerrar paga">
+          <dxi-button
+            hint="Cerrar Paga"
+            icon="copy"
+            text="Cerrar paga"
+            [visible]="true"
+            [onClick]="CerrarPaga"
+            [visible]="CerrarPagaDisabled"
+          ></dxi-button>
+        </dxi-column>
+        <dxo-paging [pageSize]="15"></dxo-paging>
+      </dx-data-grid>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- </div> -->
+
+<!-- POPUP -->
+<dx-popup
+  [width]="'auto'"
+  [height]="'auto'"
+  [showTitle]="true"
+  title="GENERANDO PÓLIZAS DE LA {{ tituloModal }}"
+  [dragEnabled]="false"
+  [showCloseButton]="false"
+  container=".dx-viewport"
+  [(visible)]="popupVisible"
+>
+  <div id="gauge-demo">
+    <div id="gauge-container">
+      <div class="left-section">
+        Generando poliza
+        <dx-circular-gauge [value]="speedValue">
+          <dxo-size [width]="100" [height]="100"></dxo-size>
+          <dxo-value-indicator color="#f05b41"> </dxo-value-indicator>
+          <dxo-geometry [startAngle]="180" [endAngle]="90"> </dxo-geometry>
+          <dxo-scale [startValue]="0" [endValue]="100" [tickInterval]="50">
+          </dxo-scale>
+        </dx-circular-gauge>
+      </div>
+      <div class="center-section">
+        <dx-circular-gauge id="speed-gauge" [value]="speedValue">
+          <dxo-size [width]="260"></dxo-size>
+          <dxo-value-indicator
+            type="twoColorNeedle"
+            color="none"
+            [secondFraction]="0.24"
+            secondColor="#f05b41"
+          >
+          </dxo-value-indicator>
+          <dxo-geometry [startAngle]="225" [endAngle]="315"> </dxo-geometry>
+          <dxo-scale
+            [startValue]="0"
+            [endValue]="100"
+            [tickInterval]="1"
+            [minorTickInterval]="1"
+          >
+          </dxo-scale>
+        </dx-circular-gauge>
+        <div class="speed-value">
+          <span>{{ speedValue }}</span>
+        </div>
+      </div>
+      <div class="right-section">
+        {{ sucursalProcesada }}
+        <dx-circular-gauge [value]="speedValue">
+          <dxo-size [width]="100" [height]="100"></dxo-size>
+          <dxo-value-indicator color="#f05b41"> </dxo-value-indicator>
+          <dxo-geometry [startAngle]="90" [endAngle]="0"> </dxo-geometry>
+          <dxo-scale [startValue]="100" [endValue]="0" [tickInterval]="50">
+          </dxo-scale>
+        </dx-circular-gauge>
+      </div>
+    </div>
+  </div>
+
+
+</dx-popup>
+
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#contenedor' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  (onShown)="onShown()"
+  (onHidden)="onHidden()"
+>
+</dx-load-panel>

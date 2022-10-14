@@ -1,0 +1,8 @@
+<dx-toolbar> 
+    <dxi-item location="center" widget="dxButton" locateInMenu="never">
+        <div *dxTemplate>
+         <b><ng-content select="[TitleNegritas]" class="toolbar-label"></ng-content></b>
+         <ng-content select="[TitleStd]" class="toolbar-label"></ng-content>
+        </div>
+      </dxi-item>
+</dx-toolbar>
