@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { locale } from 'devextreme/localization';
+import { take } from 'rxjs';
 import { ConsultaPolizaNominaService } from 'src/app/shared/services/consulta-poliza-nomina.service';
 
-
+import Swal from 'sweetalert2'
 @Component({
   selector: 'app-nomina',
   templateUrl: './nomina.component.html',
@@ -79,10 +80,11 @@ export class NominaComponent implements OnInit {
       },
     ];
 
-    this.nominaService.ListaEmpresasPoliza().subscribe(resp => {
+    this.nominaService.ListaEmpresasPoliza().pipe(take(2)).subscribe(resp => {
       console.log(resp);
-      
-      this.lstEmpresas = resp
+    
+      this.lstEmpresas = resp.slice(0,2) // quitar el slice
+      console.log(this.lstEmpresas)
     })
 
     /**Relacionamos el evento clic con el metodo del mismo nombre */
@@ -148,8 +150,30 @@ export class NominaComponent implements OnInit {
   }
 
   onHidden() {
+
+    Swal.fire({
+      title: '¿Quieres cerrar paga?',
+      text: "Si cierras la paga se enviara la información a BPRO para generar la póliza",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si',
+      cancelButtonText:'No',
+      allowOutsideClick: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.CerrarPagas()
+      }
+    })
+
+
+  }
+
+  CerrarPagas(){
     this.popupVisible = true;
     let polizaProcesada
+    this.speedValue = 0
     setTimeout(async () => {
       for (let i = 0; i < this.lstEmpresas.length; i++) {
       
@@ -171,7 +195,6 @@ export class NominaComponent implements OnInit {
 
     }  
     }, 2000);
-
   }
 
   CalculoNomina(idLugarTrabajo:string){

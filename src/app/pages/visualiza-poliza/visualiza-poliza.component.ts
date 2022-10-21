@@ -223,7 +223,7 @@ export class VisualizaPolizaComponent implements OnInit {
 
   ConsultaAsiento(idSucursal:string){
     return new Promise((resolve, reject) =>{
-      this.nominaService.ObtieneAsientoContable(idSucursal, this.periodo.fechasPaga, this.periodo.tipo,this.periodo.frecuencia)
+      this.nominaService.ConsultaAsientoPolizaBpro(idSucursal,this.periodo.fechasPaga, this.periodo.tipo)
       .pipe(
         // finalize(() => (this.loadingVisible = false)),
         catchError((err) => {
@@ -234,6 +234,18 @@ export class VisualizaPolizaComponent implements OnInit {
       .subscribe((resp:any) => {
         resolve(resp)
       });
+
+      // this.nominaService.ObtieneAsientoContable(idSucursal, this.periodo.fechasPaga, this.periodo.tipo,this.periodo.frecuencia)
+      // .pipe(
+      //   // finalize(() => (this.loadingVisible = false)),
+      //   catchError((err) => {
+      //     this.loadingVisible = false;
+      //     throw `${err}`;
+      //   })
+      // )
+      // .subscribe((resp:any) => {
+      //   resolve(resp)
+      // });
     })
   }
 
@@ -246,7 +258,7 @@ export class VisualizaPolizaComponent implements OnInit {
   }
 
   customizeTextConfBpro(data: any) {
-    return data.value === 1 ? 'Existe' : 'No existe';
+    return data.value === true ? 'Existe' : 'No existe';
   }
 
   onContentReady(e: any) {

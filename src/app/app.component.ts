@@ -55,25 +55,28 @@ export class AppComponent implements OnInit {
       }
     }
 
-    if(usuarioLogeado.idUsuario){
-      idUsuario = usuarioLogeado.idUsuario
-      resp = await this.acceso(idUsuario)
-      
-      if(resp.idRol >= 0){
-        sessionStorage.setItem('login', JSON.stringify(resp))
-        this.accesoUsuario$.next(!this.accesoUsuario$.getValue())
+    if(usuarioLogeado !== null && usuarioLogeado !== undefined){
+      if(usuarioLogeado.idUsuario){
+        idUsuario = usuarioLogeado.idUsuario
+        resp = await this.acceso(idUsuario)
+        
+        if(resp.idRol >= 0){
+          sessionStorage.setItem('login', JSON.stringify(resp))
+          this.accesoUsuario$.next(!this.accesoUsuario$.getValue())
 
-        const result = await this.authService.logIn(
-          resp.nombre.substring(0,15),
-          '123'
-        );
-  
-        if (!result.isOk) {
-          notify(result.message, 'error', 2000);
+          const result = await this.authService.logIn(
+            resp.nombre.substring(0,15),
+            '123'
+          );
+    
+          if (!result.isOk) {
+            notify(result.message, 'error', 2000);
+          }
+
         }
-
-      }
+      }   
     }
+ 
 
   }
 

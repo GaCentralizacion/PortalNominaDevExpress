@@ -111,4 +111,13 @@ export class ConsultaPolizaNominaService {
     return this.http.post(`${environment.apiNomina}api/nomina/CalculoPolizaNomina`, params)
   }
 
+  ConsultaAsientoPolizaBpro(idSucursal:string, fechaPaga:string, tipo:string ){
+    const params = new HttpParams()
+    .set('idSucursal',idSucursal)
+    .set('fechaPaga',fechaPaga)
+    .set('tipo',tipo)
+
+    return this.http.post(`${environment.apiNomina}api/nomina/ConsultaAsientoPolizaBpro`, params)
+  }
+
 }
