@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { locale } from 'devextreme/localization';
 import { take } from 'rxjs';
+import { CatalogosSicossService } from 'src/app/shared/services/catalogosSicoss.service';
 import { ConsultaPolizaNominaService } from 'src/app/shared/services/consulta-poliza-nomina.service';
+import { ConsultaPolizaSicossService } from 'src/app/shared/services/consulta-poliza-sicoss.service';
 
 import Swal from 'sweetalert2'
 @Component({
@@ -30,8 +32,11 @@ export class NominaComponent implements OnInit {
   frecuenciaSeleccionada!:string
   semQuin!:number
   tipoPagaSeleccionada!:string
+  periodoId: any;
+  periodo: any;
+  tipoNomina: any;
 
-  constructor(private nominaService: ConsultaPolizaNominaService) { 
+  constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private polSicoss:ConsultaPolizaSicossService) { 
     locale(navigator.language);
     
     let fecha = new Date()
@@ -80,11 +85,15 @@ export class NominaComponent implements OnInit {
       },
     ];
 
-    this.nominaService.ListaEmpresasPoliza().pipe(take(2)).subscribe(resp => {
-      console.log(resp);
+    // this.nominaService.ListaEmpresasPoliza().pipe(take(2)).subscribe(resp => {
+    //   console.log(resp);
     
-      this.lstEmpresas = resp.slice(0,2) // quitar el slice
-      console.log(this.lstEmpresas)
+    //   this.lstEmpresas = resp.slice(0,2) // quitar el slice
+    //   console.log(this.lstEmpresas)
+    // })
+
+    this.catSicoss.LugaresTrabajo().subscribe(resp => {
+      this.lstEmpresas = resp
     })
 
     /**Relacionamos el evento clic con el metodo del mismo nombre */
@@ -103,11 +112,16 @@ export class NominaComponent implements OnInit {
   }
 
   FechasPaga(anio:any, mes:any){
-   
-    this.nominaService.FechasPagas(anio,mes).subscribe(resp => {
+
+    this.catSicoss.FechasPagas(anio,mes).subscribe(resp =>{
       this.lstQuincenas = []
       this.lstQuincenas = resp
     })
+   
+    // this.nominaService.FechasPagas(anio,mes).subscribe(resp => {
+    //   this.lstQuincenas = []
+    //   this.lstQuincenas = resp
+    // })
   }
 
   AnioSelect(e:any){
@@ -126,10 +140,14 @@ export class NominaComponent implements OnInit {
     
     this.tituloModal = e.row.data.paga
 
+    this.periodoId = e.row.data.frecuencia
+    this.periodo = e.row.data.semQuin
+    this.tipoNomina = e.row.data.tipo
+
     this.fechaPagaSeleccionada = e.row.data.fechasPaga
-    this.frecuenciaSeleccionada = e.row.data.frecuencia
-    this.semQuin = e.row.data.semQuin
-    this.tipoPagaSeleccionada  = e.row.data.tipo
+    //this.frecuenciaSeleccionada = e.row.data.frecuencia
+    //this.semQuin = e.row.data.semQuin
+    //this.tipoPagaSeleccionada  = e.row.data.tipo
 
     this.loadingVisible = true;
     setTimeout(() => {
@@ -139,7 +157,7 @@ export class NominaComponent implements OnInit {
   }
 
   CerrarPagaDisabled(e:any){
-    return e.row.data.apagado === 1
+    return e.row.data.apagado === 0
 
   }
 
@@ -167,7 +185,6 @@ export class NominaComponent implements OnInit {
       }
     })
 
-
   }
 
   CerrarPagas(){
@@ -180,27 +197,30 @@ export class NominaComponent implements OnInit {
         // setTimeout(async () => {
           const element = this.lstEmpresas[i];
           this.sucursalProcesada = element.sucursal.substring(0, 12)
-          polizaProcesada = await this.CalculoNomina(element.workLocat)
+          polizaProcesada = await this.CalculoNomina(element.Centro_ID)
           this.speedValue =  Number((((i+1)*100)/this.lstEmpresas.length).toFixed(0))  
         
           if(this.speedValue === 100){
-          setTimeout(() => {
-            this.popupVisible = false;
-          }, 2000);
+            setTimeout(() => {
+              this.popupVisible = false;
+            }, 2000);
           }
               
         // }, i*2000);
-
-
 
     }  
     }, 2000);
   }
 
-  CalculoNomina(idLugarTrabajo:string){
-    return new Promise((resolve) => {
-      this.nominaService.CalculoNomina(this.mesActual,this.anioActual,this.fechaPagaSeleccionada,this.tipoPagaSeleccionada,idLugarTrabajo).subscribe(resp => resolve(true))
+  CalculoNomina(idLugarTrabajo:number){
+
+    return new Promise((resolve) =>{
+      this.polSicoss.CalculoPolizaSicoss(this.mesActual, this.anioActual, this.periodoId, this.periodo, this.tipoNomina, idLugarTrabajo)
     })
+
+    // return new Promise((resolve) => {
+    //   this.nominaService.CalculoNomina(this.mesActual,this.anioActual,this.fechaPagaSeleccionada,this.tipoPagaSeleccionada,idLugarTrabajo).subscribe(resp => resolve(true))
+    // })
   }
 
 }

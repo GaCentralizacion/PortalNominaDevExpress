@@ -12,6 +12,17 @@ export interface Pagas{
     apagado: number;
 }
 
+export interface pagasSicoss{
+    anio:number;
+    apagado:number;
+    fechasPaga:string;
+    frecuencia:number;
+    mes:number;
+    paga:string;
+    semQuin:number;
+    tipo:number;
+}
+
 export interface AsientoContable{
     cuetaContable: string;
     cta: string;

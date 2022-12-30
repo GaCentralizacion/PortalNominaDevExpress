@@ -14,8 +14,8 @@
                 <div>
                     <dx-drop-down-box
                     [(value)]="gridBoxValue"
-                    valueExpr="workLocat"
-                    displayExpr="sucursal"
+                    valueExpr="Centro_ID"
+                    displayExpr="Descripcion"
                     placeholder="Selecciona sucursales..."
                     [showClearButton]="true"
                     [dataSource]="lstEmpresasPagadoras"
@@ -24,7 +24,7 @@
                     <div *dxTemplate="let data of 'content'">
                       <dx-data-grid
                         [dataSource]="lstEmpresasPagadoras"
-                        [columns]="['sucursal']"
+                        [columns]="['Descripcion']"
                         [selection]="{ mode: 'multiple' }"
                         [hoverStateEnabled]="true"
                         [paging]="{ enabled: true, pageSize: 100 }"

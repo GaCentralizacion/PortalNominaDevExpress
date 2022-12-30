@@ -9,6 +9,8 @@ import {
   campoPivote
 } from './visualiza-poliza.model';
 import CustomStore from 'devextreme/data/custom_store';
+import { ConsultaPolizaSicossService } from 'src/app/shared/services/consulta-poliza-sicoss.service';
+import { CatalogosSicossService } from 'src/app/shared/services/catalogosSicoss.service';
 
 type AOA = any[][];
 
@@ -26,14 +28,7 @@ export class VisualizaPolizaComponent implements OnInit {
   anioActual: number;
   mesActual: number;
   lstQuincenas: Pagas[] = [];
-  periodo: Pagas = {
-    fechasPaga: '',
-    semQuin: 0,
-    tipo: '',
-    frecuencia: '',
-    paga: '',
-    apagado: 0,
-  };
+  periodo: any;
   sucursal: string = '';
   lstAsientoContable: AsientoContable[] = [];
   loadingVisible: boolean = false;
@@ -47,7 +42,7 @@ export class VisualizaPolizaComponent implements OnInit {
   gridBoxValue: any[]=[];
   gridAsientoFinal: any[] = []
 
-  constructor(private nominaService: ConsultaPolizaNominaService) {
+  constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService) {
     
     let fecha = new Date();
     this.anioActual = fecha.getFullYear();
@@ -133,10 +128,16 @@ export class VisualizaPolizaComponent implements OnInit {
 }
 
   Pagas(anio: number, mes: number) {
-    this.nominaService.FechasPagas(anio, mes).subscribe((resp) => {
-      this.lstQuincenas = [];
-      this.lstQuincenas = resp;
-    });
+
+    this.catSicoss.FechasPagas(anio,mes).subscribe((resp:any) => {
+      this.lstQuincenas = []
+      this.lstQuincenas = resp
+    })
+
+    // this.nominaService.FechasPagas(anio, mes).subscribe((resp) => {
+    //   this.lstQuincenas = [];
+    //   this.lstQuincenas = resp;
+    // });
   }
 
   Anios() {
@@ -146,17 +147,30 @@ export class VisualizaPolizaComponent implements OnInit {
   }
 
   LugaresTrabajo() {
-    this.nominaService.ListaEmpresasPoliza().subscribe((resp) => {
-      this.lstEmpresas = resp;
+
+    this.catSicoss.LugaresTrabajo().subscribe((resp) => {
+      this.lstEmpresas = resp
       let source$ = of(resp)
-      this.lstEmpresasPagadoras =  new CustomStore({
-        loadMode: 'raw',
-        key: "workLocat",
-        load() {
-          return lastValueFrom(source$ );
+      this.lstEmpresasPagadoras = new CustomStore({
+        loadMode:'raw',
+        key:'Centro_ID',
+        load(){
+          return lastValueFrom(source$)
         }
-      });
-    });
+      })
+    })
+
+    // this.nominaService.ListaEmpresasPoliza().subscribe((resp) => {
+    //   this.lstEmpresas = resp;
+    //   let source$ = of(resp)
+    //   this.lstEmpresasPagadoras =  new CustomStore({
+    //     loadMode: 'raw',
+    //     key: "workLocat",
+    //     load() {
+    //       return lastValueFrom(source$ );
+    //     }
+    //   });
+    // });
   }
 
   AnioSelect(e: any) {
@@ -193,13 +207,13 @@ export class VisualizaPolizaComponent implements OnInit {
           
           this.lstAsientoContable.push(respuesta);
 
-          let nomSucursal = this.lstEmpresas.find((x:any) => x.workLocat === idSucursal)
+          let nomSucursal = this.lstEmpresas.find((x:any) => x.Centro_ID === idSucursal)
           
           for (let j = i; j < this.lstAsientoContable.length; j++) {
             let element:any = this.lstAsientoContable[j];
     
             element.forEach((ele:any) => {
-              ele.sucursal = nomSucursal?.sucursal
+              ele.sucursal = nomSucursal?.Descripcion
             });
             
           }
@@ -221,19 +235,32 @@ export class VisualizaPolizaComponent implements OnInit {
   
   }
 
-  ConsultaAsiento(idSucursal:string){
+  ConsultaAsiento(idSucursal:number){
     return new Promise((resolve, reject) =>{
-      this.nominaService.ConsultaAsientoPolizaBpro(idSucursal,this.periodo.fechasPaga, this.periodo.tipo)
+
+      this.sicoss.ConsultaAsientoPolizaBproSicoss(idSucursal, this.periodo.fechasPaga, this.periodo.frecuencia, this.periodo.semQuin  )
       .pipe(
-        // finalize(() => (this.loadingVisible = false)),
-        catchError((err) => {
-          this.loadingVisible = false;
-          throw `${err}`;
+        catchError((err) =>{
+          this.loadingVisible = false
+          throw `${err}`
         })
       )
-      .subscribe((resp:any) => {
+      .subscribe((resp:any) =>{
         resolve(resp)
-      });
+      })
+
+
+      // this.nominaService.ConsultaAsientoPolizaBpro(idSucursal,this.periodo.fechasPaga, this.periodo.tipo)
+      // .pipe(
+      //   // finalize(() => (this.loadingVisible = false)),
+      //   catchError((err) => {
+      //     this.loadingVisible = false;
+      //     throw `${err}`;
+      //   })
+      // )
+      // .subscribe((resp:any) => {
+      //   resolve(resp)
+      // });
 
       // this.nominaService.ObtieneAsientoContable(idSucursal, this.periodo.fechasPaga, this.periodo.tipo,this.periodo.frecuencia)
       // .pipe(
@@ -275,7 +302,7 @@ export class VisualizaPolizaComponent implements OnInit {
     }
 
     if (e.rowType === 'data' && e.column.dataField === 'existeBPRO') {
-      if (e.data.existeBPRO !== 0) {
+      if (e.data.existeBPRO !== false) {
         e.cellElement.className += 'existe';
       } else {
         e.cellElement.className += 'noExiste';

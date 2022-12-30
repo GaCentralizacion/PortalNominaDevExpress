@@ -142,4 +142,8 @@ export class PolizaGeneradaComponent implements OnInit {
         this.dataPolizas = resp;
       });
   }
+
+  Consulta(){
+    this.ConsultaBitacoraPolizas();
+  }
 }

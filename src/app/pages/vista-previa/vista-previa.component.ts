@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ConsultaPolizaNominaService} from 'src/app/shared/services/consulta-poliza-nomina.service';
-import {campoPivote, LugarTrabajoModel, Pagas} from '../visualiza-poliza/visualiza-poliza.model';
+import {campoPivote, LugarTrabajoModel, Pagas, pagasSicoss} from '../visualiza-poliza/visualiza-poliza.model';
 import {catchError, finalize, findIndex, from, lastValueFrom, map, of} from 'rxjs';
 import { filter, find } from 'rxjs/operators'; 
 import {CurrencyPipe} from '@angular/common';
@@ -8,6 +8,8 @@ import PivotGridDataSource from 'devextreme/ui/pivot_grid/data_source';
 import { DxDataGridComponent } from 'devextreme-angular';
 import { dxPivotGridSummaryCell } from 'devextreme/ui/pivot_grid';
 import CustomStore from 'devextreme/data/custom_store';
+import { CatalogosSicossService } from 'src/app/shared/services/catalogosSicoss.service';
+import { ConsultaPolizaSicossService } from 'src/app/shared/services/consulta-poliza-sicoss.service';
 
 @Component({selector: 'app-vista-previa', templateUrl: './vista-previa.component.html', styleUrls: ['./vista-previa.component.scss']})
 export class VistaPreviaComponent implements OnInit {
@@ -22,15 +24,17 @@ export class VistaPreviaComponent implements OnInit {
     anioActual : number;
     mesActual : number;
     lstQuincenas : Pagas[] = [];
-    periodo : Pagas = {
-        fechasPaga: '',
-        semQuin: 0,
-        tipo: '',
-        frecuencia: '',
-        paga: '',
-        apagado: 0
-    };
-
+    // periodo : pagasSicoss = {
+    //     fechasPaga: '',
+    //     semQuin: 0,
+    //     tipo: 0,
+    //     frecuencia: 0,
+    //     paga: '',
+    //     apagado: 0,
+    //     anio:0,
+    //     mes:0
+    // };
+    periodo:any
     sucursal : string = '';
     searchModeOption = 'contains';
     lstDatosSabana : any[] = [];
@@ -55,7 +59,11 @@ export class VistaPreviaComponent implements OnInit {
     grupos: any;
     arrColores!: any[];
 
-    constructor(private nominaService : ConsultaPolizaNominaService) {
+    catalogoConceptos!:any
+
+    constructor(private nominaService : ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService) {
+      //this.catalogoConceptos = 
+      this.CatalogoConceptos()
       this.LugaresTrabajo();
         let fecha = new Date();
         this.anioActual = fecha.getFullYear();
@@ -106,7 +114,8 @@ export class VistaPreviaComponent implements OnInit {
 
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
+     // this.catalogoConceptos = await this.CatalogoConceptos()
         this.Anios();
         
         this.Pagas(this.anioActual, this.mesActual);
@@ -114,8 +123,18 @@ export class VistaPreviaComponent implements OnInit {
 
     }
 
+    CatalogoConceptos(){
+      //return new Promise((resolve, reject) => {
+        this.catSicoss.ConceptosPoliza().subscribe(resp =>{
+          this.catalogoConceptos = resp
+          //resolve(resp)
+        })
+      //})
+    }
+
     GruposMeta(){
-      this.nominaService.GruposMeta().subscribe(resp =>{
+      //this.nominaService.GruposMeta().subscribe(resp =>{
+      this.catSicoss.SicossGrupo().subscribe(resp =>{
         this.lstGruposMeta = resp
       
         this.arrColores = []
@@ -137,11 +156,19 @@ export class VistaPreviaComponent implements OnInit {
     }
 
     Pagas(anio : number, mes : number) {
-        this.nominaService.FechasPagas(anio, mes).subscribe((resp) => {
-            this.lstQuincenas = [];
-            this.lstQuincenas = resp;
-        });
-    }
+
+        this.catSicoss.FechasPagas(anio, mes).subscribe((resp:any) => {
+          this.lstQuincenas = []
+          this.lstQuincenas = resp
+
+        })
+
+        // this.nominaService.FechasPagas(anio, mes).subscribe((resp) => {
+        //     this.lstQuincenas = [];
+        //     this.lstQuincenas = resp;
+        // });
+    
+      }
 
     Anios() {
         this.nominaService.ListaAnios().subscribe((resp) => {
@@ -150,17 +177,31 @@ export class VistaPreviaComponent implements OnInit {
     }
 
     LugaresTrabajo() {
-        this.nominaService.ListaEmpresasPoliza().subscribe((resp) => {
-            //this.lstEmpresasPagadoras = resp;  
+
+        this.catSicoss.LugaresTrabajo().subscribe((resp) => {
             let source$ = of(resp)
             this.lstEmpresasPagadoras =  new CustomStore({
               loadMode: 'raw',
-              key: "workLocat",
+              key: "Centro_ID",
               load() {
                 return lastValueFrom(source$ );
               }
             });
-        });
+
+            console.log(this.lstEmpresasPagadoras);
+            
+        })
+        // this.nominaService.ListaEmpresasPoliza().subscribe((resp) => {
+        //     //this.lstEmpresasPagadoras = resp;  
+        //     let source$ = of(resp)
+        //     this.lstEmpresasPagadoras =  new CustomStore({
+        //       loadMode: 'raw',
+        //       key: "workLocat",
+        //       load() {
+        //         return lastValueFrom(source$ );
+        //       }
+        //     });
+        // });
     }
 
     AnioSelect(e : any) {
@@ -208,10 +249,11 @@ export class VistaPreviaComponent implements OnInit {
 
     }
 
-    ConsultaSabana(sucursal:string){
+    ConsultaSabana(sucursal:number){
       return new Promise((resolve, reject) =>{
-          this.nominaService.ConsultaSabanaMeta(sucursal, this.periodo.fechasPaga, this.periodo.tipo, this.periodo.frecuencia)
-          .pipe(
+
+        this.sicoss.vistaPrevia(this.periodo.anio, this.periodo.mes, this.periodo.frecuencia, this.periodo.semQuin, sucursal, this.periodo.tipo)
+         .pipe(
             finalize(() => (this.loadingVisible = false))
             , catchError((err) => {
               this.loadingVisible = false;
@@ -221,6 +263,19 @@ export class VistaPreviaComponent implements OnInit {
           ).subscribe((resp : any) => {
               resolve(resp);
           });
+
+          // this.nominaService.ConsultaSabanaMeta(sucursal, this.periodo.fechasPaga, this.periodo.tipo, this.periodo.frecuencia)
+          // .pipe(
+          //   finalize(() => (this.loadingVisible = false))
+          //   , catchError((err) => {
+          //     this.loadingVisible = false;
+          //     resolve([])
+          //     throw `${err}`;
+          //     })
+          // ).subscribe((resp : any) => {
+          //     resolve(resp);
+          // });
+
       })
     }
 
@@ -250,16 +305,26 @@ export class VistaPreviaComponent implements OnInit {
         }
     }
 
-    ConsultaSabanaGrupo(sucursal:string){
+    ConsultaSabanaGrupo(sucursal:number){
       return new Promise((resolve, reject) =>{
-        this.nominaService.ConsultaSabanaMetaGrupo(sucursal, this.periodo.fechasPaga, this.periodo.tipo, this.periodo.frecuencia)
-        .pipe(
-          catchError((err) => {
-          this.loadingVisible = false;
-          throw `${err}`;
-      })).subscribe((resp : any) => {
-              resolve(resp[0].final);
-          });
+       
+      this.sicoss.SabanaGrupoSicoss(this.periodo.anio, this.periodo.mes, this.periodo.frecuencia, this.periodo.semQuin, sucursal, this.periodo.tipo,this.periodo.fechasPaga)
+      .pipe(
+        catchError((err) =>{
+          this.loadingVisible = false
+          throw `${err}`
+        })
+      ).subscribe((resp:any) => {
+        resolve(resp[0].final)
+      })
+      //   this.nominaService.ConsultaSabanaMetaGrupo(sucursal, this.periodo.fechasPaga, this.periodo.tipo, this.periodo.frecuencia)
+      //   .pipe(
+      //     catchError((err) => {
+      //     this.loadingVisible = false;
+      //     throw `${err}`;
+      // })).subscribe((resp : any) => {
+      //         resolve(resp[0].final);
+      //     });
       })
     }
 
@@ -401,7 +466,15 @@ export class VistaPreviaComponent implements OnInit {
 
     customizeCurrency(data : any) {
         if (data !== undefined) {
+
+          if(data.value === null){
+            return new CurrencyPipe('en-US').transform('0');
+          }
+
+          if(data.value !== null){
             return new CurrencyPipe('en-US').transform(data.value.toString());
+          }
+
         } else {
             return data;
         }
@@ -513,7 +586,7 @@ export class VistaPreviaComponent implements OnInit {
             for (let i = 0; i < filtros.length; i++) {
             const elementFiltro = filtros[i];
   
-              if(elementFiltro.alias !== 'unidad org' ){
+              if(elementFiltro.alias !== 'unidad org' && elementFiltro.alias !== 'Id RH' && elementFiltro.alias !== 'Lugar de trabajo'){
                 this.columnasDownDrill.push(elementFiltro.alias)
               }
             

@@ -18,6 +18,17 @@
             <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mesActual" [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
         </div>
     </div>
+    <div class="dx-field">
+      <div class="dx-field-value">
+        <dx-button
+        stylingMode="contained"
+        text="Consultar"
+        type="default"
+        [width]="220"
+        (onClick)="Consulta()">
+      </dx-button>
+      </div>
+  </div>
      
     </div>
 
