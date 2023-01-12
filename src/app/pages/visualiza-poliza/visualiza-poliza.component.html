@@ -1,0 +1,166 @@
+
+<app-titulo>
+    <span TitleNegritas>Visita previa </span>
+    <span TitleStd>del asiento contable de la póliza dejada en BPRO</span>
+</app-titulo>
+
+<div class="content-block">
+    <div class="dx-card responsive-paddings"  fxFlexAlign="center" id="P_AsientoContable">
+        <div fxLayout="row" fxLayoutAlign="space-around center" fxLayout.xs="column">
+          
+          <div class="dx-fieldset" fxlflex="100" >
+            <div class="dx-field">
+              <div class="dx-field-value">
+                  <dx-drop-down-box
+                    [(value)]="gridBoxValue"
+                    valueExpr="Centro_ID"
+                    displayExpr="Descripcion"
+                    placeholder="Selecciona sucursales..."
+                    [showClearButton]="true"
+                    [dataSource]="lstEmpresasPagadoras"
+                    [width]="400"
+                  >
+                  <div *dxTemplate="let data of 'content'">
+                    <dx-data-grid
+                      [dataSource]="lstEmpresasPagadoras"
+                      [columns]="['Descripcion']"
+                      [selection]="{ mode: 'multiple' }"
+                      [hoverStateEnabled]="true"
+                      [paging]="{ enabled: true, pageSize: 100 }"
+                      [filterRow]="{ visible: true }"
+                      [scrolling]="{ mode: 'virtual' }"
+                      [height]="500"
+                      [(selectedRowKeys)]="gridBoxValue"
+                    >
+                    </dx-data-grid>
+                  </div>
+                </dx-drop-down-box>
+              </div>
+            </div>
+          </div>
+
+          <div class="dx-fieldset" fxlflex="100" >
+            <div class="dx-field">
+              <div class="dx-field-value">
+                <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anioActual" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
+               </div>
+            </div>        
+          </div>
+
+          <div class="dx-fieldset" fxlflex="100" >
+            <div class="dx-field">
+              <div class="dx-field-value">
+                <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mesActual"  [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
+              </div>
+            </div>
+          </div>
+
+          <div class="dx-fieldset" fxlflex="100" > 
+            <div class="dx-field">
+              <div class="dx-field-value">
+                <dx-select-box label="Periodo" [dataSource]="lstQuincenas"  displayExpr="paga" valueExpr="paga"  placeholder="Seleciona año" [showClearButton]="false" width="300" (onValueChanged)="PeriodoSelected($event)"></dx-select-box>
+              </div>
+            </div>
+          </div>
+
+          <div class="dx-fieldset" fxlflex="100" >
+             <div class="dx-field">
+                <dx-button
+                stylingMode="contained"
+                text="Consultar"
+                type="default"
+                [width]="120"
+                (onClick)="AsientoContable()"
+              >
+              </dx-button>
+            </div>           
+          </div>
+
+
+        </div>  
+  
+     
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" *ngIf="verAsiento">
+            <div>Genera Pivote</div>
+            <div>
+              <dx-switch   [(value)]="generaPivote"
+              (onValueChanged)="switchValueChanged($event)">></dx-switch>
+            </div>
+        </div>
+    
+        <div fxLayout="row" *ngIf="verAsiento && !generaPivote" style="height: 65vh; width: 80vw-60px;">
+    
+                <dx-data-grid id="gridContainer" [showBorders]="true" [dataSource]="gridAsientoFinal" (onContentReady)="onContentReady($event)" (onCellPrepared)="onCellPrepared($event)" width="100%">
+                    <dxo-filter-row
+                        [visible]="true"
+                    ></dxo-filter-row>
+                    <dxo-scrolling mode="virtual"></dxo-scrolling>
+                    <dxo-load-panel [enabled]="false"></dxo-load-panel>
+                    <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+                    <dxo-group-panel [visible]="true"></dxo-group-panel>
+                    <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+                    <!-- <dxi-column dataField="estatusCuenta"      caption="Estatus cuenta" dataType="string" [width]="'auto'" cssClass="cell-highlighted"></dxi-column> -->
+                    <dxi-column dataField="sucursal"           caption="Sucursal" dataType="string" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="estatusCuenta"      caption="Estatus cuenta" dataType="string" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="existeBPRO"         caption="Existe conf BPRO" dataType="string" [width]="'auto'" [customizeText]="customizeTextConfBpro"></dxi-column>
+                    <dxi-column dataField="documento"           caption="Documento" dataType="string" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="cuentaContable"      caption="Cuenta contable BPRO" dataType="string" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="concepto"           caption="Concepto META4" dataType="string" [width]="'auto'" [alignment]="'center'"></dxi-column>
+                    <dxi-column dataField="debe"               caption="Debe (Cargo)"  dataType="number" [width]="200" [customizeText]="customizeCurrency"></dxi-column>
+                    <dxi-column dataField="haber"              caption="Haber (Abono)" dataType="number" [customizeText]="customizeCurrency" [width]="200"></dxi-column>
+                    <dxi-column dataField="id_persona_empresa" caption="Persona" dataType="number" [width]="120"></dxi-column>
+                    <dxo-summary>
+                        <dxi-total-item
+                        column="Debe (Cargo)"
+                        summaryType="sum"
+                        [customizeText]="customizeCurrency"
+                      ></dxi-total-item>
+                        <dxi-total-item
+                        column="Haber (Abono)"
+                        summaryType="sum"
+                        [customizeText]="customizeCurrency"
+                      ></dxi-total-item>
+                    </dxo-summary>
+                    <dxo-export [enabled]="true"></dxo-export>
+                </dx-data-grid>
+        </div>
+    
+        <div fxLayout="row" *ngIf="generaPivote" style="height: 65vh; width: 80vw-60px;">
+    
+            <dx-pivot-grid
+            id="pivotgrid"
+            [allowSortingBySummary]="true"
+            [allowFiltering]="true"
+            [showBorders]="true"
+            [allowSortingBySummary]="true"
+            [showColumnGrandTotals]="false"
+            [showRowGrandTotals]="true"
+            [showRowTotals]="true"
+            [showColumnTotals]="false"
+            [dataSource]="pivotGridDataSource"
+          >
+            <dxo-export [enabled]="true"></dxo-export>
+            <dxo-field-chooser [enabled]="true" [height]="400"></dxo-field-chooser>
+            <dxo-scrolling mode="virtual"></dxo-scrolling>
+          </dx-pivot-grid>
+    
+        </div>
+    
+    
+    </div>
+</div>
+
+
+   
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#P_AsientoContable' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+>
+</dx-load-panel>
+ 
+
