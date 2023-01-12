@@ -10,20 +10,20 @@
     id="P_AsientoContable"
   >
     <div fxLayout="row" fxLayout.xs="column">
-    <div class="dx-fieldset" fxlflex="100">
-      <div class="dx-field">
-        <div class="dx-field-value">
-          <dx-select-box
-            label="Año"
-            [labelMode]="labelMode"
-            [dataSource]="lstAnios"
-            displayExpr="anio"
-            valueExpr="anio"
-            [value]="anioActual"
-            placeholder="Seleciona año"
-            [showClearButton]="false"
-            (onValueChanged)="AnioSelect($event)"
-          ></dx-select-box>
+      <div class="dx-fieldset" fxlflex="100">
+        <div class="dx-field">
+          <div class="dx-field-value">
+            <dx-select-box
+              label="Año"
+              [labelMode]="labelMode"
+              [dataSource]="lstAnios"
+              displayExpr="anio"
+              valueExpr="anio"
+              [value]="anioActual"
+              placeholder="Seleciona año"
+              [showClearButton]="false"
+              (onValueChanged)="AnioSelect($event)"
+            ></dx-select-box>
         </div>
       </div>
     </div>

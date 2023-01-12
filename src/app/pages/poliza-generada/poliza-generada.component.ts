@@ -3,6 +3,7 @@ import { ConsultaPolizaNominaService } from 'src/app/shared/services/consulta-po
 import { locale,formatMessage,loadMessages } from 'devextreme/localization';
 
 import * as esMessages from 'devextreme/localization/messages/es.json';
+import { ConsultaPolizaSicossService } from 'src/app/shared/services/consulta-poliza-sicoss.service';
 
 @Component({
   selector: 'app-poliza-generada',
@@ -24,7 +25,7 @@ export class PolizaGeneradaComponent implements OnInit {
   estadoPoliza: string = '';
   formatMessage = formatMessage;
 
-  constructor(private nominaService: ConsultaPolizaNominaService) {
+  constructor(private nominaService: ConsultaPolizaNominaService, private sicoss: ConsultaPolizaSicossService) {
     // locale('es');
     // this.initMessages();
     const that = this;
@@ -122,25 +123,44 @@ export class PolizaGeneradaComponent implements OnInit {
   }
 
   ConsultaBitacoraPolizas() {
-    this.nominaService
-      .ConsultaBitacoraPolizas(this.mesActual, this.anioActual)
-      .subscribe((resp) => {
-        this.lstPolizas = resp;
-      });
+
+    this.sicoss
+    .ConsultaBitacoraPolizasSICOSS(this.mesActual, this.anioActual)
+    .subscribe((resp) => {
+      this.lstPolizas = resp
+    })
+    // this.nominaService
+    //   .ConsultaBitacoraPolizas(this.mesActual, this.anioActual)
+    //   .subscribe((resp) => {
+    //     this.lstPolizas = resp;
+    //   });
   }
 
   ConsultaPoliza(e: any) {
-    this.nominaService
-      .ConsultaPoliza(e.row.data.id_work_locat, e.row.data.DSBPEncInfoEnc)
-      .subscribe((resp: any) => {
-        this.popupVisible = true;
-        this.sucursalPoliza = e.row.data.sucursal;
-        this.estadoPoliza =
-          resp[0].EstatusContabilizacion === 1
-            ? 'Póliza generada'
-            : 'Póliza en proceso';
-        this.dataPolizas = resp;
-      });
+
+    this.sicoss
+    .ConsultaPolizaSICOSS(e.row.data.id_work_locat, e.row.data.DSBPEncInfoEnc)
+    .subscribe((resp: any) => {
+      this.popupVisible = true;
+      this.sucursalPoliza = e.row.data.sucursal;
+      this.estadoPoliza =
+        resp[0].EstatusContabilizacion === 1
+          ? 'Póliza generada'
+          : 'Póliza en proceso';
+      this.dataPolizas = resp;
+    });
+
+    // this.nominaService
+    //   .ConsultaPoliza(e.row.data.id_work_locat, e.row.data.DSBPEncInfoEnc)
+    //   .subscribe((resp: any) => {
+    //     this.popupVisible = true;
+    //     this.sucursalPoliza = e.row.data.sucursal;
+    //     this.estadoPoliza =
+    //       resp[0].EstatusContabilizacion === 1
+    //         ? 'Póliza generada'
+    //         : 'Póliza en proceso';
+    //     this.dataPolizas = resp;
+    //   });
   }
 
   Consulta(){

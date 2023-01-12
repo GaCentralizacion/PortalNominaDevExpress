@@ -61,6 +61,23 @@ export class ConsultaPolizaSicossService{
         .set('periodo', periodo)
     
         return this.http.post(`${environment.apiNomina}api/nominaSICOSS/ConsultaAsientoPolizaBproSicoss`, params)
+    }
+
+    ConsultaBitacoraPolizasSICOSS(mes:number, anio: number){
+        const params = new HttpParams()
+        .set('mes', mes)
+        .set('anio',anio)
+
+        return this.http.post(`${environment.apiNomina}api/nominaSICOSS/ConsultaBitacoraPolizasSICOSS`, params)
+    }
+
+    ConsultaPolizaSICOSS(lugarTrabajo:string, idCabecero:number){
+        const params = new HttpParams()
+        .set('lugarTrabajo',lugarTrabajo)
+        .set('idCabecero',idCabecero);
+    
+        return this.http.post(`${environment.apiNomina}api/nominaSICOSS/ConsultaPolizaSICOSS`,params)
+    
       }
 
 }

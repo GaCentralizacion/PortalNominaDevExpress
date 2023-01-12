@@ -6,13 +6,12 @@
 
 <div class="content-block">
     <div class="dx-card responsive-paddings"  fxFlexAlign="center" id="P_AsientoContable">
-        <div fxLayout="row" fxLayoutAlign="space-around center">
+        <div fxLayout="row" fxLayoutAlign="space-around center" fxLayout.xs="column">
+          
+          <div class="dx-fieldset" fxlflex="100" >
             <div class="dx-field">
-                <!-- <div class="dx-field-value">
-                    <dx-select-box label="Sucursal" [dataSource]="lstEmpresasPagadoras"  displayExpr="sucursal" valueExpr="workLocat"  placeholder="Seleciona sucursal" [showClearButton]="false" width="450px" (onValueChanged)="SucursalSelect($event)" [searchMode]="searchModeOption"  [searchEnabled]="true"></dx-select-box>
-                </div> -->
-                <div>
-                    <dx-drop-down-box
+              <div class="dx-field-value">
+                  <dx-drop-down-box
                     [(value)]="gridBoxValue"
                     valueExpr="Centro_ID"
                     displayExpr="Descripcion"
@@ -21,39 +20,51 @@
                     [dataSource]="lstEmpresasPagadoras"
                     [width]="400"
                   >
-                    <div *dxTemplate="let data of 'content'">
-                      <dx-data-grid
-                        [dataSource]="lstEmpresasPagadoras"
-                        [columns]="['Descripcion']"
-                        [selection]="{ mode: 'multiple' }"
-                        [hoverStateEnabled]="true"
-                        [paging]="{ enabled: true, pageSize: 100 }"
-                        [filterRow]="{ visible: true }"
-                        [scrolling]="{ mode: 'virtual' }"
-                        [height]="500"
-                        [(selectedRowKeys)]="gridBoxValue"
-                      >
-                      </dx-data-grid>
-                    </div>
-                  </dx-drop-down-box>
+                  <div *dxTemplate="let data of 'content'">
+                    <dx-data-grid
+                      [dataSource]="lstEmpresasPagadoras"
+                      [columns]="['Descripcion']"
+                      [selection]="{ mode: 'multiple' }"
+                      [hoverStateEnabled]="true"
+                      [paging]="{ enabled: true, pageSize: 100 }"
+                      [filterRow]="{ visible: true }"
+                      [scrolling]="{ mode: 'virtual' }"
+                      [height]="500"
+                      [(selectedRowKeys)]="gridBoxValue"
+                    >
+                    </dx-data-grid>
                   </div>
+                </dx-drop-down-box>
+              </div>
             </div>
+          </div>
+
+          <div class="dx-fieldset" fxlflex="100" >
             <div class="dx-field">
-                <div class="dx-field-value">
-                    <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anioActual" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
-                </div>
+              <div class="dx-field-value">
+                <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anioActual" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
+               </div>
+            </div>        
+          </div>
+
+          <div class="dx-fieldset" fxlflex="100" >
+            <div class="dx-field">
+              <div class="dx-field-value">
+                <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mesActual"  [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
+              </div>
             </div>
+          </div>
+
+          <div class="dx-fieldset" fxlflex="100" > 
             <div class="dx-field">
-                <div class="dx-field-value">
-                    <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mesActual"  [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
-                </div>
+              <div class="dx-field-value">
+                <dx-select-box label="Periodo" [dataSource]="lstQuincenas"  displayExpr="paga" valueExpr="paga"  placeholder="Seleciona año" [showClearButton]="false" width="300" (onValueChanged)="PeriodoSelected($event)"></dx-select-box>
+              </div>
             </div>
-            <div class="dx-field">
-                <div class="dx-field-value">
-                    <dx-select-box label="Periodo" [dataSource]="lstQuincenas"  displayExpr="paga" valueExpr="paga"  placeholder="Seleciona año" [showClearButton]="false" width="400px" (onValueChanged)="PeriodoSelected($event)"></dx-select-box>
-                </div>
-            </div>
-            <div class="dx-field">
+          </div>
+
+          <div class="dx-fieldset" fxlflex="100" >
+             <div class="dx-field">
                 <dx-button
                 stylingMode="contained"
                 text="Consultar"
@@ -62,7 +73,10 @@
                 (onClick)="AsientoContable()"
               >
               </dx-button>
-            </div>
+            </div>           
+          </div>
+
+
         </div>  
   
      
