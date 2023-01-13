@@ -4,11 +4,8 @@
 </app-titulo>
 <div class="content-block">
   <div class="dx-card responsive-paddings"  fxFlexAlign="center" id="P_AsientoContable">
-      <div fxLayout="row" fxLayoutAlign="space-around center">
+      <div fxLayout="row" fxLayoutAlign="space-around center" fxLayout.xs="column" fxLayout.sm="column" fxLayout.md="column" >
           <div class="dx-field">
-              <!-- <div class="dx-field-value">
-                  <dx-select-box label="Sucursal" [dataSource]="lstEmpresasPagadoras"  displayExpr="sucursal" valueExpr="workLocat"   placeholder="Seleciona sucursal" [showClearButton]="false" width="450px" (onValueChanged)="SucursalSelect($event)" [searchMode]="searchModeOption"  [searchEnabled]="true"></dx-select-box>
-              </div> -->
               <div>
                 <dx-drop-down-box
                 [(value)]="gridBoxValue"

@@ -9,7 +9,7 @@
     fxFlexAlign="center"
     id="P_AsientoContable"
   >
-    <div fxLayout="row" fxLayout.xs="column">
+    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayout.md="column" >
       <div class="dx-fieldset" fxlflex="100">
         <div class="dx-field">
           <div class="dx-field-value">
@@ -54,6 +54,7 @@
         [dataSource]="lstQuincenas"
         [showBorders]="true"
       >
+       <dxo-scrolling mode="virtual"></dxo-scrolling>
         <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
         <dxi-column
           dataField="paga"
