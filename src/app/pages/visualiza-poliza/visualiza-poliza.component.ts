@@ -284,8 +284,41 @@ export class VisualizaPolizaComponent implements OnInit {
     }
   }
 
+  customizeCurrencyTotalGral(data: any) {
+    if (data.value !== undefined) {
+      return `Total Gral: ${new CurrencyPipe('en-US').transform(data.value.toString())}`;
+    } else {
+      return data;
+    }
+  }
+
+  customizeCurrencyTotal(data: any) {
+    if (data.value !== undefined) {
+      return `Total: ${new CurrencyPipe('en-US').transform(data.value.toString())}`;
+    } else {
+      return data;
+    }
+  }
+
+
   customizeTextConfBpro(data: any) {
-    return data.value === true ? 'Existe' : 'No existe';
+
+    let valor:string =''
+
+    if(data.value === true){
+      valor = 'Existe'
+    }
+
+    if(data.value === false){
+      valor = 'No existe'
+    }
+
+    if(data.value === undefined || data.value === null){
+      valor = ''
+    }
+
+    return valor;
+    //return data.value === true ? 'Existe' : 'No existe';
   }
 
   onContentReady(e: any) {
