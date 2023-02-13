@@ -110,15 +110,29 @@
                     <dxi-column dataField="haber"              caption="Haber (Abono)" dataType="number" [customizeText]="customizeCurrency" [width]="200"></dxi-column>
                     <dxi-column dataField="id_persona_empresa" caption="Persona" dataType="number" [width]="120"></dxi-column>
                     <dxo-summary>
+                      <dxi-group-item
+                        column="debe"
+                        summaryType="sum"
+                        [customizeText]="customizeCurrencyTotal"
+                        [showInGroupFooter]="true"
+                      >                        
+                      </dxi-group-item>
+                      <dxi-group-item
+                      column="haber"
+                      summaryType="sum"
+                      [customizeText]="customizeCurrencyTotal"
+                      [showInGroupFooter]="true"
+                      > 
+                    </dxi-group-item>
                         <dxi-total-item
                         column="Debe (Cargo)"
                         summaryType="sum"
-                        [customizeText]="customizeCurrency"
+                        [customizeText]="customizeCurrencyTotalGral"
                       ></dxi-total-item>
                         <dxi-total-item
                         column="Haber (Abono)"
                         summaryType="sum"
-                        [customizeText]="customizeCurrency"
+                        [customizeText]="customizeCurrencyTotalGral"
                       ></dxi-total-item>
                     </dxo-summary>
                     <dxo-export [enabled]="true"></dxo-export>

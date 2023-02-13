@@ -83,9 +83,12 @@
               <dxi-column dataField="CentroCostos" caption="Centro de costos" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
 
               <dxi-column *ngFor="let colm of catalogoConceptos; let k = index" dataField="{{colm.Concepto_ID}}" caption="{{colm.Descripcion}}" dataType="number" [customizeText]="customizeCurrency" [width]="'auto'"></dxi-column>
-
+              <dxo-summary>
+                <dxi-group-item *ngFor="let colm of catalogoConceptos; let k = index" column="{{colm.Concepto_ID}}" summaryType="sum" [customizeText]="customizeCurrency" [showInGroupFooter]="true"></dxi-group-item>
+                <dxi-total-item *ngFor="let colm of catalogoConceptos; let k = index" column="{{colm.Concepto_ID}}" summaryType="sum" [customizeText]="customizeCurrencyTotal"></dxi-total-item>
+              </dxo-summary>
               <dxo-group-panel [visible]="true"></dxo-group-panel>
-              <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+              <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
               <dxo-export [enabled]="true"></dxo-export>
           </dx-data-grid>
       </div>

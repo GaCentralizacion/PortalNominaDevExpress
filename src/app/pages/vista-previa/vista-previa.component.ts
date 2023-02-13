@@ -480,6 +480,22 @@ export class VistaPreviaComponent implements OnInit {
         }
     }
 
+    customizeCurrencyTotal(data: any) {
+      if (data !== undefined) {
+
+        if(data.value === null){
+          return `Total: ${new CurrencyPipe('en-US').transform('0')}`;
+        }
+
+        if(data.value !== null){
+          return `Total: ${new CurrencyPipe('en-US').transform(data.value.toString())} `;
+        }
+
+      } else {
+          return data;
+      }
+    }
+
     getCssStyles(e:any) {
       if(e !== undefined){
         let  { fill, font, bold } = e
