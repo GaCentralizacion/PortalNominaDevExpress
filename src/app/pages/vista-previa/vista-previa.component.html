@@ -82,7 +82,7 @@
               <dxi-column dataField="LugarTrabajo" caption="Lugar de trabajo" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
               <dxi-column dataField="CentroCostos" caption="Centro de costos" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
 
-              <dxi-column *ngFor="let colm of catalogoConceptos; let k = index" dataField="{{colm.Concepto_ID}}" caption="{{colm.Descripcion}}" dataType="number" [customizeText]="customizeCurrency" [width]="'auto'"></dxi-column>
+              <dxi-column *ngFor="let colm of catalogoConceptos; let k = index" dataField="{{colm.Concepto_ID}}" caption="{{colm.Concepto_ID}}-{{colm.Descripcion}}" dataType="number" [customizeText]="customizeCurrency" [width]="'auto'"></dxi-column>
               <dxo-summary>
                 <dxi-group-item *ngFor="let colm of catalogoConceptos; let k = index" column="{{colm.Concepto_ID}}" summaryType="sum" [customizeText]="customizeCurrency" [showInGroupFooter]="true"></dxi-group-item>
                 <dxi-total-item *ngFor="let colm of catalogoConceptos; let k = index" column="{{colm.Concepto_ID}}" summaryType="sum" [customizeText]="customizeCurrencyTotal"></dxi-total-item>
@@ -141,6 +141,11 @@
     <dxi-column dataField="Lugar de trabajo" caption="LUGAR DE TRABAJO" dataType="number" [width]="'200'" [fixed]="true"></dxi-column>
 
     <dxi-column *ngFor="let colm of columnasDownDrill; let k = index" dataField="{{colm}}" caption="{{colm}}" dataType="number" [customizeText]="customizeCurrency" [width]="'auto'"></dxi-column>
+    <dxo-summary>
+      <dxi-group-item *ngFor="let colm of columnasDownDrill; let k = index" column="{{colm}}" summaryType="sum" [customizeText]="customizeCurrency" [showInGroupFooter]="true"></dxi-group-item>
+      <dxi-total-item *ngFor="let colm of columnasDownDrill; let k = index" column="{{colm}}" summaryType="sum" [customizeText]="customizeCurrencyTotal"></dxi-total-item>
+    </dxo-summary>
+
 
     <dxo-filter-row [visible]="true"></dxo-filter-row>
     <dxo-export [enabled]="true"></dxo-export>
