@@ -467,11 +467,11 @@ export class VistaPreviaComponent implements OnInit {
     customizeCurrency(data : any) {
         if (data !== undefined) {
 
-          if(data.value === null){
+          if(data.value === null || data.value === undefined){
             return new CurrencyPipe('en-US').transform('0');
           }
 
-          if(data.value !== null){
+          if(data.value !== null && data.value !== undefined){
             return new CurrencyPipe('en-US').transform(data.value.toString());
           }
 
