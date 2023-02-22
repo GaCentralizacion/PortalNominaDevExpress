@@ -171,7 +171,7 @@ export class NominaComponent implements OnInit {
 
     Swal.fire({
       title: '¿Quieres cerrar paga?',
-      text: "Si cierras la paga se enviara la información a BPRO para generar la póliza",
+      text: "Si cierras la paga se enviará la información a BPRO para generar la póliza",
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -191,12 +191,13 @@ export class NominaComponent implements OnInit {
     this.popupVisible = true;
     let polizaProcesada
     this.speedValue = 0
+    this.sucursalProcesada = 'En proceso'
     setTimeout(async () => {
       for (let i = 0; i < this.lstEmpresas.length; i++) {
       
         // setTimeout(async () => {
           const element = this.lstEmpresas[i];
-          this.sucursalProcesada = element.sucursal.substring(0, 12)
+          this.sucursalProcesada = element.Descripcion.substring(0, 12)//element.sucursal.substring(0, 12)
           polizaProcesada = await this.CalculoNomina(element.Centro_ID)
           this.speedValue =  Number((((i+1)*100)/this.lstEmpresas.length).toFixed(0))  
         
@@ -215,7 +216,7 @@ export class NominaComponent implements OnInit {
   CalculoNomina(idLugarTrabajo:number){
 
     return new Promise((resolve) =>{
-      this.polSicoss.CalculoPolizaSicoss(this.mesActual, this.anioActual, this.periodoId, this.periodo, this.tipoNomina, idLugarTrabajo)
+      this.polSicoss.CalculoPolizaSicoss(this.mesActual, this.anioActual, this.periodoId, this.periodo, this.tipoNomina, idLugarTrabajo).subscribe(resp =>resolve(true))
     })
 
     // return new Promise((resolve) => {
