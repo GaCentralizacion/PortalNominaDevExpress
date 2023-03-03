@@ -53,12 +53,13 @@ export class ConsultaPolizaSicossService{
 
     }
 
-    ConsultaAsientoPolizaBproSicoss(idSucursal:number, fechaPaga:string, tipo:number, periodo: number ){
+    ConsultaAsientoPolizaBproSicoss(idSucursal:number, fechaPaga:string, tipo:number, periodo: number, tipoNomina:number ){
         const params = new HttpParams()
         .set('idSucursal',idSucursal)
         .set('fechaPaga',fechaPaga)
         .set('tipo',tipo)
         .set('periodo', periodo)
+        .set('tipoNomina', tipoNomina)
     
         return this.http.post(`${environment.apiNomina}api/nominaSICOSS/ConsultaAsientoPolizaBproSicoss`, params)
     }

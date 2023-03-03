@@ -58,20 +58,21 @@
         <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
         <dxi-column
           dataField="paga"
-          caption="Periodo"
+          caption="Nombre Periodo"
           dataType="string"
           [width]="'auto'"
         ></dxi-column>
+        <dxi-column
+        dataField="semQuin"
+        caption="Periodo"
+        [visible]="true"
+        [width]="'auto'"
+      ></dxi-column>
         <dxi-column
           dataField="fechasPaga"
           caption="Fecha Paga"
           dataType="string"
           [width]="'auto'"
-        ></dxi-column>
-        <dxi-column
-          dataField="semQuin"
-          caption="Numero"
-          [visible]="false"
         ></dxi-column>
         <dxi-column
           dataField="frecuencia"
