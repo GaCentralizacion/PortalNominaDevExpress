@@ -238,7 +238,7 @@ export class VisualizaPolizaComponent implements OnInit {
   ConsultaAsiento(idSucursal:number){
     return new Promise((resolve, reject) =>{
 
-      this.sicoss.ConsultaAsientoPolizaBproSicoss(idSucursal, this.periodo.fechasPaga, this.periodo.frecuencia, this.periodo.semQuin  )
+      this.sicoss.ConsultaAsientoPolizaBproSicoss(idSucursal, this.periodo.fechasPaga, this.periodo.frecuencia, this.periodo.semQuin, this.periodo.tipo  )
       .pipe(
         catchError((err) =>{
           this.loadingVisible = false

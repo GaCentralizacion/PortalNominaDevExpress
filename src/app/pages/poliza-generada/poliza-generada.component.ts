@@ -24,6 +24,7 @@ export class PolizaGeneradaComponent implements OnInit {
   sucursalPoliza: string = '';
   estadoPoliza: string = '';
   formatMessage = formatMessage;
+  loadingVisible: boolean = false;
 
   constructor(private nominaService: ConsultaPolizaNominaService, private sicoss: ConsultaPolizaSicossService) {
     // locale('es');
@@ -123,11 +124,13 @@ export class PolizaGeneradaComponent implements OnInit {
   }
 
   ConsultaBitacoraPolizas() {
-
+    this.loadingVisible = true
     this.sicoss
     .ConsultaBitacoraPolizasSICOSS(this.mesActual, this.anioActual)
     .subscribe((resp) => {
       this.lstPolizas = resp
+
+      this.loadingVisible = false
     })
     // this.nominaService
     //   .ConsultaBitacoraPolizas(this.mesActual, this.anioActual)

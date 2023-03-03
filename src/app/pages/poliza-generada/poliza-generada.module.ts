@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { PolizaGeneradaRoutingModule } from './poliza-generada-routing.module';
 import { PolizaGeneradaComponent } from './poliza-generada.component';
-import { DxButtonModule, DxDataGridModule, DxPopupModule, DxSelectBoxModule, DxTemplateModule, DxToolbarModule } from 'devextreme-angular';
+import { DxButtonModule, DxDataGridModule, DxLoadIndicatorModule, DxLoadPanelModule, DxPopupModule, DxSelectBoxModule, DxTemplateModule, DxToolbarModule } from 'devextreme-angular';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TituloModule } from 'src/app/shared/components/titulo/titulo.module';
 
@@ -19,7 +19,9 @@ import { TituloModule } from 'src/app/shared/components/titulo/titulo.module';
     DxPopupModule,
     DxButtonModule,
     DxTemplateModule,
-    TituloModule
+    TituloModule,
+    DxLoadIndicatorModule,
+    DxLoadPanelModule,
   ]
 })
 export class PolizaGeneradaModule { }
