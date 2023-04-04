@@ -19,6 +19,10 @@ const routes: Routes = [
   },
   {
     path:'nomina',
+    loadChildren:()=>import('./pages/visualiza-poliza-empleado/visualiza-poliza-empleado.module').then(module => module.VisualizaPolizaEmpleadoModule)
+  },
+  {
+    path:'nomina',
     loadChildren:()=>import('./pages/vista-previa/vista-previa.module').then(module => module.VistaPreviaModule)
   },
   {
