@@ -81,4 +81,14 @@ export class ConsultaPolizaSicossService{
     
       }
 
+      ConsultaAsientoPolizaBproEmpleadoSicoss(idSucursal:number, fechaPaga:string, tipo:number, tipoNomina:number ){
+        const params = new HttpParams()
+        .set('idSucursal',idSucursal)
+        .set('fechaPaga',fechaPaga)
+        .set('tipo',tipo)
+        .set('tipoNomina', tipoNomina)
+        
+        return this.http.post(`${environment.apiNomina}api/nominaSICOSS/ConsultaAsientoPolizaBproEmpleadoSICOSS`, params)
+    }
+
 }
