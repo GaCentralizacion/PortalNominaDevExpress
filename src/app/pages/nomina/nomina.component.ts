@@ -170,24 +170,35 @@ export class NominaComponent implements OnInit {
   onHidden() {
 
     Swal.fire({
-      title: '¿Quieres cerrar paga?',
+      title: '¿Qué deseas hacer?',
       text: "Si cierras la paga se enviará la información a BPRO para generar la póliza",
       icon: 'question',
       showCancelButton: true,
+      showDenyButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si',
-      cancelButtonText:'No',
+      denyButtonColor: '#7066e0',
+      confirmButtonText: 'Cerrar paga',
+      denyButtonText: `Consulta paga abierta`,
+      cancelButtonText:'Cancelar',
       allowOutsideClick: false
     }).then((result) => {
       if (result.isConfirmed) {
-        this.CerrarPagas()
+        this.CerrarPagas(1)
+      }
+
+      if (result.isDenied) {
+        this.CerrarPagas(2)
       }
     })
 
   }
 
-  CerrarPagas(){
+  /**
+   * 
+   * @param opcion 1: se envia a bpro, 2 consulta pagas abiertas
+   */
+  CerrarPagas(opcion: number){
     this.popupVisible = true;
     let polizaProcesada
     this.speedValue = 0
@@ -198,7 +209,7 @@ export class NominaComponent implements OnInit {
         // setTimeout(async () => {
           const element = this.lstEmpresas[i];
           this.sucursalProcesada = element.Descripcion.substring(0, 12)//element.sucursal.substring(0, 12)
-          polizaProcesada = await this.CalculoNomina(element.Centro_ID)
+          polizaProcesada = await this.CalculoNomina(element.Centro_ID,opcion)
           this.speedValue =  Number((((i+1)*100)/this.lstEmpresas.length).toFixed(0))  
         
           if(this.speedValue === 100){
@@ -213,10 +224,24 @@ export class NominaComponent implements OnInit {
     }, 2000);
   }
 
-  CalculoNomina(idLugarTrabajo:number){
+  CalculoNomina(idLugarTrabajo:number, opcion: number){
 
     return new Promise((resolve) =>{
-      this.polSicoss.CalculoPolizaSicoss(this.mesActual, this.anioActual, this.periodoId, this.periodo, this.tipoNomina, idLugarTrabajo).subscribe(resp =>resolve(true))
+
+      /**
+       * opcion para consulta de informacion de pagas cerradas
+       */
+      if(opcion === 1){
+        this.polSicoss.CalculoPolizaSicoss(this.mesActual, this.anioActual, this.periodoId, this.periodo, this.tipoNomina, idLugarTrabajo).subscribe(resp =>resolve(true))
+      }
+      
+      /**
+       * opcion para consulta de informacion de pagas abiertas
+       */
+      if(opcion === 2){
+        this.polSicoss.CalculoPolizaAbiertaSicoss(this.mesActual, this.anioActual, this.periodoId, this.periodo, this.tipoNomina, idLugarTrabajo).subscribe(resp =>resolve(true))
+      }
+   
     })
 
     // return new Promise((resolve) => {

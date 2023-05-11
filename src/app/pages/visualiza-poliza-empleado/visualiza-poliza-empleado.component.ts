@@ -35,6 +35,8 @@ import { CurrencyPipe } from "@angular/common";
   gridBoxValue: any[]=[];
   gridAsientoFinal: any[] = []
 
+  esAbierta:boolean = false
+
     constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService){
       let fecha = new Date();
       this.anioActual = fecha.getFullYear();
@@ -194,7 +196,7 @@ import { CurrencyPipe } from "@angular/common";
     ConsultaAsiento(idSucursal:number){
       return new Promise((resolve, reject) =>{
   
-        this.sicoss.ConsultaAsientoPolizaBproEmpleadoSicoss(idSucursal, this.periodo.fechasPaga, this.periodo.frecuencia, this.periodo.tipo  )
+        this.sicoss.ConsultaAsientoPolizaBproEmpleadoSicoss(idSucursal, this.periodo.fechasPaga, this.periodo.frecuencia, this.periodo.tipo, this.esAbierta  )
         .pipe(
           catchError((err) =>{
             this.loadingVisible = false
@@ -314,5 +316,10 @@ import { CurrencyPipe } from "@angular/common";
       }
     }
 
+    EsPolizaAbierta(){
+      if(this.lstAsientoContable.length >= 1){
+        this.AsientoContable()
+      }
+    }
 
   }

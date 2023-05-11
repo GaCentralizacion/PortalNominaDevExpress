@@ -18,7 +18,7 @@
                     placeholder="Selecciona sucursales..."
                     [showClearButton]="true"
                     [dataSource]="lstEmpresasPagadoras"
-                    [width]="400"
+                    [width]="450"
                   >
                   <div *dxTemplate="let data of 'content'">
                     <dx-data-grid
@@ -30,6 +30,7 @@
                       [filterRow]="{ visible: true }"
                       [scrolling]="{ mode: 'virtual' }"
                       [height]="500"
+                      [width]="500"
                       [(selectedRowKeys)]="gridBoxValue"
                     >
                     </dx-data-grid>
@@ -76,15 +77,24 @@
             </div>           
           </div>
 
+          <div>
+            <div>¿Es abierta?</div>
+            <dx-switch 
+            [(value)]="esAbierta"
+            (onValueChanged)="EsPolizaAbierta()" >
+            </dx-switch>
+          </div>
 
-        </div>  
+        </div>
   
      
         <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" *ngIf="verAsiento">
             <div>Genera Pivote</div>
             <div>
-              <dx-switch   [(value)]="generaPivote"
-              (onValueChanged)="switchValueChanged($event)">></dx-switch>
+              <dx-switch
+                [(value)]="generaPivote"
+                (onValueChanged)="switchValueChanged($event)">
+              </dx-switch>
             </div>
         </div>
     

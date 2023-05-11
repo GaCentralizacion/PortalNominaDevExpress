@@ -42,6 +42,8 @@ export class VisualizaPolizaComponent implements OnInit {
   gridBoxValue: any[]=[];
   gridAsientoFinal: any[] = []
 
+  esAbierta:boolean = false
+
   constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService) {
     
     let fecha = new Date();
@@ -238,7 +240,7 @@ export class VisualizaPolizaComponent implements OnInit {
   ConsultaAsiento(idSucursal:number){
     return new Promise((resolve, reject) =>{
 
-      this.sicoss.ConsultaAsientoPolizaBproSicoss(idSucursal, this.periodo.fechasPaga, this.periodo.frecuencia, this.periodo.semQuin, this.periodo.tipo  )
+      this.sicoss.ConsultaAsientoPolizaBproSicoss(idSucursal, this.periodo.fechasPaga, this.periodo.frecuencia, this.periodo.semQuin, this.periodo.tipo, this.esAbierta  )
       .pipe(
         catchError((err) =>{
           this.loadingVisible = false
@@ -395,4 +397,12 @@ export class VisualizaPolizaComponent implements OnInit {
       };
     }
   }
+
+  EsPolizaAbierta(){
+    if(this.lstAsientoContable.length >= 1){
+      this.AsientoContable()
+    }
+  }
+
+
 }
