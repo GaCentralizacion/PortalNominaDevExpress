@@ -55,6 +55,7 @@
         [showBorders]="true"
       >
        <dxo-scrolling mode="virtual"></dxo-scrolling>
+       <dxo-filter-row [visible]="true"></dxo-filter-row>
         <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
         <dxi-column
           dataField="descripcion"
@@ -84,11 +85,11 @@
           caption="Tipo"
           [visible]="false"
         ></dxi-column>
-        <dxi-column type="buttons" caption="Cerrar paga">
+        <dxi-column type="buttons" caption="Consulta paga">
           <dxi-button
-            hint="Cerrar Paga"
+            hint="Consulta Paga"
             icon="copy"
-            text="Cerrar paga"
+            text="Consulta paga"
             [onClick]="CerrarPaga"
             [visible]="CerrarPagaDisabled"
           ></dxi-button>

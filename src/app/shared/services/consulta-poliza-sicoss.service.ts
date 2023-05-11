@@ -53,13 +53,17 @@ export class ConsultaPolizaSicossService{
 
     }
 
-    ConsultaAsientoPolizaBproSicoss(idSucursal:number, fechaPaga:string, tipo:number, periodo: number, tipoNomina:number ){
+    ConsultaAsientoPolizaBproSicoss(idSucursal:number, fechaPaga:string, tipo:number, periodo: number, tipoNomina:number, esAbierta: boolean ){
+
+        const isOpen = esAbierta === true ? 1 : 0
+
         const params = new HttpParams()
         .set('idSucursal',idSucursal)
         .set('fechaPaga',fechaPaga)
         .set('tipo',tipo)
         .set('periodo', periodo)
         .set('tipoNomina', tipoNomina)
+        .set('esAbierta', isOpen)
     
         return this.http.post(`${environment.apiNomina}api/nominaSICOSS/ConsultaAsientoPolizaBproSicoss`, params)
     }
@@ -79,16 +83,33 @@ export class ConsultaPolizaSicossService{
     
         return this.http.post(`${environment.apiNomina}api/nominaSICOSS/ConsultaPolizaSICOSS`,params)
     
-      }
+    }
 
-      ConsultaAsientoPolizaBproEmpleadoSicoss(idSucursal:number, fechaPaga:string, tipo:number, tipoNomina:number ){
+    ConsultaAsientoPolizaBproEmpleadoSicoss(idSucursal:number, fechaPaga:string, tipo:number, tipoNomina:number, esAbierta:boolean ){
+
+        const isOpen = esAbierta === true ? 1 : 0
+
         const params = new HttpParams()
         .set('idSucursal',idSucursal)
         .set('fechaPaga',fechaPaga)
         .set('tipo',tipo)
         .set('tipoNomina', tipoNomina)
+        .set('esAbierta', isOpen)
         
         return this.http.post(`${environment.apiNomina}api/nominaSICOSS/ConsultaAsientoPolizaBproEmpleadoSICOSS`, params)
+    }
+
+    CalculoPolizaAbiertaSicoss(mes:number,anio:number,periodoId:number,periodo:number,tipoNomina:number,lugarTrabajo:number){
+
+        const params = new HttpParams()
+        .set('mes',mes)
+        .set('anio',anio)
+        .set('periodoId',periodoId)
+        .set('periodo',periodo)
+        .set('tipoNomina',tipoNomina)
+        .set('Lw',lugarTrabajo)
+
+        return this.http.post(`${environment.apiNomina}api/nominaSICOSS/CalculoPolizaAbiertaSicoss`, params)
     }
 
 }
