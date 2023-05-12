@@ -221,6 +221,9 @@ export class NominaComponent implements OnInit {
         // }, i*2000);
 
     }  
+
+    this.FechasPaga(this.anioActual, this.mesActual);
+
     }, 2000);
   }
 
