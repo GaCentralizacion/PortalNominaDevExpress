@@ -1,0 +1,260 @@
+<app-titulo>
+    <span TitleNegritas>Configuración de repercución</span>
+    <span TitleStd> de gasto por agencia</span>
+  </app-titulo>
+
+  <div class="content-block">
+    <div class="dx-card responsive-paddings" fxFlexAlign="center" id="P_AsientoContable">
+
+      <div fxLayout="row" style="padding-bottom: 10px;">
+        <dx-button
+        stylingMode="contained"
+        text="Agregar o quitar departamento"
+        type="default"
+        (onClick)="VerDepartamentos()">
+        </dx-button>
+      </div>
+
+      <div fxLayout="row" style="height: 65vh; width: 80vw-60px;">
+        <dx-data-grid
+        id="gridContainer"
+        keyExpr="nivel"
+        [showBorders]="true"
+        [dataSource]="lstDepartamentos"
+        (onCellPrepared)="customizeTextPorcentaje($event)"
+        >
+        <dxo-paging [enabled]="false"></dxo-paging>    
+        <dxi-column dataField="nivel" caption="Nivel contable" [width]="150"></dxi-column>
+        <dxi-column dataField="departamento" caption="Departamento"></dxi-column>
+        <dxi-column dataField="porcentaje" caption="Porcentaje / Num Sucursales" [width]="200"> </dxi-column>
+        <dxi-column type="buttons" caption="Insertar">
+          <dxi-button
+            hint="Insertar"
+            icon="fieldchooser"
+            text="Insertar"
+            [visible]="true"
+            [onClick]="ModalInsertaPorcentaje"
+          ></dxi-button>
+        </dxi-column>
+        <dxi-column type="buttons" caption="Ver detalles">
+          <dxi-button
+            hint="Ver detalle"
+            icon="info"
+            text="Ver detalle"
+            [visible]="true"
+            [onClick]="ModalVerDetalle"
+          ></dxi-button>
+        </dxi-column>
+      </dx-data-grid>
+      </div>
+    </div>
+  </div>
+
+
+<!-- POP UP PARA MOSTRAR TODOS LOS DEPARTAMENTOS  -->
+<dx-popup
+  [width]="600"
+  [showTitle]="true"
+  title="Lista de departamentos configurables"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
+  container=".dx-viewport"
+  [(visible)]="popupVisibleDeptos"
+>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="center"
+    [options]="closeButtonOptions"
+  >
+  </dxi-toolbar-item>
+  <div>
+    <dx-data-grid
+      id="gridDeptos"
+      [dataSource]="lstDepartamentosCompleta"
+      [showBorders]="true"
+      [width]="550"
+    >
+      <dxo-filter-row [visible]="true"></dxo-filter-row>  
+      <dxo-export [enabled]="true"></dxo-export>
+      <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+      <dxi-column
+        dataField="nivel"
+        caption="Nivel Contable"
+        dataType="string"
+        [width]="'auto'"
+        [alignment]="'center'"
+      ></dxi-column>
+      <dxi-column
+        dataField="departamento"
+        caption="Departamento"
+        dataType="string"
+        [width]="'auto'"
+        [alignment]="'center'"
+      ></dxi-column>
+      <dxi-column type="buttons" caption="Acción">
+        <dxi-button
+          hint="Agregar"
+          icon="check"
+          text="Agregar"
+          [visible]="OpcionVisible"
+          [onClick]="AgregarEliminarAgencia"
+        ></dxi-button>
+        <dxi-button
+          hint="Eliminar"
+          icon="clear"
+          text="Eliminar"
+          [visible]="OpcionEliminarVisible"
+          [onClick]="AgregarEliminarAgencia"
+        ></dxi-button>
+      </dxi-column>
+      <dxo-paging [pageSize]="13"></dxo-paging>
+    </dx-data-grid>
+  </div>
+</dx-popup>
+
+<!-- POPUP PARA INSERTAR LOS PORCENTAJES O SUCURSALES PARA PRORRATEO -->
+<dx-popup
+[width]="'auto'"
+[height]="200"
+[showTitle]="true"
+[(title)]="nombreDepartamentoSelected"
+[dragEnabled]="false"
+[showCloseButton]="true"
+container=".dx-viewport"
+[(visible)]="popupInsertarPorcentaje"
+>
+<dxi-toolbar-item
+  widget="dxButton"
+  toolbar="bottom"
+  location="center"
+  [options]="closeButtonOptions"
+></dxi-toolbar-item>
+  <div fxLayout="row">
+
+    <div class="dx-fieldset" fxflex="100">
+      <div class="dx-field">
+        <div class="dx-field-value">
+          <dx-select-box
+          label="Seleccione Sucursal"
+          labelMode="floating"
+          [dataSource]="lstSucursales"
+          displayExpr="sucursal"
+          valueExpr="idsucursal"
+          [(value)]="SucursalSelect"
+          [showClearButton]="false"
+          [width]="'400px'"
+
+          ></dx-select-box>
+        </div>
+      </div>
+    </div>
+
+    <div class="dx-fieldset" fxflex="100">
+      <div class="dx-field">
+        <div class="dx-field-value">
+          <dx-number-box
+            label="valor"
+            labelMode="floating"
+            [(value)]="porcentajeSucursal"
+            width="100"
+            [showSpinButtons]="true"
+            [showClearButton]="false"
+            [(disabled)]="disableValorPorcentaje"
+          ></dx-number-box>
+        </div>
+      </div>
+    </div>
+
+    <div class="dx-fieldset">
+      <div class="dx-field">
+        <div class="dx-field-label_New">Por sucursal</div>
+        <div class="dx-field-value">
+          <dx-switch [(value)]="porSucursal" [(disabled)]="disabledPorSucursal"></dx-switch>
+        </div>
+      </div>
+    </div>
+
+    <div class="dx-fieldset">
+      <div class="dx-field">
+        <div class="dx-field-value">
+          <dx-button
+            stylingMode="contained"
+            text="Guardar"
+            [width]="200"
+            type="default"
+            (onClick)="guardarPorcentaje()">
+          </dx-button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</dx-popup>
+
+<!-- MODAL DETALLE PRORRATEO -->
+<dx-popup
+  [width]="700"
+  [showTitle]="true"
+  [(title)]="nombreDetalleModal"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
+  container=".dx-viewport"
+  [(visible)]="popUpDetalles"
+>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="center"
+    [options]="closeButtonOptions"
+  >
+  </dxi-toolbar-item>
+  <div>
+    <dx-data-grid
+      id="gridDetalle"
+      [dataSource]="AgeciaDetalle"
+      [showBorders]="true"
+      [width]="'100%'"
+      (onCellPrepared)="customizeText($event)"
+    >
+      <dxo-scrolling mode="infinite"></dxo-scrolling>
+      <dxo-filter-row [visible]="true"></dxo-filter-row>  
+      <dxo-export [enabled]="true"></dxo-export>
+      <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+      <dxi-column
+        dataField="sucursal"
+        caption="Sucursal"
+        dataType="string"
+        [width]="'70%'"
+        [alignment]="'left'"
+      ></dxi-column>
+      <dxi-column
+        dataField="porcentaje"
+        caption="Valor"
+        dataType="string"
+        [width]="'30%'"
+        [alignment]="'center'"
+      ></dxi-column>
+      <dxi-column type="buttons" caption="Acción">
+        <dxi-button
+          hint="Eliminar"
+          icon="clear"
+          text="Eliminar"
+          [visible]="OpcionVisible"
+          [onClick]="EliminaSucFlotilla"
+        ></dxi-button>
+      </dxi-column>
+    </dx-data-grid>
+  </div>
+</dx-popup>
+
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#P_AsientoContable' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+>
+</dx-load-panel>

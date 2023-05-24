@@ -36,6 +36,7 @@ import { CurrencyPipe } from "@angular/common";
   gridAsientoFinal: any[] = []
 
   esAbierta:boolean = false
+  searchExprOption: any = 'paga';
 
     constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService){
       let fecha = new Date();

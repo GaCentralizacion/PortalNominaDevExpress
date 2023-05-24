@@ -43,6 +43,7 @@ export class VisualizaPolizaComponent implements OnInit {
   gridAsientoFinal: any[] = []
 
   esAbierta:boolean = false
+  searchExprOption: any = 'paga';
 
   constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService) {
     
