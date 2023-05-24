@@ -58,7 +58,8 @@
           <div class="dx-fieldset" fxlflex="100" > 
             <div class="dx-field">
               <div class="dx-field-value">
-                <dx-select-box label="Periodo" [dataSource]="lstQuincenas"  displayExpr="paga" valueExpr="paga"  placeholder="Seleciona año" [showClearButton]="false" width="300" (onValueChanged)="PeriodoSelected($event)"></dx-select-box>
+                <dx-select-box label="Periodo" [dataSource]="lstQuincenas"  displayExpr="paga" valueExpr="paga"  placeholder="Seleciona año" [showClearButton]="false" width="300" (onValueChanged)="PeriodoSelected($event)" [searchMode]="searchModeOption"
+                [searchExpr]="searchExprOption" [searchEnabled]="true"></dx-select-box>
               </div>
             </div>
           </div>

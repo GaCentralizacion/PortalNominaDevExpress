@@ -12,6 +12,8 @@ import { nominaModule } from './pages/nomina/nomina.module';
 import { LoginModule } from './shared/components/login/login.component';
 import { PolizaGeneradaModule } from './pages/poliza-generada/poliza-generada.module';
 import { VisualizaPolizaModule } from './pages/visualiza-poliza/visualiza-poliza.module';
+import { ConfProrrateoAgenciaModule } from './pages/conf-prorrateo-agencia/conf-prorrateo-agencia.module';
+import { RepercusionModule } from './pages/repercusion/repercusion.module';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { VisualizaPolizaModule } from './pages/visualiza-poliza/visualiza-poliza
     nominaModule,
     LoginModule,
     PolizaGeneradaModule,
-    VisualizaPolizaModule
+    VisualizaPolizaModule,
+    ConfProrrateoAgenciaModule,
+    RepercusionModule
   ],
   providers: [
     AuthService,

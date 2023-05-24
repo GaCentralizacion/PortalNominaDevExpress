@@ -23,11 +23,7 @@ export class SideNavigationMenuComponent implements OnInit, AfterViewInit, OnDes
 
   OpcionesMenu: OpMenu[]=[]
     
-  opcion: OpMenu={
-    text:'',
-    icon:'',
-    items:[{}]
-  }
+
   
   itemDetalle:any = [] 
   miMenu:any
@@ -152,16 +148,21 @@ export class SideNavigationMenuComponent implements OnInit, AfterViewInit, OnDes
       let menuNominas:any = await this.MenuNomina(usuario.idRol)
       
       for (let i = 0; i < menuNominas.length; i++) {
+        let opcion: OpMenu={
+          text:'',
+          icon:'',
+          items:[{}]
+        }
         const element = menuNominas[i];
 
 
         let itemDeta:any = await this.MenuNominaDetalle(element.items, element.idRol)      
         this.itemDetalle = [...itemDeta]
 
-        this.opcion.text = element.text
-        this.opcion.icon = element.icon
-        this.opcion.items = this.itemDetalle
-        this.OpcionesMenu.push(this.opcion)
+        opcion.text = element.text
+        opcion.icon = element.icon
+        opcion.items = this.itemDetalle
+        this.OpcionesMenu.push(opcion)
 
       }
 

@@ -26,6 +26,14 @@ const routes: Routes = [
     loadChildren:()=>import('./pages/vista-previa/vista-previa.module').then(module => module.VistaPreviaModule)
   },
   {
+    path:'gasto',
+    loadChildren:()=>import('./pages/conf-prorrateo-agencia/conf-prorrateo-agencia.module').then(module => module.ConfProrrateoAgenciaModule)
+  },
+  {
+    path:'gasto',
+    loadChildren:()=>import('./pages/repercusion/repercusion-routing.module').then(module => module.RepercusionRoutingModule)
+  },
+  {
     path: 'login-form',
     component: LoginFormComponent,
     canActivate: [ AuthGuardService ]
