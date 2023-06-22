@@ -204,7 +204,7 @@ export class ConfProrrateoAgenciaComponent implements OnInit{
         let suc = porSucursal === true ? 1 : 0
         return new Promise((resolve, reject) => {
             this.gastoService.InsertarSucFlotilla(IdFlotilla,idSucursal,porcentaje,idUsuario,suc).subscribe((resp:any)=>{
-                resolve(resp[0])
+                resolve(resp)
             })
         })
     }
