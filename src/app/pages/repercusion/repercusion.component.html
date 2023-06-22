@@ -1,16 +1,502 @@
+
+
 <app-titulo>
-  <span TitleNegritas>Configuración de repercución</span>
+  <span TitleNegritas>Ejecuta repercusión</span>
   <span TitleStd> de gasto por agencia</span>
 </app-titulo>
 
 <div class="content-block">
-  <div
-    class="dx-card responsive-paddings"
-    fxFlexAlign="center"
-    id="P_AsientoContable"
-  >
-    <div class="alert alert-primary" role="alert">
-        A simple primary alert—check it out!
+  <div class="dx-card responsive-paddings" fxFlexAlign="center" id="P_AsientoContable">
+    <div class="alert alert-primary">
+      Esta pantalla te guiará en la ejecución del proceso de repercusión de gasto, por favor sigue los pasos y no te saltes ninguno
+    </div>
+    <div id="accordion">
+      <dx-accordion
+      #accordion
+      [collapsible]="false"
+      [multiple]="false"
+      [animationDuration]="300"
+      id="accordion-container">
+        
+      <dxi-item title="PASO 1 Fecha de ejecución y obtención de balanza">
+          <div class="alert alert-info">
+            Selecciona la fecha de ejecución, esta fecha es la que determinara hasta que dia bajara la información de la balanza, la 2da quincena la fecha se tomara en automático
+          </div>
+          <div fxLayout="row" fxLayoutAlign="center center" >
+            
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <div class="dx-field-value-label">Selecciona la fecha de la 1ra Quincena</div>
+                  <dx-calendar
+                  #calendar
+                  [(disabled)]="disableCalenda"
+                  [firstDayOfWeek]="0"
+                  weekNumberRule="auto"
+                  [(value)]="currentValue"
+                  [min]="minDate"
+                  >
+                </dx-calendar>
+                </div>
+              </div>
+            </div>
+
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <dx-button
+                  stylingMode="contained"
+                  text="Descargar balanza 1Q"
+                  type="default"
+                  [(disabled)]="disableCalenda"
+                  [width]="500"
+                  (onClick)="ProrrateoBalanza(1)">
+                  </dx-button>
+                </div>
+              </div>
+            </div>
+
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <dx-button
+                  stylingMode="contained"
+                  text="Descargar balanza 2Q"
+                  type="success"
+                  [(disabled)]="disableCalenda"
+                  [width]="500"
+                  (onClick)="ProrrateoBalanza(2)">
+                  </dx-button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+      </dxi-item>
+
+      <dxi-item title="PASO 2 Reporte de departamentos, sucursales y creación de OC">
+          <div class="alert alert-info">
+            Es necesario validar la información obtenida y verificar que la diferencia es mínima
+          </div>
+
+          <!-- SECCION SELECCION DE PARAMETROS DE CONSULTA -->
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <div class="dx-fieldset" fxFlex="100">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anioActual" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
+                 </div>
+              </div>        
+            </div>
+  
+            <div class="dx-fieldset" fxFlex="100">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mesActual"  [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
+                </div>
+              </div>
+            </div>
+
+            <div class="dx-fieldset" fxFlex="100">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <dx-select-box [dataSource]="lstQuincenas" displayExpr="nombre" valueExpr="id" [(value)]="quincenaSelected"></dx-select-box>
+                </div>
+              </div>
+            </div>
+
+            <div class="dx-fieldset" fxFlex="100">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <dx-button
+                  stylingMode="contained"
+                  text="Consultar"
+                  type="default"
+                  (onClick)="GetResumenBalanza()">
+                  </dx-button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- SECCION FORMULARIO -->
+          <div fxLayout="row" fxLayoutAlign="center center">
+              <dx-form id="form" [formData]="formDataValidacion" [labelMode]="labelMode" [colCount]="4">
+                <dxi-item itemType="group" [colCount]="1" caption="Prorrateo balanza">
+                  <dxi-item dataField="subTotalResumen" [visible]="true" [colSpan]="2"></dxi-item>
+                </dxi-item>
+                <dxi-item itemType="group" [colCount]="2" caption="Balanza">
+                  <dxi-item dataField="cargoBalanza" [visible]="true"></dxi-item>
+                  <dxi-item dataField="abonoBalanza" [visible]="true"></dxi-item>
+                  <dxi-item dataField="totalBalanza" [visible]="true" [colSpan]="2"></dxi-item>
+                </dxi-item>
+                <dxi-item itemType="group" [colCount]="2" caption="Comisiones y bonos">
+                  <dxi-item dataField="totalComisiones" [visible]="true"></dxi-item>
+                  <dxi-item dataField="totalBonos" [visible]="true"></dxi-item>
+                </dxi-item>
+                <dxi-item itemType="group" [colCount]="2" caption="Resultado diferencia">
+                  <dxi-item dataField="diferencia" [visible]="true" [colSpan]="2"></dxi-item>
+                </dxi-item>
+              </dx-form>
+          </div>
+
+          <!-- SECCION DE BOTONES -->
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <div class="dx-fieldset" fxFlex="30">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <dx-button
+                  stylingMode="contained"
+                  [text]="btnVerDetalle"
+                  type="success"
+                  (onClick)="VerDetalle()">
+                  </dx-button>
+                </div>
+              </div>
+            </div>
+            <div class="dx-fieldset" fxFlex="30">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <dx-button
+                  stylingMode="contained"
+                  text="Generar OC"
+                  type="danger"
+                  (onClick)="OrdenesCompra()"
+                  [(disabled)]="disabledOC">
+                  </dx-button>
+                </div>
+              </div>
+            </div>
+            <div class="dx-fieldset" fxFlex="20" *ngIf="verDetalles">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <dx-button
+                  stylingMode="contained"
+                  text="Exportar"
+                  type="default"
+                  (onClick)="exportGrids()">
+                  </dx-button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECCION DE TABLAS -->
+          <div fxLayout="row" fxLayoutAlign="center center" *ngIf="verDetalles">
+            <dx-tab-panel
+              #tabPanel
+              [width]="'100%'"
+              [selectedIndex]="0"
+              [loop]="false"
+              [animationEnabled]="true"
+              [swipeEnabled]="true"
+            >
+              <dxi-item title="RESUMEN">
+
+              <div fxLayout="row" fxLayoutAlign="center center">
+                <dx-data-grid
+                  #completoGrid
+                  id="completoGrid"
+                  [dataSource]="lstResumenBalanzaCentralizado"
+                  [showBorders]="true"
+                  width="100%"
+                  [wordWrapEnabled]="true"
+                >
+                <dxo-pager
+                  [visible]="true"
+                  [showInfo]="true"
+                  [allowedPageSizes]="allowedPageSizes"
+                  displayMode="full"
+                  [showPageSizeSelector]="true"
+                >
+                </dxo-pager>
+                  <dxo-filter-row [visible]="true"></dxo-filter-row>
+                  <dxi-column dataField="lugarTrabajo" caption="lugarTrabajo" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                  <dxi-column dataField="Nominas" caption="Nominas" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="generalesCorporativo" caption="generalesCorporativo" dataType="number" [width]="'auto'" [fixed]="true"  [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="SUA" caption="SUA" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="Nominas2" caption="Nominas2" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="GastosDivrsos" caption="GastosDivrsos" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="prestacionServ" caption="prestacionServ" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="flotillasEspeciales" caption="flotillasEspeciales" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="tesoreria" caption="tesoreria" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="PTU" caption="PTU" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="valesDespensa" caption="valesDespensa" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="fondoAhorro" caption="fondoAhorro" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="flotilla8Claudia" caption="flotilla8Claudia" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="compras" caption="compras" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="recursosHumanos" caption="recursosHumanos" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="flot5JC" caption="flot5JC" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="flot6Hugo" caption="flot6Hugo" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="flot7Consuelo" caption="flot7Consuelo" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="flot9FJ" caption="flot9FJ" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="contraloria" caption="contraloria" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="sistemas" caption="sistemas" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="consejo" caption="consejo" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="planeacionFinanciera" caption="planeacionFinanciera" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="juridico" caption="juridico" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="seminuevos" caption="seminuevos" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="corporativo" caption="corporativo" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="mercadotecnia" caption="mercadotecnia" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="flotGM" caption="flotGM" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="finanzas" caption="finanzas" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="casanova" caption="casanova" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="flotCentral" caption="flotCentral" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="RHNominas" caption="RHNominas" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="ContraContabilidad" caption="ContraContabilidad" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="nuevos" caption="nuevos" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="marketing" caption="marketing" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="flotGob" caption="flotGob" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="gastosNegNuevos" caption="gastosNegNuevos" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="gastosArrendamiento" caption="gastosArrendamiento" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="dirFinanciamiento" caption="dirFinanciamiento" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="pagoTerceros" caption="pagoTerceros" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="subTotal" caption="subTotal" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="IVA" caption="IVA" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="Retencion" caption="Retencion" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="Total" caption="Retencion" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="totalFacturado" caption="totalFacturado" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="precioUnitario" caption="precioUnitario" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="totalFactura" caption="totalFactura" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="totalOC" caption="totalOC" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxi-column dataField="aplica" caption="aplica" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                  <dxo-summary>
+                    <dxi-total-item column="subTotal" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+                  </dxo-summary>
+                  <dxo-paging [pageSize]="5"></dxo-paging>
+                  <dxo-export [enabled]="true"></dxo-export>
+                </dx-data-grid>  
+              </div>
+
+              </dxi-item>
+              <dxi-item title="BALANZA">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                  <dx-data-grid
+                  #gridBalanza
+                  id="gridBalanza"
+                  [dataSource]="lstBalanza"
+                  [showBorders]="true"
+                  width="50%"
+                  [wordWrapEnabled]="true"
+                  >
+                  <dxo-pager
+                    [visible]="true"
+                    [showInfo]="true"
+                    [allowedPageSizes]="allowedPageSizes"
+                    displayMode="full"
+                    [showPageSizeSelector]="true"
+                  >
+                  </dxo-pager>
+                    <dxo-filter-row [visible]="true"></dxo-filter-row>
+                    <dxi-column dataField="DEPARTAMENTO" caption="DEPARTAMENTO" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="DEP" caption="NIVEL" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="CARGO" caption="CARGO" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                    <dxi-column dataField="ABONO" caption="ABONO" dataType="number" [width]="'auto'" [fixed]="true"  [customizeText]="customizeCurrency"></dxi-column>
+                    <dxo-summary>
+                      <dxi-total-item column="CARGO" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+                      <dxi-total-item column="ABONO" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+                    </dxo-summary>
+                    <dxo-paging [pageSize]="5"></dxo-paging>
+                    <dxo-export [enabled]="true"></dxo-export>
+                  </dx-data-grid>  
+                </div>
+              </dxi-item>
+              <dxi-item title="COMISIONES">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                  <dx-data-grid
+                  #gridComisiones
+                  id="gridComisiones"
+                  [dataSource]="lstComisiones"
+                  [showBorders]="true"
+                  width="50%"
+                  [wordWrapEnabled]="true"
+                  >
+                  <dxo-pager
+                    [visible]="true"
+                    [showInfo]="true"
+                    [allowedPageSizes]="allowedPageSizes"
+                    displayMode="full"
+                    [showPageSizeSelector]="true"
+                  >
+                  </dxo-pager>
+                    <dxo-filter-row [visible]="true"></dxo-filter-row>
+                    <dxi-column dataField="DEPARTAMENTO" caption="DEPARTAMENTO" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="DEP" caption="NIVEL" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="CARGO" caption="CARGO" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                    <dxi-column dataField="ABONO" caption="ABONO" dataType="number" [width]="'auto'" [fixed]="true"  [customizeText]="customizeCurrency"></dxi-column>
+                    <dxo-summary>
+                      <dxi-total-item column="CARGO" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+                      <dxi-total-item column="ABONO" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+                    </dxo-summary>
+                    <dxo-paging [pageSize]="5"></dxo-paging>
+                    <dxo-export [enabled]="true"></dxo-export>
+                  </dx-data-grid>  
+                </div>
+              </dxi-item>
+              <dxi-item title="BONO">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                  <dx-data-grid
+                  #gridBono
+                  id="gridBono"
+                  [dataSource]="lstBono"
+                  [showBorders]="true"
+                  width="50%"
+                  [wordWrapEnabled]="true"
+                  >
+                  <dxo-pager
+                    [visible]="true"
+                    [showInfo]="true"
+                    [allowedPageSizes]="allowedPageSizes"
+                    displayMode="full"
+                    [showPageSizeSelector]="true"
+                  >
+                  </dxo-pager>
+                    <dxo-filter-row [visible]="true"></dxo-filter-row>
+                    <dxi-column dataField="DEPARTAMENTO" caption="DEPARTAMENTO" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="DEP" caption="NIVEL" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="CARGO" caption="CARGO" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                    <dxi-column dataField="ABONO" caption="ABONO" dataType="number" [width]="'auto'" [fixed]="true"  [customizeText]="customizeCurrency"></dxi-column>
+                    <dxo-summary>
+                      <dxi-total-item column="CARGO" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+                      <dxi-total-item column="ABONO" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+                    </dxo-summary>
+                    <dxo-paging [pageSize]="5"></dxo-paging>
+                    <dxo-export [enabled]="true"></dxo-export>
+                  </dx-data-grid>  
+                </div>
+              </dxi-item>
+
+            </dx-tab-panel>
+          </div>
+
+      </dxi-item>
+      
+      <dxi-item title="PASO 3 Consulta de ordenes de compra">
+          <div class="alert alert-info">
+            Este paso mostrar las ordenes creadas para la ultima fecha de ejecución de repercusión de gastos del mes seleccionado en el paso 2
+          </div>
+          
+          <!-- SECCION DE BOTONES -->
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <div class="dx-fieldset" fxFlex="30">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <dx-button
+                  stylingMode="contained"
+                  text="Consulta OC"
+                  type="success"
+                  (onClick)="ConsultaOrdenesCompra()">
+                  </dx-button>
+                </div>
+              </div>
+            </div>
+            <div class="dx-fieldset" fxFlex="30">
+              <div class="dx-field">
+                <div class="dx-field-value">
+                  <dx-button
+                  stylingMode="contained"
+                  text="Facturación"
+                  type="danger">
+                  </dx-button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <dx-data-grid
+            #gridOrdenesCompra
+            id="gridOrdenesCompra"
+            [dataSource]="lstOrdenesCompra"
+            [showBorders]="true"
+            width="50%"
+            [wordWrapEnabled]="true"
+            >
+            <dxo-pager
+              [visible]="true"
+              [showInfo]="true"
+              [allowedPageSizes]="allowedPageSizes"
+              displayMode="full"
+              [showPageSizeSelector]="true"
+            >
+            </dxo-pager>
+              <dxo-filter-row [visible]="true"></dxo-filter-row>
+              <dxi-column dataField="sucursal" caption="SUCURSAL" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxi-column dataField="odm_ordencompra" caption="ORDEN COMPRA" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxi-column dataField="odm_fechaproceso" caption="FECHA" dataType="date" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxi-column dataField="odm_estatus" caption="ESTATUS" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxo-paging [pageSize]="5"></dxo-paging>
+              <dxo-export [enabled]="true"></dxo-export>
+            </dx-data-grid>  
+          </div>
+      </dxi-item>
+
+      <dxi-item title="PASO 4 Solicitud de Facturación">
+        <div class="alert alert-info">
+          Consulta de facturas creadas
+        </div>
+        <!-- SECCION DE BOTONES -->
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <div class="dx-fieldset" fxFlex="30">
+            <div class="dx-field">
+              <div class="dx-field-value">
+                <dx-button
+                stylingMode="contained"
+                text="Consulta Facturación"
+                type="success"
+                (onClick)="ConsultarFacturas()">
+                </dx-button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCION TABLA -->
+        <div fxLayout="row" fxLayoutAlign="center center">
+          
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <dx-data-grid
+            #gridOrdenesCompra
+            id="gridOrdenesCompra"
+            [dataSource]="lstFacturasCreadas"
+            [showBorders]="true"
+            width="70%"
+            [wordWrapEnabled]="true"
+            >
+            <dxo-pager
+              [visible]="true"
+              [showInfo]="true"
+              [allowedPageSizes]="allowedPageSizes"
+              displayMode="full"
+              [showPageSizeSelector]="true"
+            >
+            </dxo-pager>
+              <dxo-filter-row [visible]="true"></dxo-filter-row>
+              <dxi-column dataField="IdBPRO" caption="IdBPRO" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxi-column dataField="Empresa" caption="Empresa" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxi-column dataField="OC" caption="Orden compra" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxi-column dataField="Factura" caption="Factura" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+              <dxo-paging [pageSize]="5"></dxo-paging>
+              <dxo-export [enabled]="true"></dxo-export>
+            </dx-data-grid>  
+          </div>
+
+        </div>
+      </dxi-item>
+      </dx-accordion>
     </div>
   </div>
 </div>
+
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#P_AsientoContable' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+>
+</dx-load-panel>

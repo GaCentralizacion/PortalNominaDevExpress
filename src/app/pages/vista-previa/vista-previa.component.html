@@ -74,7 +74,7 @@
           <dx-data-grid id="gridContainer" [showBorders]="true"  (onContentReady)="onContentReady($event)" width="100%" [dataSource]="lstDatosSabana">
               <dxo-filter-row [visible]="true"></dxo-filter-row>
               <dxo-load-panel [enabled]="false"></dxo-load-panel>
-              <dxo-scrolling mode="virtual"></dxo-scrolling>
+              <dxo-scrolling mode="infinite"></dxo-scrolling>
               <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
               <dxi-column dataField="Trab_ID" caption="ID RH" dataType="number" [width]="'100'" [fixed]="true"></dxi-column>
               <dxi-column dataField="Depto_ID" caption="Unidad org" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>

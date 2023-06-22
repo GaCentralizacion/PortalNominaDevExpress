@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiNomina_:'http://localhost:8090/',
-  apiNomina:'http://192.168.20.59:8090/'
+  apiNomina:'http://localhost:8090/',
+  _apiNomina:'http://192.168.20.59:8090/'
 };
 
 /*

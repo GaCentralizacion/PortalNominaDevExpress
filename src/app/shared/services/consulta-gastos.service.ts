@@ -59,4 +59,89 @@ export class ConsultaGastosServices{
 
         return this.http.post(`${environment.apiNomina}api/prorrateoAgencias/EliminaSucFlotillaAgencia`, params)
     }
+
+    SelFechaEjecucionRepercusion(anio: number, mes: number){
+        let params = new HttpParams()
+        .set('anio',anio)
+        .set('mes',mes)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/SelFechaEjecucion`, params)
+    }
+
+    ResumenInsertaBalanzaCentralizado(anio:number,mes:number,idDetalle:number,inserta:number){
+
+        let params = new HttpParams()
+        .set('anio', anio)
+        .set('mes', mes)
+        .set('idDetalle',idDetalle)
+        .set('inserta', inserta)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/ResumenInsertaBalanzaCentralizado`,params)
+    }
+
+    ResumenBalanzaComisionesBonos(mes:number,anio:number,quincena:number){
+
+        let params = new HttpParams()
+        .set('mes', mes)
+        .set('anio',anio)
+        .set('quincena', quincena)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/ResumenBalanzaComisionesBonos`,params)
+    }
+
+    ConsultaOrdenesCompra(fecha:string){
+        
+        let params = new HttpParams()
+        .set('fecha', fecha)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/ConsultaOrdenesCompra`, params)
+
+    }
+
+    ConsultaOCError(oc:string, sucursal:string){
+        
+        let params = new HttpParams()
+        .set('oc', oc)
+        .set('sucursal', sucursal)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/ConsultaOCError`, params)
+    }
+
+    ConsultaFacturacion(fecha:string){
+        
+        let params = new HttpParams()
+        .set('fecha', fecha)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/ConsultaFacturas`, params)
+
+    }
+
+    ConsultaFechaFacturacion(mes:number,anio:number,quincena:number,inserta:number){
+        let params = new HttpParams()
+        .set('mes', mes)
+        .set('anio', anio)
+        .set('quincena', quincena)
+        .set('inserta', inserta)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/ConsultaFechaFaturacion`, params)
+    }
+
+    ParametrosNotificacion(tabla:string){
+        let params = new HttpParams()
+        .set('tabla',tabla)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/ParametrosNotificacion`, params)
+    }
+
+    ProrrateoBalanza(mes:number,anio:number,quincena:number,dia:number){
+        let params = new HttpParams()
+        .set('mes', mes)
+        .set('anio', anio)
+        .set('quincena', quincena)
+        .set('dia', dia)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/ProrrateoBalanza`, params)
+
+    }
+
 }
