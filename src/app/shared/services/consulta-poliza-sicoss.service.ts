@@ -112,4 +112,16 @@ export class ConsultaPolizaSicossService{
         return this.http.post(`${environment.apiNomina}api/nominaSICOSS/CalculoPolizaAbiertaSicoss`, params)
     }
 
+    InsertaBorraFechapaga(periodoId:number, periodo:number, tipoNomina:number, fechInicio:string, fechFin:string, insertaBorra:number){
+        const params = new HttpParams()
+        .set('periodoId',periodoId)
+        .set('periodo',periodo)
+        .set('tipoNomina',tipoNomina)
+        .set('fechInicio',fechInicio)
+        .set('fechFin',fechFin)
+        .set('insertaBorra',insertaBorra)
+
+        return this.http.post(`${environment.apiNomina}api/nominaSICOSS/InsertaBorraFechaPaga`, params)
+    }
+
 }

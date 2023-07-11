@@ -1,0 +1,144 @@
+<app-titulo>
+    <span TitleNegritas>Cálculo y generación de </span>
+    <span TitleStd>comisiones</span>
+  </app-titulo>
+
+  <div class="content-block">
+    <div
+        class="dx-card responsive-paddings"
+        fxFlexAlign="center"
+        id="P_AsientoContable">
+
+        <div class="alert alert-primary">
+            <strong>Selecciona el Año y mes para el cálculo de comisiones que deseas consultar, solo se visualizan empresas centralizadas</strong> 
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-evenly center">
+            <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-value">
+                    <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anio" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
+                   </div>
+                </div>        
+              </div>
+    
+              <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-value">
+                    <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mes"  [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-value">
+                    <dx-button
+                    stylingMode="contained"
+                    text="Consultar"
+                    type="default"
+                    (onClick)="GetResumenScored()">
+                    </dx-button>
+                  </div>
+                </div>
+              </div>
+        </div>
+
+        <div id="accordion" fxLayout="row" fxflex>
+            <dx-accordion
+            #accordion
+            [collapsible]="false"
+            [multiple]="false"
+            [animationDuration]="300"
+            [width]="'100%'"
+            id="accordion-container">
+
+                <dxi-item title="Cálculo comisión Seminuevos">
+
+                    <div fxLayout="row" fxLayoutAlign="space-around center">
+                        <div class="dx-fieldset" fxFlex="100">
+                        <dx-form id="form" [formData]="formData" labelMode="floating" [colCount]="2" width="100%">
+                            <dxi-item itemType="group" caption="Calificación manual no centralizado" [colCount]="2">
+                                <dxi-item dataField="calificacionSeat" [visible]="true"></dxi-item>
+                                <dxi-item dataField="calificacionVw" [visible]="true"></dxi-item>
+                            </dxi-item>
+                        </dx-form>    
+                        </div>
+                        
+                        <div class="dx-fieldset" fxFlex="100">
+                            <div class="dx-field">
+                              <div class="dx-field-value">
+                                <dx-button
+                                stylingMode="contained"
+                                text="Actualiza calificación"
+                                type="default"
+                                (onClick)="ActualizaCalificacion()">
+                                </dx-button>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="10">
+
+
+                        <div>
+                          <dx-data-grid
+                            #completoGrid
+                            id="completoGrid"
+                            [dataSource]="lstCalificaciones"
+                            [showBorders]="true"
+                            width="100%"
+                            [wordWrapEnabled]="true"
+                          >
+                          <dxo-pager
+                            [visible]="true"
+                            [showInfo]="true"
+                            [allowedPageSizes]="allowedPageSizes"
+                            displayMode="full"
+                            [showPageSizeSelector]="true"
+                          >
+                          </dxo-pager>
+                            <dxo-filter-row [visible]="true"></dxo-filter-row>
+                            <dxi-column dataField="nombre" caption="Agencia" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                            <dxi-column dataField="calificacion" caption="Calificacion" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                            <dxi-column dataField="monto" caption="Importe comisión" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                            <dxo-summary>
+                                <dxi-total-item column="monto" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+                            </dxo-summary>
+                            <dxo-paging [pageSize]="5"></dxo-paging>
+                            <dxo-export [enabled]="true"></dxo-export>
+                          </dx-data-grid> 
+                        </div>
+                        <div>
+                            <dx-data-grid
+                            #completoGrid
+                            id="completoGrid"
+                            [dataSource]="lstRangos"
+                            [showBorders]="true"
+                            width="100%"
+                            [wordWrapEnabled]="true"
+                          >
+                          <dxo-pager
+                            [visible]="true"
+                            [showInfo]="true"
+                            [allowedPageSizes]="allowedPageSizes"
+                            displayMode="full"
+                            [showPageSizeSelector]="true"
+                          >
+                          </dxo-pager>
+                            <dxo-filter-row [visible]="true"></dxo-filter-row>
+                            <dxi-column dataField="limiteInferior" caption="Limite Inferior" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                            <dxi-column dataField="limiteSuperior" caption="Limite Superior" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                            <dxi-column dataField="monto" caption="Monto" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                            <dxo-paging [pageSize]="5"></dxo-paging>
+                            <dxo-export [enabled]="true"></dxo-export>
+                          </dx-data-grid> 
+                        </div>
+                    </div>
+
+                </dxi-item>
+            </dx-accordion>
+
+        </div>
+    </div>
+  </div>
