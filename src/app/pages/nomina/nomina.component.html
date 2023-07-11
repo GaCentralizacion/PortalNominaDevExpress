@@ -44,6 +44,17 @@
         </div>
       </div>
     </div>
+
+<div class="dx-fieldset" fxlflex="100">
+    <div class="dx-field">
+        <div class="dx-field-value">
+            <dx-button stylingMode="contained" text="Agrega paga" type="default" [width]="220" (onClick)="ModalPagas()"></dx-button>
+        </div>
+    </div>
+</div>
+
+
+
   </div>
 
   <div fxLayout="row" fxLayoutAlign="start center">
@@ -53,8 +64,10 @@
         id="gridContainer"
         [dataSource]="lstQuincenas"
         [showBorders]="true"
+        [height]="600"
       >
        <dxo-scrolling mode="virtual"></dxo-scrolling>
+       <dxo-load-panel [enabled]="true"></dxo-load-panel>
        <dxo-filter-row [visible]="true"></dxo-filter-row>
         <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
         <dxi-column
@@ -166,6 +179,43 @@
 
 </dx-popup>
 
+<dx-popup
+  [width]="550"
+  [height]="'auto'"
+  [showTitle]="true"
+  title="Agrega paga"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
+  container=".dx-viewport"
+  [(visible)]="popupPagasVisible"
+>
+<div fxLayout="row" fxLayoutAlign="center center">
+  <dx-form id="form" [formData]="formDataValidacion" [labelMode]="labelMode" [width]="'auto'">
+    <dxi-item itemType="group" caption="Datos de la paga" [colCount]="2">
+      <dxi-item dataField="periodoId" [visible]="true" [editorOptions]="positionEditorOptions" editorType="dxSelectBox"></dxi-item>
+      <dxi-item dataField="periodo"  [visible]="true"></dxi-item>
+      <dxi-item dataField="tipoNomina"  [visible]="true" [editorOptions]="positionEditorOptionsTipo" editorType="dxSelectBox" [colSpan]="2"></dxi-item>
+      <dxi-item dataField="fechaInicio"  [visible]="true" editorType="dxDateBox" [editorOptions]="positionEditorOptionsCalenda"></dxi-item>
+      <dxi-item dataField="fechaFin"  [visible]="true" editorType="dxDateBox" [editorOptions]="positionEditorOptionsCalenda"></dxi-item>
+    </dxi-item>
+  </dx-form>   
+</div>
+<div fxLayout="row" fxLayoutAlign="space-evenly center">
+  
+    
+        <div>
+            <dx-button stylingMode="contained" text="Agrega paga" type="default" [width]="'auto'" (onClick)="InsertaPaga(1)"></dx-button>
+        </div>
+    
+    
+      <div>
+        <dx-button stylingMode="contained" text="Elimina paga" type="danger" [width]="'auto'" (onClick)="InsertaPaga(0)"></dx-button>
+      
+    </div>
+  
+</div>
+
+</dx-popup>
 <dx-load-panel
   #loadPanel
   shadingColor="rgba(0,0,0,0.4)"

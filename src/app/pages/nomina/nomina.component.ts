@@ -4,6 +4,7 @@ import { take } from 'rxjs';
 import { CatalogosSicossService } from 'src/app/shared/services/catalogosSicoss.service';
 import { ConsultaPolizaNominaService } from 'src/app/shared/services/consulta-poliza-nomina.service';
 import { ConsultaPolizaSicossService } from 'src/app/shared/services/consulta-poliza-sicoss.service';
+import { Report } from 'notiflix';
 
 import Swal from 'sweetalert2'
 @Component({
@@ -21,6 +22,7 @@ export class NominaComponent implements OnInit {
   anioActual:number = 0;
   mesActual:number = 0;
   popupVisible = false;
+  popupPagasVisible:boolean = false
   loadingVisible = false;
   tituloModal:string = ''
   sucursalProcesada:string = 'En proceso'
@@ -36,7 +38,22 @@ export class NominaComponent implements OnInit {
   periodo: any;
   tipoNomina: any;
 
-  constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private polSicoss:ConsultaPolizaSicossService) { 
+  lstPeriodosSicos:any;
+  lstTipoNominaSicoss:any
+
+  formDataValidacion: any = {
+    periodoId: 0,
+    periodo: 0,
+    tipoNomina: 0,
+    fechaInicio: '',
+    fechaFin: ''
+  };
+  
+  positionEditorOptions: any
+  positionEditorOptionsTipo: any
+  positionEditorOptionsCalenda: any
+
+  constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private polSicoss:ConsultaPolizaSicossService, private consultaSicoss: ConsultaPolizaSicossService) { 
     locale(navigator.language);
     
     let fecha = new Date()
@@ -96,13 +113,30 @@ export class NominaComponent implements OnInit {
       this.lstEmpresas = resp
     })
 
+    this.positionEditorOptionsCalenda = {
+      displayFormat:'yyyy/MM/dd'
+    }
+
     /**Relacionamos el evento clic con el metodo del mismo nombre */
     this.CerrarPaga = this.CerrarPaga.bind(this)
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.Anios()
     this.FechasPaga(this.anioActual, this.mesActual);
+    this.lstPeriodosSicos = await this.PeriodoSicoss()
+    this.lstTipoNominaSicoss = await this.TipoNomina()
+
+    this.positionEditorOptions = { 
+      dataSource:this.lstPeriodosSicos,
+      displayExpr: "Descripcion",
+      valueExpr: "Periodo_ID"
+    }
+    this.positionEditorOptionsTipo = { 
+      dataSource:this.lstTipoNominaSicoss,
+      displayExpr: "Descripcion",
+      valueExpr: "TipoNomina_ID"
+    }
   }
 
   Anios(){
@@ -117,11 +151,22 @@ export class NominaComponent implements OnInit {
       this.lstQuincenas = []
       this.lstQuincenas = resp
     })
-   
-    // this.nominaService.FechasPagas(anio,mes).subscribe(resp => {
-    //   this.lstQuincenas = []
-    //   this.lstQuincenas = resp
-    // })
+  }
+
+  PeriodoSicoss(){
+    return new Promise((resolve, reject) =>{
+      this.catSicoss.PeriodosSicoss().subscribe(resp => {
+        resolve(resp)
+      })
+    })
+  }
+
+  TipoNomina (){
+    return new Promise((resolve, reject) => {
+      this.catSicoss.TipoNominaSicoss().subscribe(resp =>{
+        resolve(resp)
+      })
+    })
   }
 
   AnioSelect(e:any){
@@ -250,6 +295,46 @@ export class NominaComponent implements OnInit {
     // return new Promise((resolve) => {
     //   this.nominaService.CalculoNomina(this.mesActual,this.anioActual,this.fechaPagaSeleccionada,this.tipoPagaSeleccionada,idLugarTrabajo).subscribe(resp => resolve(true))
     // })
+  }
+
+  ModalPagas(){
+    this.formDataValidacion = {
+      periodoId: 0,
+      periodo: 0,
+      tipoNomina: 0,
+      fechaInicio: '',
+      fechaFin: ''
+    };
+    this.popupPagasVisible = true
+  }
+
+  async InsertaPaga(opcion:number){
+
+    let fechaInicio = `${this.formDataValidacion.fechaInicio.getFullYear()}/${this.formDataValidacion.fechaInicio.getMonth() + 1}/${this.formDataValidacion.fechaInicio.getDate()}`;
+    let fechaFin = `${this.formDataValidacion.fechaFin.getFullYear()}/${this.formDataValidacion.fechaFin.getMonth() + 1}/${this.formDataValidacion.fechaFin.getDate()}`;
+
+    let respuesta:any
+    respuesta = await this.EjecutaInsertaPaga(this.formDataValidacion.periodoId, this.formDataValidacion.periodo, this.formDataValidacion.tipoNomina, fechaInicio, fechaFin, opcion)
+    //console.log(respuesta);
+    
+    Report.success(
+      'Acción ejecutada',
+      respuesta.msj,
+      'Ok'
+    )
+
+    this.FechasPaga(this.anioActual, this.mesActual);
+    this.popupPagasVisible = false
+
+  }
+
+  EjecutaInsertaPaga(periodoId:number,periodo:number,tipoNomina:number,fechaInicio:string,fechaFin:string, opcion:number){
+    return new Promise((resolve, reject) => {
+      this.consultaSicoss.InsertaBorraFechapaga(periodoId,periodo,tipoNomina,fechaInicio,fechaFin, opcion).subscribe((resp:any) => {
+        resolve(resp[0])
+      })
+    
+    })
   }
 
 }

@@ -34,6 +34,10 @@ const routes: Routes = [
     loadChildren:()=>import('./pages/repercusion/repercusion-routing.module').then(module => module.RepercusionRoutingModule)
   },
   {
+    path:'comisiones',
+    loadChildren:() => import('./pages/comisiones/comisiones.module').then(module => module.ComisionesModule)
+  },
+  {
     path: 'login-form',
     component: LoginFormComponent,
     canActivate: [ AuthGuardService ]

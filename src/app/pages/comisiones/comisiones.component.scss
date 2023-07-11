@@ -1,0 +1,27 @@
+
+.alert-primary {
+    color: #084298;
+    background-color: #cfe2ff;
+    border-color: #b6d4fe;
+}  
+
+.alert-warning {
+    color: #664d03;
+    background-color: #fff3cd;
+    border-color: #ffecb5;
+
+}
+
+.alert-info {
+    color: #055160;
+    background-color: #cff4fc;
+    border-color: #b6effb;
+
+}
+
+.alert{
+    padding: 1rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #b6d4fe;
+    border-radius: 0.25rem;
+}

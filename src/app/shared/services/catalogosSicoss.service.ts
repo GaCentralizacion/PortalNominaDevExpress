@@ -32,4 +32,16 @@ export class CatalogosSicossService{
         return this.http.get(`${environment.apiNomina}api/catalogosSICOSS/SicossGrupo`)
     }
 
+    PeriodosSicoss(){
+        return this.http.get(`${environment.apiNomina}api/catalogosSICOSS/PeriodosSicoss`)
+    }
+
+    TipoNominaSicoss(){
+        return this.http.get(`${environment.apiNomina}api/catalogosSICOSS/TipoNominaSicoss`)
+    }
+
+    RelacionWSFCentralizacion(){
+        return this.http.get(`${environment.apiNomina}api/catalogosSICOSS/RelacionWSFCentralizacion`)
+    }
+
 }
