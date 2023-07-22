@@ -38,6 +38,14 @@ const routes: Routes = [
     loadChildren:() => import('./pages/comisiones/comisiones.module').then(module => module.ComisionesModule)
   },
   {
+    path:'comisiones',
+    loadChildren:() => import('./pages/conf-comisiones/conf-comisiones.module').then(module => module.ConfComisionesModule)
+  },
+  {
+    path:'comisiones',
+    loadChildren:() => import('./pages/comi-flotillas/comi-flotillas.module').then(module => module.ComiFlotillasModule)
+  },
+  {
     path: 'login-form',
     component: LoginFormComponent,
     canActivate: [ AuthGuardService ]

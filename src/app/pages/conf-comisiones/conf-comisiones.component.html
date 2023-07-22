@@ -1,0 +1,351 @@
+<app-titulo>
+    <span TitleNegritas>Configuración de comisiones </span>
+    <span TitleStd>Merkating, dev center, nuevos y seminuevos</span>
+</app-titulo>
+
+<div class="content-block">
+    <div class="dx-card responsive-paddings" fxFlexAlign="center" id="P_AsientoContable">
+
+        <div class="alert alert-primary">
+            <!-- <dx-button
+            icon="info"
+            style="background-color: transparent;">
+            </dx-button>  -->
+            <strong>Configuración de las sucursales que se van a considerar en el detalle de la comisión</strong> 
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-value">
+                    <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anio" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
+                   </div>
+                </div>        
+              </div>
+    
+              <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-value">
+                    <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mes"  [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-value">
+                    <dx-button
+                    stylingMode="contained"
+                    text="Consulta"
+                    type="default"
+                    (onClick)="ConsultaConfig()">
+                    </dx-button>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <dx-tab-panel
+              #tabPanel
+              [width]="'100%'"
+              [selectedIndex]="0"
+              [loop]="false"
+              [animationEnabled]="true"
+              [swipeEnabled]="true">
+        
+              <dxi-item title="Marketing">
+
+                <div fxLayout="row" fxLayoutAlign="center center" style="padding-top: 10px;">
+                    <dx-button
+                    stylingMode="contained"
+                    text="Agregar o quitar Configuración Marketing"
+                    type="default"
+                    (onClick)="MostrarPopMarketing()">
+                    </dx-button>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <dx-data-grid
+                            #completoGrid
+                            id="marketing"
+                            [dataSource]="lstConfiguracionesMark"
+                            [showBorders]="true"
+                            width="50%"
+                            [wordWrapEnabled]="true"
+                          >
+                          <dxo-pager
+                            [visible]="true"
+                            [showInfo]="true"
+                            allowedPageSizes="true"
+                            displayMode="full"
+                            [showPageSizeSelector]="true"
+                          >
+                          </dxo-pager>
+                            <dxo-filter-row [visible]="true"></dxo-filter-row>
+                            <dxi-column dataField="Descripcion" caption="Agencia" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                            <dxi-column dataField="anio" caption="Año" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                            <dxi-column dataField="mes" caption="mes" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                            <dxo-paging [pageSize]="5"></dxo-paging>
+                            <dxo-export [enabled]="true"></dxo-export>
+                    </dx-data-grid> 
+                </div>
+
+              </dxi-item>
+
+              <dxi-item title="Business Dev Center">
+                <div fxLayout="row" fxLayoutAlign="center center" style="padding-top: 10px;">
+                    <dx-button
+                    stylingMode="contained"
+                    text="Agregar o quitar Configuración Dev Center"
+                    type="default"
+                    (onClick)="MostrarPopDevCenter()">
+                    </dx-button>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <dx-data-grid
+                    #completoGrid
+                    id="devCenter"
+                    [dataSource]="lstConfiguracionesDevCenter"
+                    [showBorders]="true"
+                    width="50%"
+                    [wordWrapEnabled]="true"
+                  >
+                  <dxo-pager
+                    [visible]="true"
+                    [showInfo]="true"
+                    allowedPageSizes="true"
+                    displayMode="full"
+                    [showPageSizeSelector]="true"
+                  >
+                  </dxo-pager>
+                    <dxo-filter-row [visible]="true"></dxo-filter-row>
+                    <dxi-column dataField="Descripcion" caption="Agencia" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="anio" caption="Año" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="mes" caption="mes" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxo-paging [pageSize]="5"></dxo-paging>
+                    <dxo-export [enabled]="true"></dxo-export>
+            </dx-data-grid> 
+                </div>
+              </dxi-item>
+
+              <dxi-item title="Seminuevos">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                  <dx-data-grid
+                  #completoGrid
+                  id="completoGrid"
+                  [dataSource]="lstRangosSeminuevos"
+                  [showBorders]="true"
+                  width="50%"
+                  [wordWrapEnabled]="true"
+                  (onSaving)="OnSavingSemin($event)"
+                >
+                <dxo-pager
+                  [visible]="true"
+                  [showInfo]="true"
+                  allowedPageSizes="true"
+                  displayMode="full"
+                  [showPageSizeSelector]="true"
+                >
+                </dxo-pager>
+                  <dxo-filter-row [visible]="true"></dxo-filter-row>
+                  <dxo-editing
+                  mode="batch"
+                  [allowUpdating]="true"
+                  [allowAdding]="true"
+                  [allowDeleting]="true"
+                  [selectTextOnEditStart]="selectTextOnEditStart"
+                  [startEditAction]="startEditAction"
+                  >
+                  </dxo-editing>
+                  <dxi-column dataField="limiteInferior" caption="Limite Inferior" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                  <dxi-column dataField="limiteSuperior" caption="Limite Superior" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                  <dxi-column dataField="monto" caption="Importe comision" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                  <dxo-paging [pageSize]="5"></dxo-paging>
+                  <dxo-export [enabled]="true"></dxo-export>
+                </dx-data-grid> 
+                                 
+              </div>
+              </dxi-item>
+
+              <dxi-item title="Nuevos">
+
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <dx-data-grid
+                    #completoGrid
+                    id="completoGrid"
+                    [dataSource]="lstRangosNuevos"
+                    [showBorders]="true"
+                    width="50%"
+                    [wordWrapEnabled]="true"
+                    (onSaving)="OnSaving($event)"
+                  >
+                  <dxo-pager
+                    [visible]="true"
+                    [showInfo]="true"
+                    allowedPageSizes="true"
+                    displayMode="full"
+                    [showPageSizeSelector]="true"
+                  >
+                  </dxo-pager>
+                    <dxo-filter-row [visible]="true"></dxo-filter-row>
+                    <dxo-editing
+                    mode="batch"
+                    [allowUpdating]="true"
+                    [allowAdding]="true"
+                    [allowDeleting]="true"
+                    [selectTextOnEditStart]="selectTextOnEditStart"
+                    [startEditAction]="startEditAction"
+                    >
+                    </dxo-editing>
+                    <dxi-column dataField="limiteInferior" caption="Limite Inferior" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="limiteSuperior" caption="Limite Superior" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="porcentaje" caption="Porcentaje" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                    <dxo-paging [pageSize]="5"></dxo-paging>
+                    <dxo-export [enabled]="true"></dxo-export>
+                  </dx-data-grid> 
+                                   
+                </div>
+
+              </dxi-item> 
+
+        </dx-tab-panel>
+
+    </div>
+</div>
+
+<dx-popup
+  [width]="600"
+  [showTitle]="true"
+  title="Lista de departamentos configurables"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
+  container=".dx-viewport"
+  [(visible)]="popupVisibleMarketing"
+>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="center"
+    [options]="closeButtonOptions"
+  >
+  </dxi-toolbar-item>
+  <div>
+    <dx-data-grid
+      id="gridDeptos"
+      [dataSource]="lstEmpresasModalMark"
+      [showBorders]="true"
+      [width]="550"
+    >
+      <dxo-filter-row [visible]="true"></dxo-filter-row>  
+      <dxo-export [enabled]="true"></dxo-export>
+      <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+      <dxi-column
+        dataField="Descripcion"
+        caption="Agencia"
+        dataType="string"
+        [width]="'auto'"
+        [alignment]="'center'"
+      ></dxi-column>
+      <dxi-column
+        dataField="idEmpresa"
+        caption="idEmpresa"
+        dataType="number"
+        [width]="'auto'"
+        [alignment]="'center'"
+        [visible]="false"
+      ></dxi-column>
+      <dxi-column
+        dataField="idSucursal"
+        caption="idSucursal"
+        dataType="number"
+        [width]="'auto'"
+        [alignment]="'center'"
+        [visible]="false"
+      ></dxi-column>
+      <dxi-column type="buttons" caption="Acción">
+        <dxi-button
+          hint="Agregar"
+          icon="check"
+          text="Agregar"
+          [visible]="OpcionVisible"
+          [onClick]="AgregarEliminarAgencia"
+        ></dxi-button>
+        <dxi-button
+          hint="Eliminar"
+          icon="clear"
+          text="Eliminar"
+          [visible]="OpcionEliminarVisible"
+          [onClick]="AgregarEliminarAgencia"
+        ></dxi-button>
+      </dxi-column>
+      <dxo-paging [pageSize]="13"></dxo-paging>
+    </dx-data-grid>
+  </div>
+</dx-popup>
+
+<dx-popup
+  [width]="600"
+  [showTitle]="true"
+  title="Lista de agencias configurables"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
+  container=".dx-viewport"
+  [(visible)]="popupVisibleDevCenter"
+>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="center"
+    [options]="closeButtonOptionsDevCenter"
+  >
+  </dxi-toolbar-item>
+  <div>
+    <dx-data-grid
+      id="gridDeptos"
+      [dataSource]="lstEmpresasDEvCenter"
+      [showBorders]="true"
+      [width]="550"
+    >
+      <dxo-filter-row [visible]="true"></dxo-filter-row>  
+      <dxo-export [enabled]="true"></dxo-export>
+      <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+      <dxi-column
+        dataField="Descripcion"
+        caption="Agencia"
+        dataType="string"
+        [width]="'auto'"
+        [alignment]="'center'"
+      ></dxi-column>
+      <dxi-column
+        dataField="idEmpresa"
+        caption="idEmpresa"
+        dataType="number"
+        [width]="'auto'"
+        [alignment]="'center'"
+        [visible]="false"
+      ></dxi-column>
+      <dxi-column
+        dataField="idSucursal"
+        caption="idSucursal"
+        dataType="number"
+        [width]="'auto'"
+        [alignment]="'center'"
+        [visible]="false"
+      ></dxi-column>
+      <dxi-column type="buttons" caption="Acción">
+        <dxi-button
+          hint="Agregar"
+          icon="check"
+          text="Agregar"
+          [visible]="OpcionVisible"
+          [onClick]="AgregarEliminarAgencia"
+        ></dxi-button>
+        <dxi-button
+          hint="Eliminar"
+          icon="clear"
+          text="Eliminar"
+          [visible]="OpcionEliminarVisible"
+          [onClick]="AgregarEliminarAgencia"
+        ></dxi-button>
+      </dxi-column>
+      <dxo-paging [pageSize]="13"></dxo-paging>
+    </dx-data-grid>
+  </div>
+</dx-popup>

@@ -37,7 +37,7 @@
                     stylingMode="contained"
                     text="Consultar"
                     type="default"
-                    (onClick)="GetResumenScored()">
+                    (onClick)="ConsultarScoreCard()">
                     </dx-button>
                   </div>
                 </div>
@@ -53,14 +53,24 @@
             [width]="'100%'"
             id="accordion-container">
 
-                <dxi-item title="Cálculo comisión Seminuevos">
+                <dxi-item title="Cálculo comisión seminuevos y nuevos">
 
+                  <dx-tab-panel
+                  #tabPanel
+                  [width]="'100%'"
+                  [selectedIndex]="0"
+                  [loop]="false"
+                  [animationEnabled]="true"
+                  [swipeEnabled]="true">
+
+                  <!-- PESTAÑA SEMINUEVOS -->
+                  <dxi-item title="Seminuevos">
                     <div fxLayout="row" fxLayoutAlign="space-around center">
                         <div class="dx-fieldset" fxFlex="100">
                         <dx-form id="form" [formData]="formData" labelMode="floating" [colCount]="2" width="100%">
-                            <dxi-item itemType="group" caption="Calificación manual no centralizado" [colCount]="2">
-                                <dxi-item dataField="calificacionSeat" [visible]="true"></dxi-item>
-                                <dxi-item dataField="calificacionVw" [visible]="true"></dxi-item>
+                            <dxi-item itemType="group" caption="Calificación manual seminuevos no centralizado" [colCount]="2">
+                                <dxi-item dataField="calificacionSeat" [visible]="true" editorType="dxNumberBox"></dxi-item>
+                                <dxi-item dataField="calificacionVw" [visible]="true" editorType="dxNumberBox"></dxi-item>
                             </dxi-item>
                         </dx-form>    
                         </div>
@@ -76,7 +86,7 @@
                                 </dx-button>
                               </div>
                             </div>
-                          </div>
+                        </div>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="10">
 
@@ -135,6 +145,105 @@
                           </dx-data-grid> 
                         </div>
                     </div>
+                  </dxi-item>
+
+
+                  <!-- PESTAÑA NUEVOS -->
+                  <dxi-item title="Nuevos">
+                    <div fxLayout="row" fxLayoutAlign="space-around center">
+                      <div class="dx-fieldset" fxFlex="100">
+                        <dx-form id="form" [formData]="formDataNuevos" labelMode="floating" width="100%">
+                            <dxi-item itemType="group" caption="Calificación manual nuevos no centralizado" [colCount]="4">
+                                <dxi-item dataField="calificacionSeat" [visible]="true" editorType="dxNumberBox"></dxi-item>
+                                <dxi-item dataField="ebitdaSeat" [visible]="true" editorType="dxNumberBox"></dxi-item>
+                                <dxi-item dataField="calificacionVw" [visible]="true" editorType="dxNumberBox"></dxi-item>
+                                <dxi-item dataField="ebitdaVw" [visible]="true" editorType="dxNumberBox"></dxi-item>
+                                <dxi-item dataField="importeRH" [visible]="true" editorType="dxNumberBox"></dxi-item>
+                            </dxi-item>
+                        </dx-form>    
+                        </div>
+
+                        <div class="dx-fieldset" fxFlex="100">
+                          <div class="dx-field">
+                            <div class="dx-field-value">
+                              <dx-button
+                              stylingMode="contained"
+                              text="Actualiza calificación"
+                              type="default"
+                              (onClick)="ActualizaCalificacionNuevo()">
+                              </dx-button>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="10">
+
+
+                      <div>
+                        <dx-data-grid
+                          #completoGrid
+                          id="completoGrid"
+                          [dataSource]="lstCalificacionesNuevos"
+                          [showBorders]="true"
+                          width="100%"
+                          [wordWrapEnabled]="true"
+                        >
+                        <dxo-pager
+                          [visible]="true"
+                          [showInfo]="true"
+                          [allowedPageSizes]="allowedPageSizes"
+                          displayMode="full"
+                          [showPageSizeSelector]="true"
+                        >
+                        </dxo-pager>
+                          <dxo-filter-row [visible]="true"></dxo-filter-row>
+                          <dxi-column dataField="nombre" caption="Agencia" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                          <dxi-column dataField="calificacion" caption="Calificación" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                          <dxi-column dataField="ebitda" caption="EBITDA" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                          <dxi-column dataField="monto" caption="Importe comisión" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                          <dxi-column dataField="porcentaje"caption="Porcentaje" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                          <dxi-column dataField="importeFinal"caption="Comision Final" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                          <dxo-summary>
+                              <dxi-total-item column="monto" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+                              <dxi-total-item column="importeFinal" summaryType="sum" [customizeText]="customizeCurrency"></dxi-total-item>
+                          </dxo-summary>
+                          <dxo-paging [pageSize]="5"></dxo-paging>
+                          <dxo-export [enabled]="true"></dxo-export>
+                        </dx-data-grid> 
+                      </div>
+                      <div>
+                          <dx-data-grid
+                          #completoGrid
+                          id="completoGrid"
+                          [dataSource]="lstRangosNuevos"
+                          [showBorders]="true"
+                          width="100%"
+                          [wordWrapEnabled]="true"
+                        >
+                        <dxo-pager
+                          [visible]="true"
+                          [showInfo]="true"
+                          [allowedPageSizes]="allowedPageSizes"
+                          displayMode="full"
+                          [showPageSizeSelector]="true"
+                        >
+                        </dxo-pager>
+                          <dxo-filter-row [visible]="true"></dxo-filter-row>
+                          <dxi-column dataField="limiteInferior" caption="Limite Inferior" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                          <dxi-column dataField="limiteSuperior" caption="Limite Superior" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                          <dxi-column dataField="porcentaje" caption="Porcentaje" dataType="number" [width]="'auto'" [fixed]="true"></dxi-column>
+                          <dxo-paging [pageSize]="5"></dxo-paging>
+                          <dxo-export [enabled]="true"></dxo-export>
+                        </dx-data-grid> 
+                      </div>
+                  </div>
+
+                  </dxi-item>
+
+                  </dx-tab-panel>
+
+
 
                 </dxi-item>
             </dx-accordion>

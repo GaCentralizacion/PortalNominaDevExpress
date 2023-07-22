@@ -3,7 +3,7 @@ import { TituloModule } from 'src/app/shared/components/titulo/titulo.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ComisionesComponent } from './comisiones.component';
 import { ComisionesRoutingModule } from './comisiones-routing.module';
-import { DxAccordionModule, DxButtonModule, DxDataGridModule, DxFormModule, DxSelectBoxModule } from 'devextreme-angular';
+import { DxAccordionModule, DxButtonModule, DxDataGridModule, DxFormModule, DxSelectBoxModule, DxTabPanelModule } from 'devextreme-angular';
 
 @NgModule({
     declarations:[ComisionesComponent],
@@ -15,7 +15,8 @@ import { DxAccordionModule, DxButtonModule, DxDataGridModule, DxFormModule, DxSe
         DxSelectBoxModule,
         DxButtonModule,
         DxDataGridModule,
-        DxFormModule
+        DxFormModule,
+        DxTabPanelModule
     ],
     exports:[]
 })
