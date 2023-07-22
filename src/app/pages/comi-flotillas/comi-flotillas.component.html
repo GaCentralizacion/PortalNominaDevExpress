@@ -1,0 +1,75 @@
+<app-titulo>
+    <span TitleNegritas>Cálculo de comisiones </span>
+    <span TitleStd>de flotillas</span>
+</app-titulo>
+
+<div class="content-block">
+    <div class="dx-card responsive-paddings" fxFlexAlign="center" id="P_AsientoContable">
+
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-value">
+                    <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anio" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
+                   </div>
+                </div>        
+              </div>
+    
+              <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-value">
+                    <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mes"  [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-value">
+                    <dx-button
+                    stylingMode="contained"
+                    text="Consulta"
+                    type="default"
+                    (onClick)="ConsultaComision()">
+                    </dx-button>
+                  </div>
+                </div>
+              </div>
+        </div>
+
+        <dx-tab-panel
+              #tabPanel
+              [width]="'100%'"
+              [selectedIndex]="0"
+              [loop]="false"
+              [animationEnabled]="true"
+              [swipeEnabled]="true"
+              [dataSource]="lstDepartamentos">
+
+              <div *dxTemplate="let depto of 'title'">
+                <span>{{depto.nivel}} - {{ depto.departamento }}</span>
+              </div>
+
+              <div *dxTemplate="let depto of 'item'">
+                <dx-tab-panel
+                #tabPanelEmpresas
+                [width]="'100%'"
+                [selectedIndex]="0"
+                [loop]="true"
+                [animationEnabled]="true"
+                [swipeEnabled]="true"
+                [dataSource]="lstSucursales"
+                [showNavButtons]="true"
+                [scrollByContent]="true">
+
+                  <div *dxTemplate="let emp of 'title'">
+                    <span> {{ emp.Descripcion }}</span>
+                  </div>
+
+                </dx-tab-panel>
+              </div>
+
+        </dx-tab-panel>
+
+    </div>
+</div>
