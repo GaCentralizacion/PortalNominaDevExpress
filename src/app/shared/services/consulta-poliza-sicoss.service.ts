@@ -24,7 +24,7 @@ export class ConsultaPolizaSicossService{
 
     }
 
-    CalculoPolizaSicoss(mes:number,anio:number,periodoId:number,periodo:number,tipoNomina:number,lugarTrabajo:number){
+    CalculoPolizaSicoss(mes:number,anio:number,periodoId:number,periodo:number,tipoNomina:number,lugarTrabajo:number, inserta:number){
 
         const params = new HttpParams()
         .set('mes',mes)
@@ -33,6 +33,7 @@ export class ConsultaPolizaSicossService{
         .set('periodo',periodo)
         .set('tipoNomina',tipoNomina)
         .set('lugarTrabajo',lugarTrabajo)
+        .set('inserta',inserta)        
 
         return this.http.post(`${environment.apiNomina}api/nominaSICOSS/CalculoPolizaSicoss`, params)
     }

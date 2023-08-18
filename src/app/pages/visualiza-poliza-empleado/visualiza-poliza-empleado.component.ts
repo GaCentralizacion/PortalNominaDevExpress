@@ -6,6 +6,7 @@ import { catchError, lastValueFrom, of } from "rxjs";
 import { ConsultaPolizaNominaService } from "src/app/shared/services/consulta-poliza-nomina.service";
 import { ConsultaPolizaSicossService } from "src/app/shared/services/consulta-poliza-sicoss.service";
 import { CurrencyPipe } from "@angular/common";
+import { ExcelClass } from 'src/app/shared/services/excelClass.service';
 
 @Component({
     selector: 'app-visualiza-poliza-empleado',
@@ -37,6 +38,8 @@ import { CurrencyPipe } from "@angular/common";
 
   esAbierta:boolean = false
   searchExprOption: any = 'paga';
+
+  objUsuario:any={}
 
     constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService){
       let fecha = new Date();
@@ -96,7 +99,9 @@ import { CurrencyPipe } from "@angular/common";
     }
 
     ngOnInit(): void {
-
+      this.objUsuario = sessionStorage.getItem('login')
+      this.objUsuario = JSON.parse(this.objUsuario)
+      
       this.Anios();
       this.LugaresTrabajo();
       this.Pagas(this.anioActual, this.mesActual);
@@ -138,7 +143,7 @@ import { CurrencyPipe } from "@angular/common";
   
     LugaresTrabajo() {
   
-      this.catSicoss.LugaresTrabajo().subscribe((resp) => {
+      this.catSicoss.LugaresTrabajoUsuario(this.objUsuario.idUsuario).subscribe((resp) => {
         this.lstEmpresas = resp
         let source$ = of(resp)
         this.lstEmpresasPagadoras = new CustomStore({
@@ -322,5 +327,12 @@ import { CurrencyPipe } from "@angular/common";
         this.AsientoContable()
       }
     }
+
+    onExporting(e:any){
+
+      let excel = new ExcelClass()
+      let msj = excel.onExporting(e,'datos', `Pólizas por empleado ${this.periodo.descripcion} periodo ${this.periodo.semQuin} mes ${this.periodo.mes}`)
+  
+     }
 
   }

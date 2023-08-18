@@ -4,9 +4,15 @@ import { take } from 'rxjs';
 import { CatalogosSicossService } from 'src/app/shared/services/catalogosSicoss.service';
 import { ConsultaPolizaNominaService } from 'src/app/shared/services/consulta-poliza-nomina.service';
 import { ConsultaPolizaSicossService } from 'src/app/shared/services/consulta-poliza-sicoss.service';
-import { Report } from 'notiflix';
-
+import { Loading, Report } from 'notiflix';
+import { exportDataGrid } from 'devextreme/excel_exporter'
+import { Workbook } from 'exceljs';
+import { saveAs } from 'file-saver';
 import Swal from 'sweetalert2'
+import { ExcelClass } from 'src/app/shared/services/excelClass.service';
+import { MesesServices } from 'src/app/shared/services/meses.service';
+import themes from 'devextreme/ui/themes';
+
 @Component({
   selector: 'app-nomina',
   templateUrl: './nomina.component.html',
@@ -40,6 +46,7 @@ export class NominaComponent implements OnInit {
 
   lstPeriodosSicos:any;
   lstTipoNominaSicoss:any
+  empresasSeleccionadas:any=[]
 
   formDataValidacion: any = {
     periodoId: 0,
@@ -52,55 +59,30 @@ export class NominaComponent implements OnInit {
   positionEditorOptions: any
   positionEditorOptionsTipo: any
   positionEditorOptionsCalenda: any
+  popupCentrosTrabajoVisible:boolean = false
 
-  constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private polSicoss:ConsultaPolizaSicossService, private consultaSicoss: ConsultaPolizaSicossService) { 
+  allMode: string;
+  checkBoxesMode: string;
+
+  opcionSeleccionada:number = 0
+  nombreSucursal:string = ''
+
+  constructor(
+    private nominaService: ConsultaPolizaNominaService, 
+    private catSicoss: CatalogosSicossService, 
+    private polSicoss:ConsultaPolizaSicossService, 
+    private consultaSicoss: ConsultaPolizaSicossService,
+    private _mesService: MesesServices
+    ) { 
+    
     locale(navigator.language);
+    this.allMode = 'allPages';
+    this.checkBoxesMode = themes.current().startsWith('material') ? 'always' : 'onClick';
     
     let fecha = new Date()
     this.anioActual = fecha.getFullYear()
     this.mesActual = fecha.getMonth()+1
-    this.lstMeses = [
-      {
-          id: 1,
-          text: "Enero"
-      },
-      {
-          id: 2,
-          text: "Febrero"
-      },
-      {
-          id: 3,
-          text: "Marzo"
-      },
-      {
-          id: 4,
-          text: "Abril"
-      }, {
-          id: 5,
-          text: "Mayo"
-      }, {
-          id: 6,
-          text: "Junio"
-      }, {
-          id: 7,
-          text: "Julio"
-      }, {
-          id: 8,
-          text: "Agosto"
-      }, {
-          id: 9,
-          text: "Septiembre"
-      }, {
-          id: 10,
-          text: "Octubre"
-      }, {
-          id: 11,
-          text: "Noviembre"
-      }, {
-          id: 12,
-          text: "Diciembre"
-      },
-    ];
+    this.lstMeses = this._mesService.meses()
 
     // this.nominaService.ListaEmpresasPoliza().pipe(take(2)).subscribe(resp => {
     //   console.log(resp);
@@ -223,20 +205,38 @@ export class NominaComponent implements OnInit {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       denyButtonColor: '#7066e0',
-      confirmButtonText: 'Cerrar paga',
-      denyButtonText: `Consulta paga abierta`,
+      confirmButtonText: 'Generar póliza',
+      denyButtonText: `Consulta paga`,
       cancelButtonText:'Cancelar',
       allowOutsideClick: false
     }).then((result) => {
       if (result.isConfirmed) {
-        this.CerrarPagas(1)
+        //this.CerrarPagas(1)
+        this.opcionSeleccionada = 1 
+        this.OpenListaEmpresas()
+       
       }
 
       if (result.isDenied) {
-        this.CerrarPagas(2)
+        //this.CerrarPagas(2)
+        this.opcionSeleccionada = 0
+        this.OpenListaEmpresas()
+        
       }
     })
 
+  }
+
+  OpenListaEmpresas(){
+    this.empresasSeleccionadas = []
+    this.popupCentrosTrabajoVisible = true
+  }
+
+  PruebaSeleccion(){
+    console.log(this.empresasSeleccionadas);
+    this.popupCentrosTrabajoVisible = false
+    this.CerrarPagas(this.opcionSeleccionada)
+    
   }
 
   /**
@@ -245,50 +245,47 @@ export class NominaComponent implements OnInit {
    */
   CerrarPagas(opcion: number){
     this.popupVisible = true;
+    //Loading.hourglass(`Espere por favor, obteniendo datos`);
     let polizaProcesada
     this.speedValue = 0
     this.sucursalProcesada = 'En proceso'
-    setTimeout(async () => {
-      for (let i = 0; i < this.lstEmpresas.length; i++) {
-      
-        // setTimeout(async () => {
-          const element = this.lstEmpresas[i];
-          this.sucursalProcesada = element.Descripcion.substring(0, 12)//element.sucursal.substring(0, 12)
-          polizaProcesada = await this.CalculoNomina(element.Centro_ID,opcion)
-          this.speedValue =  Number((((i+1)*100)/this.lstEmpresas.length).toFixed(0))  
+    let dato:any
+    let values_response:any = []
+    setTimeout( async () => {
+      for (let i = 0; i < this.empresasSeleccionadas.length; i++) {
+        const element = this.empresasSeleccionadas[i];
+        //values_response.push(this.CalculoNomina(element,opcion))
+        //  setTimeout( async () => {
+
+           dato = this.lstEmpresas.find((x:any) => x.Centro_ID === Number(element))
+
+            this.sucursalProcesada = dato.Descripcion.substring(0, 12)//element.sucursal.substring(0, 12)
+            polizaProcesada = await this.CalculoNomina(Number(element),opcion) //await this.CalculoNomina(element.Centro_ID,opcion)
+            this.speedValue =  Number((((i+1)*100)/this.empresasSeleccionadas.length).toFixed(0))  
         
-          if(this.speedValue === 100){
-            setTimeout(() => {
-              this.popupVisible = false;
-            }, 2000);
-          }
+           if(this.speedValue === 100){
+             setTimeout(() => {
+               this.popupVisible = false;
+             }, 2000);
+           }
               
-        // }, i*2000);
+        //  }, i*2000);
 
     }  
 
-    this.FechasPaga(this.anioActual, this.mesActual);
+    //let values = await Promise.all(values_response)
 
-    }, 2000);
+    this.FechasPaga(this.anioActual, this.mesActual);
+   // Loading.remove()
+
+    }, 1000);
   }
 
   CalculoNomina(idLugarTrabajo:number, opcion: number){
 
     return new Promise((resolve) =>{
 
-      /**
-       * opcion para consulta de informacion de pagas cerradas
-       */
-      if(opcion === 1){
-        this.polSicoss.CalculoPolizaSicoss(this.mesActual, this.anioActual, this.periodoId, this.periodo, this.tipoNomina, idLugarTrabajo).subscribe(resp =>resolve(true))
-      }
-      
-      /**
-       * opcion para consulta de informacion de pagas abiertas
-       */
-      if(opcion === 2){
-        this.polSicoss.CalculoPolizaAbiertaSicoss(this.mesActual, this.anioActual, this.periodoId, this.periodo, this.tipoNomina, idLugarTrabajo).subscribe(resp =>resolve(true))
-      }
+      this.polSicoss.CalculoPolizaSicoss(this.mesActual, this.anioActual, this.periodoId, this.periodo, this.tipoNomina, idLugarTrabajo,opcion).subscribe(resp =>{resolve(true)})
    
     })
 
@@ -336,5 +333,14 @@ export class NominaComponent implements OnInit {
     
     })
   }
+
+   onExporting(e:any){
+
+    let excel = new ExcelClass()
+    let msj = excel.onExporting(e,'data','Gastos flotillas')
+
+   }
+
+
 
 }

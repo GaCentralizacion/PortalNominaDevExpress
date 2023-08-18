@@ -1,0 +1,74 @@
+
+
+::ng-deep #dropzone-external {
+    width: 350px;
+    height: 350px;
+    background-color: rgba(183, 183, 183, 0.1);
+    border-width: 2px;
+    border-style: dashed;
+    padding: 10px;
+  }
+  
+  ::ng-deep #dropzone-external > * {
+    pointer-events: none;
+  }
+  
+  ::ng-deep #dropzone-external.dropzone-active {
+    border-style: solid;
+  }
+  
+  ::ng-deep .widget-container > span {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  
+  ::ng-deep #dropzone-image {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  
+  ::ng-deep #dropzone-text > span {
+    font-weight: 100;
+    opacity: 0.5;
+  }
+  
+  ::ng-deep #upload-progress {
+    display: flex;
+    margin-top: 10px;
+  }
+  
+  ::ng-deep .flex-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .alert-primary {
+    color: #084298;
+    background-color: #cfe2ff;
+    border-color: #b6d4fe;
+}  
+
+.alert-warning {
+    color: #664d03;
+    background-color: #fff3cd;
+    border-color: #ffecb5;
+
+}
+
+.alert-info {
+    color: #055160;
+    background-color: #cff4fc;
+    border-color: #b6effb;
+
+}
+
+.alert{
+    padding: 1rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #b6d4fe;
+    border-radius: 0.25rem;
+}
+

@@ -13,7 +13,7 @@ export class ComisionesServices{
     ConsultaScoreCard(mes:number, anio:number){
 
 
-        return `http://localhost:4204/api/report/balanceSucursal?idUsuario=3&periodoYear=${anio}&periodoMes=${mes}`
+        return `http://192.168.20.89:4202/api/report/balanceSucursal?idUsuario=3&periodoYear=${anio}&periodoMes=${mes}`
 
     }
 
@@ -89,6 +89,32 @@ export class ComisionesServices{
 
     SucursalesComisiones(){
         return this.http.get(`${environment.apiNomina}api/comisionesFlotillas/SucursalesComisiones`)
+    }
+
+    CatEmpresasComisiones(){
+        return this.http.get(`${environment.apiNomina}api/comisionesFlotillas/CatEmpresasComisiones`)
+    }
+
+    CalculoGastoComisionesFlotillas(idSucursalWSF: number,anio: number,mes: number,detalle:number){
+        let params = new HttpParams()
+        .set('idSucursalWSF',idSucursalWSF)
+        .set('anio',anio)
+        .set('mes',mes)
+        .set('detalle',detalle)
+
+        return this.http.post(`${environment.apiNomina}api/comisionesFlotillas/CalculoGastoComisionesFlotillas`, params)
+    }
+
+    CalculoDetalleComisionesFlotillas(base:string,ip:string,nombreDepto:string,fechaInicio:string,fechafin:string,totalGasto:number){
+        let params = new HttpParams()
+        .set('base',base)
+        .set('ip',ip)
+        .set('nombreDepto',nombreDepto)
+        .set('fechaInicio',fechaInicio)
+        .set('fechafin',fechafin)
+        .set('totalGasto',totalGasto)
+
+        return this.http.post(`${environment.apiNomina}api/comisionesFlotillas/CalculoDetalleComisionesFlotillas`, params)
     }
 
 }

@@ -23,6 +23,9 @@ export class AppComponent implements OnInit {
   constructor(private authService: AuthService, private screen: ScreenService, public appInfo: AppInfoService, private accesoService: AccesoService) { 
     locale('es');
     this.initMessages();
+    config({
+      defaultCurrency: 'MXN'
+  });
   }
 
   async ngOnInit(): Promise<void> {

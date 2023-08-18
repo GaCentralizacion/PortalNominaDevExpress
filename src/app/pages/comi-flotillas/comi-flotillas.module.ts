@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { ComiFlotillasComponent } from "./comi-flotillas.component";
 import { ComiFlotillasRoutingModule } from "./comi-flotillas-routing.module";
-import { DxAccordionModule, DxButtonModule, DxDataGridModule, DxFormModule, DxPopupModule, DxSelectBoxModule, DxTabPanelModule } from "devextreme-angular";
+import { DxAccordionModule, DxButtonModule, DxDataGridModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxNumberBoxModule, DxPopupModule, DxProgressBarModule, DxSelectBoxModule, DxTabPanelModule } from "devextreme-angular";
 import { TituloModule } from "src/app/shared/components/titulo/titulo.module";
 import { FlexLayoutModule } from "@angular/flex-layout";
 
@@ -16,8 +16,12 @@ import { FlexLayoutModule } from "@angular/flex-layout";
         DxFormModule,
         DxTabPanelModule,
         DxPopupModule,
+        DxDateBoxModule,
         TituloModule,
-        FlexLayoutModule
+        FlexLayoutModule,
+        DxNumberBoxModule,
+        DxFileUploaderModule,
+        DxProgressBarModule
     ],
     exports:[]
 })
