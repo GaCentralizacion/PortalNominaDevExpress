@@ -65,10 +65,12 @@
         [dataSource]="lstQuincenas"
         [showBorders]="true"
         [height]="600"
+        (onExporting)="onExporting($event)"
       >
        <dxo-scrolling mode="virtual"></dxo-scrolling>
        <dxo-load-panel [enabled]="true"></dxo-load-panel>
        <dxo-filter-row [visible]="true"></dxo-filter-row>
+       <dxo-export [enabled]="true"></dxo-export>
         <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
         <dxi-column
           dataField="descripcion"
@@ -82,6 +84,12 @@
         [visible]="true"
         [width]="'auto'"
       ></dxi-column>
+      <dxi-column
+      dataField="inicioPeriodo"
+      caption="Fecha inicio"
+      dataType="string"
+      [width]="'auto'"
+    ></dxi-column>
         <dxi-column
           dataField="fechasPaga"
           caption="Fecha Paga"
@@ -216,6 +224,49 @@
 </div>
 
 </dx-popup>
+
+
+<dx-popup
+  [width]="550"
+  [height]="650"
+  [showTitle]="true"
+  title="Selecciona la(s) empresa(s)"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
+  container=".dx-viewport"
+  [(visible)]="popupCentrosTrabajoVisible"
+>
+<div fxLayout="row" fxLayoutAlign="center center">
+  <dx-data-grid
+  id="grid-container"
+  [dataSource]="lstEmpresas"
+  keyExpr="Centro_ID"
+  [showBorders]="true"
+  [height]="500"
+  [(selectedRowKeys)]="empresasSeleccionadas"
+>
+<dxo-selection
+      [selectAllMode]="allMode"
+      [showCheckBoxesMode]="checkBoxesMode"
+      mode="multiple"
+    ></dxo-selection>
+    <dxo-filter-row [visible]="true"></dxo-filter-row>
+    <dxi-column dataField="Centro_ID" caption="Centro id" [visible]="false"></dxi-column>
+    <dxi-column dataField="Descripcion" caption="Lugar trabajo"></dxi-column>
+
+</dx-data-grid>
+</div>
+<div fxLayout="row" fxLayoutAlign="space-evenly center">
+     
+  <div>
+      <dx-button stylingMode="contained" text="Continuar" type="default" [width]="'auto'" (onClick)="PruebaSeleccion()"></dx-button>
+  </div>
+  
+</div>
+
+</dx-popup>
+
+
 <dx-load-panel
   #loadPanel
   shadingColor="rgba(0,0,0,0.4)"

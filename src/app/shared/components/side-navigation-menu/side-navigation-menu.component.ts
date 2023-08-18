@@ -145,7 +145,7 @@ export class SideNavigationMenuComponent implements OnInit, AfterViewInit, OnDes
        let usuario:any= sessionStorage.getItem('login')
       usuario = JSON.parse(usuario)
 
-      let menuNominas:any = await this.MenuNomina(usuario.idRol)
+      let menuNominas:any = await this.MenuNomina(usuario.idUsuario)
       
       for (let i = 0; i < menuNominas.length; i++) {
         let opcion: OpMenu={
@@ -156,7 +156,7 @@ export class SideNavigationMenuComponent implements OnInit, AfterViewInit, OnDes
         const element = menuNominas[i];
 
 
-        let itemDeta:any = await this.MenuNominaDetalle(element.items, element.idRol)      
+        let itemDeta:any = await this.MenuNominaDetalle(element.items, usuario.idUsuario)      
         this.itemDetalle = [...itemDeta]
 
         opcion.text = element.text

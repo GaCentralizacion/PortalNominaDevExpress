@@ -25,7 +25,15 @@ export class CatalogosSicossService{
     }
 
     LugaresTrabajo(){
+
         return this.http.get(`${environment.apiNomina}api/catalogosSICOSS/LugaresTrabajo`)
+    }
+
+    LugaresTrabajoUsuario(idUsuario: number){
+        const params = new HttpParams()
+        .set('idUsuario',idUsuario)
+
+        return this.http.post(`${environment.apiNomina}api/catalogosSICOSS/LugaresTrabajoUsuario`, params)
     }
 
     SicossGrupo(){

@@ -765,7 +765,11 @@ export class RepercusionComponent implements OnInit {
     })
   }
 
-  ConsultarFacturas(){
+  async ConsultarFacturas(){
+
+    let quincena = (this.quincenaSelected === undefined || this.quincenaSelected === null) ? 1 : this.quincenaSelected
+
+    this.fechaSolicitudFacturacion = await this.ConsultaFechaSolicitudFactura(this.mesActual, this.anioActual, quincena,0)
     this.gastosServices.ConsultaFacturacion(this.fechaSolicitudFacturacion.fechas).subscribe((resp:any) =>{
       this.lstFacturasCreadas = resp[0]
     })

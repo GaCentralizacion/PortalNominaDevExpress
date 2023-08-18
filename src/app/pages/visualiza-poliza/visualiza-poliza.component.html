@@ -100,7 +100,7 @@
     
         <div fxLayout="row" *ngIf="verAsiento && !generaPivote" style="height: 65vh; width: 80vw-60px;">
     
-                <dx-data-grid id="gridContainer" [showBorders]="true" [dataSource]="gridAsientoFinal" (onContentReady)="onContentReady($event)" (onCellPrepared)="onCellPrepared($event)" width="100%">
+                <dx-data-grid id="gridContainer" [showBorders]="true" [dataSource]="gridAsientoFinal" (onContentReady)="onContentReady($event)" (onCellPrepared)="onCellPrepared($event)" width="100%" (onExporting)="onExporting($event)">
                     <dxo-filter-row
                         [visible]="true"
                     ></dxo-filter-row>

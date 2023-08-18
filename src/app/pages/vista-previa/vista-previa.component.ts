@@ -61,6 +61,8 @@ export class VistaPreviaComponent implements OnInit {
 
     catalogoConceptos!:any
 
+    objUsuario:any ={}
+
     constructor(private nominaService : ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService) {
       //this.catalogoConceptos = 
       this.CatalogoConceptos()
@@ -116,6 +118,8 @@ export class VistaPreviaComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
      // this.catalogoConceptos = await this.CatalogoConceptos()
+        this.objUsuario = sessionStorage.getItem('login')
+        this.objUsuario = JSON.parse(this.objUsuario)
         this.Anios();
         
         this.Pagas(this.anioActual, this.mesActual);
@@ -178,7 +182,7 @@ export class VistaPreviaComponent implements OnInit {
 
     LugaresTrabajo() {
 
-        this.catSicoss.LugaresTrabajo().subscribe((resp) => {
+        this.catSicoss.LugaresTrabajoUsuario(this.objUsuario.idUsuario).subscribe((resp) => {
             let source$ = of(resp)
             this.lstEmpresasPagadoras =  new CustomStore({
               loadMode: 'raw',

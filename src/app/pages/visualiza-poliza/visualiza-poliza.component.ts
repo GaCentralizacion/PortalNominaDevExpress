@@ -11,6 +11,8 @@ import {
 import CustomStore from 'devextreme/data/custom_store';
 import { ConsultaPolizaSicossService } from 'src/app/shared/services/consulta-poliza-sicoss.service';
 import { CatalogosSicossService } from 'src/app/shared/services/catalogosSicoss.service';
+import { ExcelClass } from 'src/app/shared/services/excelClass.service';
+import { MesesServices } from 'src/app/shared/services/meses.service';
 
 type AOA = any[][];
 
@@ -45,66 +47,23 @@ export class VisualizaPolizaComponent implements OnInit {
   esAbierta:boolean = false
   searchExprOption: any = 'paga';
 
-  constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService) {
+  objUsuario:any = {}
+
+  constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService,private _mesService:MesesServices) {
     
     let fecha = new Date();
     this.anioActual = fecha.getFullYear();
     this.mesActual = fecha.getMonth() + 1;
 
-    this.lstMeses = [
-      {
-        id: 1,
-        text: 'Enero',
-      },
-      {
-        id: 2,
-        text: 'Febrero',
-      },
-      {
-        id: 3,
-        text: 'Marzo',
-      },
-      {
-        id: 4,
-        text: 'Abril',
-      },
-      {
-        id: 5,
-        text: 'Mayo',
-      },
-      {
-        id: 6,
-        text: 'Junio',
-      },
-      {
-        id: 7,
-        text: 'Julio',
-      },
-      {
-        id: 8,
-        text: 'Agosto',
-      },
-      {
-        id: 9,
-        text: 'Septiembre',
-      },
-      {
-        id: 10,
-        text: 'Octubre',
-      },
-      {
-        id: 11,
-        text: 'Noviembre',
-      },
-      {
-        id: 12,
-        text: 'Diciembre',
-      },
-    ];
+    this.lstMeses = this._mesService.meses()
 
   }
 
   ngOnInit(): void {
+
+    this.objUsuario = sessionStorage.getItem('login')
+    this.objUsuario = JSON.parse(this.objUsuario)
+
     this.Anios();
     this.LugaresTrabajo();
     this.Pagas(this.anioActual, this.mesActual);
@@ -151,7 +110,7 @@ export class VisualizaPolizaComponent implements OnInit {
 
   LugaresTrabajo() {
 
-    this.catSicoss.LugaresTrabajo().subscribe((resp) => {
+    this.catSicoss.LugaresTrabajoUsuario(this.objUsuario.idUsuario).subscribe((resp) => {
       this.lstEmpresas = resp
       let source$ = of(resp)
       this.lstEmpresasPagadoras = new CustomStore({
@@ -188,6 +147,8 @@ export class VisualizaPolizaComponent implements OnInit {
 
   PeriodoSelected(e: any) {
     this.periodo = this.lstQuincenas.filter((x) => x.paga === e.value)[0];
+    //console.log(this.periodo);
+    
   }
 
   SucursalSelect(e: any) {
@@ -404,6 +365,13 @@ export class VisualizaPolizaComponent implements OnInit {
       this.AsientoContable()
     }
   }
+
+  onExporting(e:any){
+
+    let excel = new ExcelClass()
+    let msj = excel.onExporting(e,'datos', `Pólizas ${this.periodo.descripcion} periodo ${this.periodo.semQuin} mes ${this.periodo.mes}`)
+
+   }
 
 
 }
