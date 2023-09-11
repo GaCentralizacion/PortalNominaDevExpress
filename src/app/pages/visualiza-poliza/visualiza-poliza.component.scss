@@ -1,0 +1,16 @@
+::ng-deep .dx-data-row .existe {
+    background-color: #32d411;
+}
+
+::ng-deep .dx-data-row .noExiste {
+    background-color: #dd2d27;
+}
+ 
+::ng-deep .dx-header-row .cell-highlighted {
+    color: gray;
+    font-style: italic;
+}
+
+.cls {  
+    background-color: red;  
+} 

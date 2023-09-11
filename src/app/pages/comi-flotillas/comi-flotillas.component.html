@@ -1,0 +1,278 @@
+<app-titulo>
+    <span TitleNegritas>Cálculo de comisiones </span>
+    <span TitleStd>de flotillas</span>
+</app-titulo>
+
+<div class="content-block">
+    <div class="dx-card responsive-paddings" fxFlexAlign="center" id="P_AsientoContable">
+
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-label">Fecha inicio</div>
+                  <div class="dx-field-value">
+                    <!-- <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anio" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box> -->
+                    <dx-date-box
+                    type="date"
+                    [(value)]="fechainicial"
+                    displayFormat="dd/MM/yyyy"
+                  >
+                  </dx-date-box>
+                   </div>
+                </div>        
+              </div>
+    
+              <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-label">Fecha final</div>
+                  <div class="dx-field-value">
+                    <!-- <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mes"  [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box> -->
+                    <dx-date-box
+                    type="date"
+                    [(value)]="fechaFinal"
+                    displayFormat="dd/MM/yyyy"
+                    [inputAttr]="{ 'aria-label': 'Date' }"
+                    >
+                    </dx-date-box>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dx-fieldset" fxFlex="100">
+                <div class="dx-field">
+                  <div class="dx-field-value">
+                    <dx-button
+                    stylingMode="contained"
+                    text="Consulta"
+                    type="default"
+                    (onClick)="ConsultaComision()">
+                    </dx-button>
+                  </div>
+                </div>
+              </div>
+        </div>
+
+        <dx-tab-panel 
+        [dataSource]="lstEmpresas"
+        [width]="'100%'"
+        [selectedIndex]="0"
+        [loop]="false"
+        [animationEnabled]="true"
+        [swipeEnabled]="true">
+          <div *dxTemplate="let tabData of 'title'">{{ tabData.alias }}</div>
+          <div *dxTemplate="let tabData of 'item'">
+            <dx-tab-panel 
+            [dataSource]="tabData.sucursales"
+            [width]="'100%'"
+            [selectedIndex]="0"
+            [loop]="false"
+            [animationEnabled]="true"
+            [swipeEnabled]="true">
+              <div *dxTemplate="let innerTabData of 'title'">{{ innerTabData.Descripcion }}</div>
+              <div *dxTemplate="let innerTabData of 'item'">
+
+                <div id="accordion">
+                  <dx-accordion
+                  #accordion
+                  [collapsible]="true"
+                  [multiple]="false"
+                  [animationDuration]="300"
+                  id="accordion-container">
+
+                  <dxi-item title="Cálculo de gasto y carga de archivo" [height]="'400px'">
+                    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px"> 
+                      <div fxFlex="20">
+                        <dx-form id="form" [formData]="innerTabData" labelMode="floating" [colCount]="1" width="100%" [readOnly]="true">
+                          <dxi-item itemType="group" caption="Gasto obtenido" [colCount]="1">
+                              <dxi-item dataField="totalGastoCurrency" [label]="{ text: 'Total gasto' }" [visible]="true"></dxi-item>
+                          </dxi-item>
+                        </dx-form>     
+                      </div>   
+
+                    </div>
+                  </dxi-item>
+                  <dxi-item title="Detalle del cálculo de gasto">
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                      <dx-data-grid
+                        id="gridContainer"
+                        [dataSource]="innerTabData.detalleGasto"
+                        [showBorders]="true"
+                        [height]="'auto'"
+                        (onExporting)="onExporting($event)"
+                      >
+                        <dxi-column dataField="descripcion" caption="Descripcion" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
+                        <dxi-column dataField="enero" caption="Enero" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="febrero" caption="Febrero" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="marzo" caption="Marzo" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="abril" caption="Abril" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="mayo" caption="Mayo" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="junio" caption="Junio" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="julio" caption="Julio" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="agosto" caption="Agosto" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="septiembre" caption="Septiembre" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="octubre" caption="Octubre" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="noviembre" caption="Noviembre" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="diciembre" caption="Diciembre" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                        <dxi-column dataField="totales" caption="Totales" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency"></dxi-column>
+                      </dx-data-grid>
+                    </div>
+                  </dxi-item>
+
+                  </dx-accordion>
+                </div>
+
+                
+
+                <div fxLayout="row" fxLayoutAlign="center center">
+                <dx-tab-panel 
+                [dataSource]="innerTabData.departamentos"
+                [width]="'100%'"
+                [selectedIndex]="0"
+                [loop]="false"
+                [animationEnabled]="true"
+                [swipeEnabled]="true">
+                  <div *dxTemplate="let depto of 'title'">{{depto.nivel}}-{{depto.departamento }}</div>
+                  <div *dxTemplate="let depto of 'item'">
+                    <div fxLayout="row" style="padding-top: 10PX;" fxLayoutAlign="center center">
+                      <dx-accordion
+                        #accordion
+                        [collapsible]="true"
+                        [multiple]="false"
+                        [animationDuration]="300"
+                        id="accordion-container-detalle"
+                        [width]="'100%'">
+                        <dxi-item title="Monto de la comision calculada">
+
+                          <div fxFlex="20">
+                            <dx-form id="form" [formData]="depto" labelMode="floating" [colCount]="1" width="100%" [readOnly]="true">
+                              <dxi-item itemType="group" caption="Comisión calculada" [colCount]="1">
+                                  <dxi-item dataField="totalComisionCurrency" [visible]="true" [label]="{ text: 'Total comisión' }"></dxi-item>
+                              </dxi-item>
+                            </dx-form>     
+                          </div> 
+
+                          <div fxFlex="30">
+                            <dx-file-uploader
+                            name="file"
+                            [accept]="acceptedFileTypes"
+                            (onUploaded)="onFilesUploaded($event, innerTabData.IdEmpresa, innerTabData.IdSucursal, depto.id_departamento)"
+                            >
+                            </dx-file-uploader>
+                          </div>
+                          <div class="dx-fieldset" fxFlex="20">
+                            <div class="dx-field">
+                              <div class="dx-field-value">
+                                <dx-button
+                                stylingMode="contained"
+                                text="Exportar"
+                                type="default"
+                                (onClick)="exportGrids(innerTabData.IdEmpresa,innerTabData.IdSucursal,depto.id_departamento)">
+                                </dx-button>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="dx-fieldset" fxFlex="30">
+                            <div class="dx-field">
+                              <div class="dx-field-value">
+                                <dx-button
+                                stylingMode="contained"
+                                text="Ejemplo excel"
+                                type="default"
+                                (onClick)="VerEjemplo()">
+                                </dx-button>
+                              </div>
+                            </div>
+                          </div>
+                        </dxi-item>
+                        <dxi-item title="Detalle de la comision calculada">
+                          <dx-data-grid
+                          #gridContainercalculo
+                          id="gridContainercalculo"
+                          [dataSource]="depto.detalleCalculoDepto"
+                          [showBorders]="true"
+                          [height]="500"
+                          [width]="'98%'"
+                          (onExporting)="onExporting($event)"
+                          (onSaving)="OnSaving($event)"
+                          >
+                          <dxo-editing
+                            mode="batch"
+                            [allowUpdating]="true"
+                            [allowAdding]="false"
+                            [allowDeleting]="false"
+                            [selectTextOnEditStart]="selectTextOnEditStart"
+                            [startEditAction]="startEditAction"
+                          >
+                          </dxo-editing>
+                          <dxo-load-panel [enabled]="false"></dxo-load-panel>
+                          <dxo-scrolling mode="infinite"></dxo-scrolling>
+                            <dxi-column dataField="VTE_FECHDOCTO" caption="VTE_FECHDOCTO" dataType="string" [width]="'auto'" [fixed]="true" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="VTE_DOCTO" caption="FACTURA" dataType="string" [width]="'auto'" [fixed]="true" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="SERIE" caption="SERIE" dataType="string" [width]="'auto'" [fixed]="true" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="subtotal" caption="SUBTOTAL" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="iva" caption="IVA" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="total" caption="TOTAL" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="pen_isan" caption="PEN ISAN" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="GASTO" caption="GASTO" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="PRECIO_BASE_MAS_GASTO" caption="BASE + GASTO" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="IVA_COSTO_UNIDAD" caption="IVA COSTO UNIDAD" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="DESCUENTOS" caption="DESCUENTOS" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="INCENTIVO" caption="INCENTIVO" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="UPE_TASA" caption="TASA" dataType="number" [width]="'auto'" [fixed]="true" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="UPE_MENSUALIDAD" caption="MENSUALIDAD" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="UPE_PLAZO" caption="PLAZO" dataType="number" [width]="'auto'" [fixed]="true" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="UPE_ENGANCHE" caption="ENGANCHE" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="COSTO_TOTAL" caption="COSTO TOTAL" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="UTILIDAD" caption="UTILIDAD" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="PORCENTAJE_UTILIDAD" caption="PORCENTAJE UTILIDAD" dataType="number" [width]="'auto'" [fixed]="true" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="PORCENTAJE_UTILIDAD_GASTO" caption="% UTILIDAD GASTO" dataType="number" [width]="'auto'" [fixed]="true" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="GASTOS" caption="GASTOS" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="INTERESES" caption="INTERESES" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="true" isValid="true"></dxi-column>
+                            <dxi-column dataField="TOTAL_GASTO" caption="TOTAL GASTO" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="PORCEN_COMISION" caption="PORCEN_COMISION" dataType="number" [width]="'auto'" [fixed]="true" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="COMISION" caption="COMISION" dataType="number" [width]="'auto'" [fixed]="true" [customizeText]="customizeCurrency" [allowEditing]="false"></dxi-column>
+                            <dxi-column dataField="PAGADA" caption="PAGADA" dataType="number" [width]="'auto'" [fixed]="true" [allowEditing]="true">
+                              <dxo-lookup [dataSource]="comisionPagada" displayExpr="texto" valueExpr="value"></dxo-lookup>
+                            </dxi-column>
+                            <dxi-column dataField="FECHA_COM_PAGADA" caption="FECHA COMISIÓN PAGADA" dataType="date" [width]="'auto'" [fixed]="true" [allowEditing]="true"></dxi-column>
+
+                          </dx-data-grid>
+                        </dxi-item>
+                      </dx-accordion>
+                      
+                    </div>
+                    
+                  </div>
+                </dx-tab-panel>                  
+                </div>
+
+              </div>
+            </dx-tab-panel>
+          </div>
+        </dx-tab-panel>
+
+    </div>
+</div>
+
+<dx-popup
+  [width]="'auto'"
+  [height]="'auto'"
+  [showTitle]="true"
+  title="Ejemplo del formato de archivo"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
+  container=".dx-viewport"
+  [(visible)]="popupEjemplo"
+>
+<div fxLayout="row" fxLayoutAlign="space-evenly center">
+  <div fxLayout="row"  class="alert-warning" style="width:100%; height: 40px;" fxLayoutAlign="space-evenly center">
+   <h6><strong>Es importante mantener el formato del excel para su correcta lectura</strong> </h6> 
+  </div>
+  
+</div>
+<div fxLayout="row" fxLayoutAlign="space-evenly center">
+
+  <img src="../../../assets/img/ejemploExcel.png" alt="Imagen PNG">
+</div>
+
+</dx-popup>

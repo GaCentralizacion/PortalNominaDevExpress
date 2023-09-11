@@ -1,0 +1,160 @@
+<app-titulo>
+  <span TitleNegritas>Listado de pólizas generadas </span>
+  <span TitleStd>Selecciona mes y año para mostrar la lista de pólizas dejadas en BPRO</span>
+</app-titulo>
+
+<div class="content-block">
+  <div class="dx-card responsive-paddings" fxFlexAlign="center" id="P_AsientoContable">
+
+  <div fxLayout="row" fxLayoutAlign="space-around center" fxLayout.xs="column" fxLayout.sm="column" fxLayout.md="column" >
+      
+    <div class="dx-field">
+        <div class="dx-field-value">
+            <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anioActual" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
+        </div>
+    </div>
+    <div class="dx-field">
+        <div class="dx-field-value">
+            <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mesActual" [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
+        </div>
+    </div>
+    <div class="dx-field">
+      <div class="dx-field-value">
+        <dx-button
+        stylingMode="contained"
+        text="Consultar"
+        type="default"
+        [width]="220"
+        (onClick)="Consulta()">
+      </dx-button>
+      </div>
+  </div>
+     
+  </div>
+
+    <div fxLayout="row">
+      
+        <dx-data-grid
+          id="gridContainer"
+          [dataSource]="lstPolizas"
+          [showBorders]="true"
+          width="100%"
+          dataRowTemplate="dataRowTemplateName"
+          [wordWrapEnabled]="true"
+          (onExporting)="onExporting($event)"
+        >
+        <dxo-pager
+          [visible]="true"
+          [showInfo]="true"
+        >
+        </dxo-pager>
+          <dxo-filter-row [visible]="true"></dxo-filter-row>
+          <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+          <dxo-group-panel [visible]="true"></dxo-group-panel>
+          <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+
+          <ng-container *dxTemplate="let pol of 'dataRowTemplateName'">
+            <tr class="main-row" [ngStyle]="{ 'background-color': rowBackgroundColor(pol) }">
+              <td>{{ pol.data.sucursal }}</td>
+              <td>{{ pol.data.tipo }}</td>
+              <td style="text-align: center;">{{ pol.data.semQuin }}</td>
+              <td style="text-align: center;">{{ pol.data.fechaProceso | date:'dd/MM/YYYY'}}</td>
+              <td>{{ pol.data.docto }}</td>
+              <td style="text-align: center;">{{ pol.data.TipoPol }}</td>
+              <td style="text-align: center;">{{ pol.data.ConsPol }}</td>
+              <td style="text-align: center;">{{ pol.data.AnioPol }}</td>
+              <td style="text-align: center;">{{ pol.data.estatus }}</td>
+              <td>{{ pol.data.error }}</td>
+            </tr>
+          </ng-container>
+
+          <dxi-column dataField="sucursal" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="tipo" [width]="'200'"></dxi-column>
+          <dxi-column dataField="semQuin" caption="Periodo" [width]="'125'" [alignment]="'center'"></dxi-column>
+          <dxi-column dataField="fechaProceso" caption="Fecha de ejecución" [width]="'auto'" dataType="date"></dxi-column>
+          <dxi-column dataField="docto" caption="Documento" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="TipoPol" caption="TipoPol" [alignment]="'center'" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="ConsPol" caption="ConsPol" [alignment]="'center'" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="AnioPol" caption="AnioPol" [alignment]="'center'" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="estatus" caption="Estatus conta" [width]="'auto'" [alignment]="'center'"></dxi-column>
+          <dxi-column dataField="error" caption="Mensaje error" [width]="'auto'"></dxi-column>
+
+          <dxo-paging [pageSize]="12"></dxo-paging>
+          <dxo-export [enabled]="true"></dxo-export>
+        </dx-data-grid>
+      </div>
+  </div>
+</div>
+
+<dx-popup
+  [width]="600"
+  [height]="250"
+  [showTitle]="true"
+  title="Póliza generada en BPRO"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
+  container=".dx-viewport"
+  [(visible)]="popupVisible"
+>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="center"
+    [options]="closeButtonOptions"
+  >
+  </dxi-toolbar-item>
+  <div>
+    <div fxLayout="column" fxLayoutAlign="space-around center">
+      <div><strong>Sucursal: </strong>{{ sucursalPoliza }}</div>
+      <div><strong>Estado de la póliza: </strong>{{ estadoPoliza }}</div>
+    </div>
+
+    <dx-data-grid
+      id="gridContainer"
+      [dataSource]="dataPolizas"
+      [showBorders]="true"
+      [width]="550"
+    >
+      <dxo-export [enabled]="true"></dxo-export>
+      <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+      <dxi-column
+        dataField="AñoPol"
+        caption="Año Póliza"
+        dataType="string"
+        [width]="'auto'"
+        [alignment]="'center'"
+      ></dxi-column>
+      <dxi-column
+        dataField="MesPol"
+        caption="Mes Póliza"
+        dataType="string"
+        [width]="'auto'"
+        [alignment]="'center'"
+      ></dxi-column>
+      <dxi-column
+        dataField="ConsPol"
+        caption="Consecutivo"
+        [width]="'auto'"
+        [alignment]="'center'"
+      ></dxi-column>
+      <dxi-column
+        dataField="Documento"
+        caption="Documento"
+        [width]="'auto'"
+        [alignment]="'center'"
+      ></dxi-column>
+      <dxo-paging [pageSize]="15"></dxo-paging>
+    </dx-data-grid>
+  </div>
+</dx-popup>
+
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#P_AsientoContable' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+>
+</dx-load-panel>
