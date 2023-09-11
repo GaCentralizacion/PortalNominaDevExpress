@@ -2,17 +2,13 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit,  } from '@angular/core';
 import { catchError, finalize, lastValueFrom, of } from 'rxjs';
 import { ConsultaPolizaNominaService } from 'src/app/shared/services/consulta-poliza-nomina.service';
-import {
-  LugarTrabajoModel,
-  Pagas,
-  AsientoContable,
-  campoPivote
-} from './visualiza-poliza.model';
+import { LugarTrabajoModel, Pagas, AsientoContable, campoPivote} from './visualiza-poliza.model';
 import CustomStore from 'devextreme/data/custom_store';
 import { ConsultaPolizaSicossService } from 'src/app/shared/services/consulta-poliza-sicoss.service';
 import { CatalogosSicossService } from 'src/app/shared/services/catalogosSicoss.service';
 import { ExcelClass } from 'src/app/shared/services/excelClass.service';
 import { MesesServices } from 'src/app/shared/services/meses.service';
+import { ApiScreenService } from 'src/app/shared/services/apiScreen.service';
 
 type AOA = any[][];
 
@@ -48,8 +44,11 @@ export class VisualizaPolizaComponent implements OnInit {
   searchExprOption: any = 'paga';
 
   objUsuario:any = {}
+  colCountByScreen: Object;
 
-  constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService,private _mesService:MesesServices) {
+  constructor(private nominaService: ConsultaPolizaNominaService, 
+    private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService
+    ,private _mesService:MesesServices, private _screen: ApiScreenService) {
     
     let fecha = new Date();
     this.anioActual = fecha.getFullYear();
@@ -57,9 +56,18 @@ export class VisualizaPolizaComponent implements OnInit {
 
     this.lstMeses = this._mesService.meses()
 
+    this.colCountByScreen = {
+      lg: 4,
+      sm: 2,
+    };
+
   }
 
   ngOnInit(): void {
+     
+
+    console.log(this._screen.sizes);
+    
 
     this.objUsuario = sessionStorage.getItem('login')
     this.objUsuario = JSON.parse(this.objUsuario)
@@ -372,6 +380,23 @@ export class VisualizaPolizaComponent implements OnInit {
     let msj = excel.onExporting(e,'datos', `Pólizas ${this.periodo.descripcion} periodo ${this.periodo.semQuin} mes ${this.periodo.mes}`)
 
    }
+
+   onExportingPivot(e:any){
+
+    let excel = new ExcelClass()
+    let msj = excel.onExportingPivot(e,'datos', `Pólizas pivote ${this.periodo.descripcion} periodo ${this.periodo.semQuin} mes ${this.periodo.mes}`)
+
+   }
+
+   screen(width:any) {
+    console.log('width: ', width);
+    
+    let valor = width < 1400 ? 'sm' : 'lg';
+    console.log('valor: ',valor);
+    
+    return valor
+  }
+
 
 
 }

@@ -144,4 +144,43 @@ export class ConsultaGastosServices{
 
     }
 
+    InsertaOrdenCompraCentralizado(anio:number,mes:number,idDetalle:number,inserta:number){
+
+        let params = new HttpParams()
+        .set('anio', anio)
+        .set('mes', mes)
+        .set('idDetalle',idDetalle)
+        .set('inserta', inserta)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/InsertaOrdenCompraCentralizado`,params)
+    }
+
+    InsertaOrdenCompraNoCentralizado(anio:number,mes:number,idDetalle:number,inserta:number){
+
+        let params = new HttpParams()
+        .set('anio', anio)
+        .set('mes', mes)
+        .set('quincena',idDetalle)
+        .set('inserta', inserta)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/InsertaOrdenCompraNoCentralizado`,params)
+    }
+
+    InsertaSolicitudFacturacion(anio:number, mes:number, quincena:number, idUsuario:number){
+
+        let params = new HttpParams()
+        .set('anio',anio)
+        .set('mes',mes)
+        .set('quincena', quincena)
+        .set('idUsuario',idUsuario)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/InsertaSolicitudFacturacion`,params)
+
+    }
+
+    AuthApiBproOC(){
+        let params = new HttpParams()
+        return this.http.post(`${environment.apiNomina}api/repercusion/AuthApi`,params)
+    }
+
 }

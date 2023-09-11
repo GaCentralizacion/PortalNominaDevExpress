@@ -30,15 +30,18 @@
       </div>
   </div>
      
-    </div>
+  </div>
 
-    <div fxLayout="row" style="height: 65vh; width: 80vw-60px;">
+    <div fxLayout="row">
       
         <dx-data-grid
           id="gridContainer"
           [dataSource]="lstPolizas"
           [showBorders]="true"
           width="100%"
+          dataRowTemplate="dataRowTemplateName"
+          [wordWrapEnabled]="true"
+          (onExporting)="onExporting($event)"
         >
         <dxo-pager
           [visible]="true"
@@ -47,79 +50,35 @@
         </dxo-pager>
           <dxo-filter-row [visible]="true"></dxo-filter-row>
           <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
-          <dxi-column type="buttons" caption="Consulta Poliza">
-            <dxi-button
-              hint="Cerrar Paga"
-              icon="find"
-              text="Cerrar paga"
-              [visible]="true"
-              [onClick]="ConsultaPoliza"
-            ></dxi-button>
-          </dxi-column>
-          <dxi-column
-            dataField="sucursal"
-            caption="Sucursal"
-            dataType="string"
-            [width]="'auto'"
-          ></dxi-column>
-          <dxi-column
-            dataField="pagadora"
-            caption="Pagadora"
-            dataType="string"
-            [width]="'auto'"
-          ></dxi-column>
-          <dxi-column
-            dataField="tipo"
-            caption="Tipo"
-            [width]="'200'"
-          ></dxi-column>
-          <dxi-column
-            dataField="semQuin"
-            caption="Periodo"
-            [width]="'125'"
-            [alignment]="'center'"
-          ></dxi-column>
-          <dxi-column
-            dataField="fechaProceso"
-            caption="Fecha de ejecución"
-            dataType="string"
-            [width]="'auto'"
-          ></dxi-column>
-          <dxi-column
-            dataField="docto"
-            caption="Documento"
-            [width]="'auto'"
-          ></dxi-column>
-          <dxi-column
-            dataField="DSBPEncInfoEnc"
-            caption="Folio Enc"
-            [width]="'auto'"
-            [visible]="false"
-          ></dxi-column>
-          <dxi-column
-            dataField="TipoPol"
-            caption="TipoPol"
-            [width]="'auto'"
-          ></dxi-column>
-          <dxi-column
-            dataField="ConsPol"
-            caption="ConsPol"
-            [width]="'auto'"
-          ></dxi-column>
-          <dxi-column
-            dataField="MesPol"
-            caption="MesPol"
-            [width]="'auto'"
-          ></dxi-column>
-          <dxi-column
-            dataField="AñoPol"
-            caption="AñoPol"
-            [width]="'auto'"
-          ></dxi-column>
-          <!-- <dxi-column dataField="fechaProceso" caption="Fecha de ejecución" [visible]="false"></dxi-column> -->
-          <!-- <dxi-column type="buttons" caption="Cerrar paga">
-                <dxi-button hint="Cerrar Paga" icon="copy" text="Cerrar paga" [visible]="true" [onClick]="CerrarPaga" [visible]="CerrarPagaDisabled"></dxi-button>
-            </dxi-column> -->
+          <dxo-group-panel [visible]="true"></dxo-group-panel>
+          <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+
+          <ng-container *dxTemplate="let pol of 'dataRowTemplateName'">
+            <tr class="main-row" [ngStyle]="{ 'background-color': rowBackgroundColor(pol) }">
+              <td>{{ pol.data.sucursal }}</td>
+              <td>{{ pol.data.tipo }}</td>
+              <td style="text-align: center;">{{ pol.data.semQuin }}</td>
+              <td style="text-align: center;">{{ pol.data.fechaProceso | date:'dd/MM/YYYY'}}</td>
+              <td>{{ pol.data.docto }}</td>
+              <td style="text-align: center;">{{ pol.data.TipoPol }}</td>
+              <td style="text-align: center;">{{ pol.data.ConsPol }}</td>
+              <td style="text-align: center;">{{ pol.data.AnioPol }}</td>
+              <td style="text-align: center;">{{ pol.data.estatus }}</td>
+              <td>{{ pol.data.error }}</td>
+            </tr>
+          </ng-container>
+
+          <dxi-column dataField="sucursal" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="tipo" [width]="'200'"></dxi-column>
+          <dxi-column dataField="semQuin" caption="Periodo" [width]="'125'" [alignment]="'center'"></dxi-column>
+          <dxi-column dataField="fechaProceso" caption="Fecha de ejecución" [width]="'auto'" dataType="date"></dxi-column>
+          <dxi-column dataField="docto" caption="Documento" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="TipoPol" caption="TipoPol" [alignment]="'center'" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="ConsPol" caption="ConsPol" [alignment]="'center'" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="AnioPol" caption="AnioPol" [alignment]="'center'" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="estatus" caption="Estatus conta" [width]="'auto'" [alignment]="'center'"></dxi-column>
+          <dxi-column dataField="error" caption="Mensaje error" [width]="'auto'"></dxi-column>
+
           <dxo-paging [pageSize]="12"></dxo-paging>
           <dxo-export [enabled]="true"></dxo-export>
         </dx-data-grid>

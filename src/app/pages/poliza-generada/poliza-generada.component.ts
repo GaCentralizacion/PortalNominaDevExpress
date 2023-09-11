@@ -4,6 +4,7 @@ import { locale,formatMessage,loadMessages } from 'devextreme/localization';
 
 import * as esMessages from 'devextreme/localization/messages/es.json';
 import { ConsultaPolizaSicossService } from 'src/app/shared/services/consulta-poliza-sicoss.service';
+import { ExcelClass } from 'src/app/shared/services/excelClass.service';
 
 @Component({
   selector: 'app-poliza-generada',
@@ -169,4 +170,24 @@ export class PolizaGeneradaComponent implements OnInit {
   Consulta(){
     this.ConsultaBitacoraPolizas();
   }
+
+  rowBackgroundColor(val: any): string {
+    if (val.data.error !== '') {
+      return '#f5c6cb'; // Rojo
+    }else if(val.data.error === '' && (val.data.estatus !== 1 && val.data.estatus !== 0)){
+      return '#fff3cd' // amrillo
+    }else if(val.data.error === '' && (val.data.estatus === 0)){
+      return '#cce5ff' // azul
+    }
+     else {
+      return 'white'; // blanco
+    }
+  }
+
+  onExporting(e:any){
+
+    let excel = new ExcelClass()
+    let msj = excel.onExporting(e,'data',`Pólizas generadas mes ${this.mesActual}`)
+
+   }
 }

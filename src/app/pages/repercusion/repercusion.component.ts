@@ -13,6 +13,10 @@ import { DxDataGridComponent } from 'devextreme-angular';
 import { CorreoServices } from 'src/app/shared/services/correo.service';
 import { Loading } from 'notiflix/build/notiflix-loading-aio';
 import { Report } from 'notiflix';
+import { MesesServices } from 'src/app/shared/services/meses.service';
+import {ajax} from 'rxjs/ajax'
+import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'repercusion',
@@ -34,7 +38,7 @@ export class RepercusionComponent implements OnInit {
 
   //fechaActual = new Date('2023-05-27')
   fechaActual = new Date();
-  diaActual = this.fechaActual.getDate();
+  diaActual = this.fechaActual.getDate()+1;
   mesActual = this.fechaActual.getMonth() + 1;
   anioActual = this.fechaActual.getFullYear();
   
@@ -54,7 +58,7 @@ export class RepercusionComponent implements OnInit {
     },
   ];
 
-  quincenaSelected: any;
+  quincenaSelected: any = 1;
   lstResumenBalanzaCentralizado: any;
   loadingVisible: boolean = false;
 
@@ -100,58 +104,10 @@ export class RepercusionComponent implements OnInit {
   constructor(
     private gastosServices: ConsultaGastosServices,
     private nominaService: ConsultaPolizaNominaService,
-    private correoServicce: CorreoServices
+    private correoServicce: CorreoServices,
+    private mesesService: MesesServices
   ) {
-    this.lstMeses = [
-      {
-        id: 1,
-        text: 'Enero',
-      },
-      {
-        id: 2,
-        text: 'Febrero',
-      },
-      {
-        id: 3,
-        text: 'Marzo',
-      },
-      {
-        id: 4,
-        text: 'Abril',
-      },
-      {
-        id: 5,
-        text: 'Mayo',
-      },
-      {
-        id: 6,
-        text: 'Junio',
-      },
-      {
-        id: 7,
-        text: 'Julio',
-      },
-      {
-        id: 8,
-        text: 'Agosto',
-      },
-      {
-        id: 9,
-        text: 'Septiembre',
-      },
-      {
-        id: 10,
-        text: 'Octubre',
-      },
-      {
-        id: 11,
-        text: 'Noviembre',
-      },
-      {
-        id: 12,
-        text: 'Diciembre',
-      },
-    ];
+    this.lstMeses = this.mesesService.meses()
 
     this.currentValue = this.fechaActual;
 
@@ -159,9 +115,10 @@ export class RepercusionComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-
+    this.currentValue = this.minDate
     this.Anios();
     this.lstFechasRepercusion = await this.FechasRepercusion();
+    console.log(this.lstFechasRepercusion);
 
     if (this.lstFechasRepercusion[0].estatus === 0) {
       
@@ -180,18 +137,23 @@ export class RepercusionComponent implements OnInit {
       return;
     }
 
-    // if (this.lstFechasRepercusion[0].dia < this.diaActual) {
-    //   this.disableCalenda = true;
-    // }
+    if(this.lstFechasRepercusion[0].estatus !== 0){
 
-    this.objUltimaRepercusion = this.obtenerUltimoElemento(
-      this.lstFechasRepercusion
-    );
-    this.ConsultaOrdenesCompra();
+      // if (this.lstFechasRepercusion[0].dia < this.diaActual) {
+      //   this.disableCalenda = true;
+      // }
 
-    this.fechaSolicitudFacturacion = await this.ConsultaFechaSolicitudFactura(this.mesActual, this.anioActual, 1,0)
-    console.log(this.fechaSolicitudFacturacion);
-    this.ConsultarFacturas()
+      this.objUltimaRepercusion = this.obtenerUltimoElemento(
+        this.lstFechasRepercusion
+      );
+
+      this.ConsultaOrdenesCompra();
+
+      this.fechaSolicitudFacturacion = await this.ConsultaFechaSolicitudFactura(this.mesActual, this.anioActual, 1,0)
+      console.log(this.fechaSolicitudFacturacion);
+      this.ConsultarFacturas()
+
+    }
     
   }
 
@@ -219,7 +181,10 @@ export class RepercusionComponent implements OnInit {
       return
     }
 
-    this.ConsultaOrdenesCompra();
+    if(this.objUltimaRepercusion.estatus !== 0){
+      this.ConsultaOrdenesCompra();
+    }
+
   }
 
   Anios() {
@@ -229,7 +194,19 @@ export class RepercusionComponent implements OnInit {
       this.objUltimaRepercusion = this.obtenerUltimoElemento(
         this.lstFechasRepercusion
       );
-      this.ConsultaOrdenesCompra();
+
+      if(this.objUltimaRepercusion.estatus === 0){
+        Report.warning(
+          this.objUltimaRepercusion.title,
+          this.objUltimaRepercusion.msj,
+          'Ok'
+        )
+      }
+
+      if(this.objUltimaRepercusion.estatus !== 0){
+        this.ConsultaOrdenesCompra();
+      }
+      
     });
   }
 
@@ -246,11 +223,13 @@ export class RepercusionComponent implements OnInit {
   async ProrrateoBalanza(numero:number){
 
     /**SE COMENTA PARA PROBAR EN LA SEGUNDA EJECUCION */
-    //let respuesta = await this.EjecutaProrrateo(numero)
+    let respuesta = await this.EjecutaProrrateo(numero)
+
+    let valor:any = numero === 23 ? 1 : 2
     
     Report.success(
       'Prorrateo de balanza',
-      `Prorrateo de la quincena ${numero} ejecutado, puedes avanzar al paso 2`,
+      `Prorrateo de la quincena ${valor} ejecutado, puedes avanzar al paso 2`,
       'OK')
   }
 
@@ -258,14 +237,12 @@ export class RepercusionComponent implements OnInit {
 
     let dia:number = 0
 
-    if( this.objUltimaRepercusion.estatus !== 0 || this.objUltimaRepercusion.estatus !== undefined || this.objUltimaRepercusion.estatus !== null )
+    if( this.objUltimaRepercusion.estatus !== 0 || this.objUltimaRepercusion.estatus === undefined )
     {
       dia = this.objUltimaRepercusion.dia 
     }
-
-    if(this.objUltimaRepercusion.estatus === 0 || this.objUltimaRepercusion.estatus === undefined || this.objUltimaRepercusion.estatus === null )
-    {
-      dia = this.diaActual
+    else{
+      dia = this.currentValue
     }
 
     return new Promise((resolve, reject) => {
@@ -418,11 +395,15 @@ export class RepercusionComponent implements OnInit {
       showCancelButton: true
     }).then(async result =>{
       if(result.isConfirmed){
-        //const respuesta: any =  await this.InsertaOrdenesCompra(this.quincenaSelected)
 
+        Loading.hourglass('Espere por favor...')
+        const respuesta: any =  await this.InsertaOrdenesCompraCentralizado(this.quincenaSelected)
+        const respuesta2: any =  await this.InsertaOrdenesCompraNoCentralizado(this.quincenaSelected)
+
+        Loading.remove()
         Swal.fire({
           icon: 'success',
-          html: 'Se inicio el proceso de generación de ordenes de compra <br/> En el paso 3 podras visualizar el avance',
+          html: 'Se dejaron los datos para la generación de OC <br/> En el paso 3 podras visualizar el avance de las OC',
           showConfirmButton: true,
           confirmButtonText:'Continuar',
           showCancelButton: false,
@@ -447,6 +428,25 @@ export class RepercusionComponent implements OnInit {
           resolve(resp);
         });
     });
+  }
+
+  InsertaOrdenesCompraCentralizado(numQuincena: number){
+    let quincena = numQuincena === 1 ? 23 : 26;
+
+    return new Promise((resolve,reject) =>{
+      this.gastosServices.InsertaOrdenCompraCentralizado(this.anioActual, this.mesActual,quincena,1).subscribe(resp=>{
+        resolve(resp)
+      })
+    })
+
+  }
+
+  InsertaOrdenesCompraNoCentralizado(numQuincena: number){
+    return new Promise((resolve, reject) =>{
+      this.gastosServices.InsertaOrdenCompraNoCentralizado(this.anioActual, this.mesActual, numQuincena, 1).subscribe(resp =>{
+        resolve(resp)
+      })
+    })
   }
 
   ResumenBalanzaComisionesBono(numQuincena: number) {
@@ -789,6 +789,33 @@ export class RepercusionComponent implements OnInit {
         resolve(resp)
       })
     })
+  }
+
+  SolicitaFacturacion(){
+    let quincena = (this.quincenaSelected === undefined || this.quincenaSelected === null) ? 1 : this.quincenaSelected
+
+    let obj:string = sessionStorage.getItem('login') || '{idUsuario:""}'
+
+    let {idUsuario} = JSON.parse(obj)
+
+    this.gastosServices.InsertaSolicitudFacturacion(this.anioActual, this.mesActual,quincena,idUsuario).subscribe(resp =>{
+      console.log(resp);
+      
+    })
+
+  }
+
+  async OrdenCompraApi(){
+    let AuthToken;
+    AuthToken = await this.GetTokenAutenticacion()
+    console.log(AuthToken);
+    
+  }
+
+  GetTokenAutenticacion(){
+    
+    this.gastosServices.AuthApiBproOC().subscribe(resp => console.log(resp))
+
   }
 
 }

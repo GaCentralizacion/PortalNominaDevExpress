@@ -337,7 +337,7 @@ export class NominaComponent implements OnInit {
    onExporting(e:any){
 
     let excel = new ExcelClass()
-    let msj = excel.onExporting(e,'data','Gastos flotillas')
+    let msj = excel.onExporting(e,'data','Calendario pagas nómina')
 
    }
 

@@ -5,88 +5,111 @@
 
 <div class="content-block">
     <div class="dx-card responsive-paddings"  fxFlexAlign="center" id="P_AsientoContable">
-        <div fxLayout="row" fxLayoutAlign="space-around center" fxLayout.xs="column" fxLayout.sm="column" fxLayout.md="column" >
+        <div fxLayout="row" fxLayoutAlign="space-around center" fxLayout.xs="column" fxLayout.sm="column" >
           
-            <div class="dx-fieldset" fxlflex="100" >
-              <div class="dx-field">
-                <div class="dx-field-value">
-                    <dx-drop-down-box
-                      [(value)]="gridBoxValue"
-                      valueExpr="Centro_ID"
-                      displayExpr="Descripcion"
-                      placeholder="Selecciona sucursales..."
-                      [showClearButton]="true"
-                      [dataSource]="lstEmpresasPagadoras"
-                      [width]="400"
-                    >
-                    <div *dxTemplate="let data of 'content'">
-                      <dx-data-grid
-                        [dataSource]="lstEmpresasPagadoras"
-                        [columns]="['Descripcion']"
-                        [selection]="{ mode: 'multiple' }"
-                        [hoverStateEnabled]="true"
-                        [paging]="{ enabled: true, pageSize: 100 }"
-                        [filterRow]="{ visible: true }"
-                        [scrolling]="{ mode: 'virtual' }"
-                        [height]="500"
-                        [(selectedRowKeys)]="gridBoxValue"
-                      >
-                      </dx-data-grid>
-                    </div>
-                  </dx-drop-down-box>
-                </div>
-              </div>
+          <div fxFlex="10%" fxHide.lt-xl>
+            <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anioActual" [showClearButton]="false" (onValueChanged)="AnioSelect($event)" width="'auto'"></dx-select-box>      
+          </div>
+
+          <div fxFlex="10%" fxHide.lt-xl>
+                <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mesActual"  [showClearButton]="false" (onValueChanged)="MesSelect($event)" width="'auto'"></dx-select-box>
+          </div>
+
+          <div fxFlex="35%" fxHide.lt-xl>
+            <dx-drop-down-box
+              [(value)]="gridBoxValue"
+              valueExpr="Centro_ID"
+              displayExpr="Descripcion"
+              placeholder="Selecciona sucursales..."
+              [showClearButton]="true"
+              [dataSource]="lstEmpresasPagadoras"
+              [width]="'100%'"
+            >
+            <div *dxTemplate="let data of 'content'">
+              <dx-data-grid
+                [dataSource]="lstEmpresasPagadoras"
+                [columns]="['Descripcion']"
+                [selection]="{ mode: 'multiple' }"
+                [hoverStateEnabled]="true"
+                [paging]="{ enabled: true, pageSize: 100 }"
+                [filterRow]="{ visible: true }"
+                [scrolling]="{ mode: 'virtual' }"
+                [height]="500"
+                [(selectedRowKeys)]="gridBoxValue"
+              >
+              </dx-data-grid>
             </div>
-  
-            <div class="dx-fieldset" fxlflex="100" >
-              <div class="dx-field">
-                <div class="dx-field-value">
-                  <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anioActual" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
-                 </div>
-              </div>        
+            </dx-drop-down-box>
+          </div>
+
+          <div fxFlex="20%" fxHide.lt-xl>
+                <dx-select-box label="Periodo" [dataSource]="lstQuincenas"  displayExpr="paga" valueExpr="paga"  placeholder="Seleciona año" [showClearButton]="false" width="'auto'" (onValueChanged)="PeriodoSelected($event)" [searchMode]="searchModeOption"
+                [searchExpr]="searchExprOption" [searchEnabled]="true"></dx-select-box>
+          </div>
+
+          <div fxFlex="15%" fxLayout="column" fxHide.xl fxLayoutGap="10px">
+            <div> 
+              <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anioActual" [showClearButton]="false" (onValueChanged)="AnioSelect($event)" width="'auto'"></dx-select-box>      
             </div>
-  
-            <div class="dx-fieldset" fxlflex="100" >
-              <div class="dx-field">
-                <div class="dx-field-value">
-                  <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mesActual"  [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
-                </div>
-              </div>
-            </div>
-  
-            <div class="dx-fieldset" fxlflex="100" > 
-              <div class="dx-field">
-                <div class="dx-field-value">
-                  <dx-select-box label="Periodo" [dataSource]="lstQuincenas"  displayExpr="paga" valueExpr="paga"  placeholder="Seleciona año" [showClearButton]="false" width="300" (onValueChanged)="PeriodoSelected($event)" [searchMode]="searchModeOption"
-                  [searchExpr]="searchExprOption" [searchEnabled]="true"></dx-select-box>
-                </div>
-              </div>
-            </div>
-  
-            <div class="dx-fieldset" fxlflex="100" >
-               <div class="dx-field">
-                  <dx-button
-                  stylingMode="contained"
-                  text="Consultar"
-                  type="default"
-                  [width]="120"
-                  (onClick)="AsientoContable()"
-                >
-                </dx-button>
-              </div>           
-            </div>
-  
             <div>
+              <dx-select-box label="mes" [dataSource]="lstMeses"  displayExpr="text" valueExpr="id"  placeholder="Seleciona mes" [value]="mesActual"  [showClearButton]="false" (onValueChanged)="MesSelect($event)" width="'auto'"></dx-select-box>
+            </div>
+          </div>
+          <div fxFlex="45%" fxLayout="column" fxHide.xl fxHide.xl fxLayoutGap="10px">
+            <div>
+              <dx-drop-down-box
+              [(value)]="gridBoxValue"
+              valueExpr="Centro_ID"
+              displayExpr="Descripcion"
+              placeholder="Selecciona sucursales..."
+              [showClearButton]="true"
+              [dataSource]="lstEmpresasPagadoras"
+              [width]="'100%'"
+            >
+            <div *dxTemplate="let data of 'content'">
+              <dx-data-grid
+                [dataSource]="lstEmpresasPagadoras"
+                [columns]="['Descripcion']"
+                [selection]="{ mode: 'multiple' }"
+                [hoverStateEnabled]="true"
+                [paging]="{ enabled: true, pageSize: 100 }"
+                [filterRow]="{ visible: true }"
+                [scrolling]="{ mode: 'virtual' }"
+                [height]="500"
+                [(selectedRowKeys)]="gridBoxValue"
+              >
+              </dx-data-grid>
+            </div>
+            </dx-drop-down-box>
+            </div>
+            <div>
+              <dx-select-box label="Periodo" [dataSource]="lstQuincenas"  displayExpr="paga" valueExpr="paga"  placeholder="Seleciona año" [showClearButton]="false" width="'auto'" (onValueChanged)="PeriodoSelected($event)" [searchMode]="searchModeOption"
+                [searchExpr]="searchExprOption" [searchEnabled]="true"></dx-select-box>
+            </div>
+          </div>
+
+          <div fxFlex="15%">
+                <dx-button
+                stylingMode="contained"
+                text="Consultar"
+                type="default"
+                [width]="'auto'"
+                (onClick)="AsientoContable()"
+              >
+              </dx-button>          
+          </div>
+  
+            <!-- <div>
               <div>¿Es abierta?</div>
               <dx-switch 
               [(value)]="esAbierta"
               (onValueChanged)="EsPolizaAbierta()" >
               </dx-switch>
-            </div>
+            </div> -->
   
         </div>
 
-        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" *ngIf="verAsiento">
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" *ngIf="verAsiento" style="padding-top: 15px;">
           <div>Genera Pivote</div>
           <div>
             <dx-switch   [(value)]="generaPivote"
@@ -156,9 +179,10 @@
           [showRowTotals]="true"
           [showColumnTotals]="false"
           [dataSource]="pivotGridDataSource"
+          (onExporting)="onExportingPivot($event)"
         >
           <dxo-export [enabled]="true"></dxo-export>
-          <dxo-field-chooser [enabled]="true" [height]="400"></dxo-field-chooser>
+          <dxo-field-chooser [enabled]="false" [height]="400"></dxo-field-chooser>
           <dxo-scrolling mode="virtual"></dxo-scrolling>
         </dx-pivot-grid>
   
