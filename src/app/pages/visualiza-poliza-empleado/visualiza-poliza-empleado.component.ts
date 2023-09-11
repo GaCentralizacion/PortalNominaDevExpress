@@ -335,4 +335,11 @@ import { ExcelClass } from 'src/app/shared/services/excelClass.service';
   
      }
 
+    onExportingPivot(e:any){
+
+      let excel = new ExcelClass()
+      let msj = excel.onExportingPivot(e,'datos', `Pólizas pivote por empleado ${this.periodo.descripcion} periodo ${this.periodo.semQuin} mes ${this.periodo.mes}`)
+  
+     }
+
   }

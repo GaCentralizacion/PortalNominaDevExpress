@@ -117,4 +117,16 @@ export class ComisionesServices{
         return this.http.post(`${environment.apiNomina}api/comisionesFlotillas/CalculoDetalleComisionesFlotillas`, params)
     }
 
+    ProrrateoBalanza(mes:number,anio:number,quincena:number,dia:number){
+        let params = new HttpParams()
+        .set('mes',mes)
+        .set('anio',anio)
+        .set('quincena',quincena)
+        .set('dia',dia)
+
+        return this.http.post(`${environment.apiNomina}api/repercusion/ProrrateoBalanza`, params)
+    }
+
+    
+
 }

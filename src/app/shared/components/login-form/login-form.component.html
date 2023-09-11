@@ -1,5 +1,6 @@
-<form class="login-form" (submit)="onSubmit($event)">
-  <dx-form [formData]="formData" [disabled]="loading">
+<h5> Redireccionando, espere por favor...</h5>
+<form class="login-form" (submit)="onSubmit($event)" hidden>
+  <dx-form [formData]="formData" [disabled]="loading" >
 
     <!-- <dxi-item dataField="email" editorType="dxTextBox"
       [editorOptions]="{ stylingMode: 'filled', placeholder: 'Email', mode: 'email' }">
