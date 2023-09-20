@@ -4,6 +4,7 @@ import { DxButtonModule, DxCircularGaugeModule, DxDataGridModule, DxLinearGaugeM
 import { TituloModule } from "src/app/shared/components/titulo/titulo.module";
 import { NominaRoutingModule } from "./nomina-routing.module";
 import { NominaComponent } from "./nomina.component";
+import { VisualizaPolizaModule } from "../visualiza-poliza/visualiza-poliza.module";
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { NominaComponent } from "./nomina.component";
         DxTreeViewModule,
         NominaRoutingModule,
         TituloModule,
-        DxFormModule
+        DxFormModule,
+        VisualizaPolizaModule
      ],
     exports:[]
 })

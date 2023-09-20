@@ -1,281 +1,173 @@
 <app-titulo>
-  <span TitleNegritas>Generación de pólizas de nomina </span>
-  <span TitleStd>cierre de fecha paga</span>
+    <span TitleNegritas="TitleNegritas">Generación de pólizas de nomina </span>
+    <span TitleStd="TitleStd">cierre de fecha paga</span>
 </app-titulo>
 
 <div class="content-block">
-  <div
-    class="dx-card responsive-paddings"
-    fxFlexAlign="center"
-    id="P_AsientoContable"
-  >
-    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayout.md="column" >
-      <div class="dx-fieldset" fxlflex="100">
-        <div class="dx-field">
-          <div class="dx-field-value">
-            <dx-select-box
-              label="Año"
-              [labelMode]="labelMode"
-              [dataSource]="lstAnios"
-              displayExpr="anio"
-              valueExpr="anio"
-              [value]="anioActual"
-              placeholder="Seleciona año"
-              [showClearButton]="false"
-              (onValueChanged)="AnioSelect($event)"
-            ></dx-select-box>
+    <div class="dx-card responsive-paddings" fxFlexAlign="center" id="P_AsientoContable">
+        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayout.md="column">
+            <div class="dx-fieldset" fxlflex="100">
+                <div class="dx-field">
+                    <div class="dx-field-value">
+                        <dx-select-box label="Año" [labelMode]="labelMode" [dataSource]="lstAnios" displayExpr="anio" valueExpr="anio" [value]="anioActual" placeholder="Seleciona año" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
+                    </div>
+                </div>
+            </div>
+            <div class="dx-fieldset" fxlflex="100">
+                <div class="dx-field">
+                    <div class="dx-field-value">
+                        <dx-select-box label="Mes" [labelMode]="labelMode" [dataSource]="lstMeses" displayExpr="text" valueExpr="id" [value]="mesActual" placeholder="Seleciona mes" [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dx-fieldset" fxlflex="100" hidden="hidden">
+                <div class="dx-field">
+                    <div class="dx-field-value">
+                        <dx-button stylingMode="contained" text="Agrega paga" type="default" [width]="220" (onClick)="ModalPagas()"></dx-button>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
-      </div>
-    </div>
-    <div class="dx-fieldset" fxlflex="100">
-      <div class="dx-field">
-        <div class="dx-field-value">
-          <dx-select-box
-            label="Mes"
-            [labelMode]="labelMode"
-            [dataSource]="lstMeses"
-            displayExpr="text"
-            valueExpr="id"
-            [value]="mesActual"
-            placeholder="Seleciona mes"
-            [showClearButton]="false"
-            (onValueChanged)="MesSelect($event)"
-          ></dx-select-box>
+
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="dx-fieldset" fxFlex="80">
+                <dx-data-grid id="gridContainer" [dataSource]="lstQuincenas" [showBorders]="true" [height]="600" (onExporting)="onExporting($event)">
+                    <dxo-scrolling mode="virtual"></dxo-scrolling>
+                    <dxo-load-panel [enabled]="true"></dxo-load-panel>
+                    <dxo-filter-row [visible]="true"></dxo-filter-row>
+                    <dxo-export [enabled]="true"></dxo-export>
+                    <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+                    <dxi-column dataField="descripcion" caption="Nombre Periodo" dataType="string" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="semQuin" caption="Periodo" [visible]="true" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="inicioPeriodo" caption="Fecha inicio" dataType="string" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="fechasPaga" caption="Fecha Paga" dataType="string" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="frecuencia" caption="Frecuencia" [visible]="false"></dxi-column>
+                    <dxi-column dataField="tipo" caption="Tipo" [visible]="false"></dxi-column>
+                    <dxi-column type="buttons" caption="Consultar paga" name="consultarPaga">
+                        <dxi-button hint="Consulta Paga" icon="tips" text="Consulta paga" [onClick]="ConsultarPagas"></dxi-button>
+                    </dxi-column>
+                    <dxi-column type="buttons" caption="Generar póliza" columnIndex:1 name="generarPoliza">
+                      <dxi-button hint="Generar póliza" icon="copy" text="Generar póliza" [onClick]="CerrarPaga" [visible]="CerrarPagaDisabled"></dxi-button>
+                  </dxi-column>
+                    <dxo-paging [pageSize]="15"></dxo-paging>
+                </dx-data-grid>
+            </div>
         </div>
-      </div>
     </div>
-
-<div class="dx-fieldset" fxlflex="100">
-    <div class="dx-field">
-        <div class="dx-field-value">
-            <dx-button stylingMode="contained" text="Agrega paga" type="default" [width]="220" (onClick)="ModalPagas()"></dx-button>
-        </div>
-    </div>
-</div>
-
-
-
-  </div>
-
-  <div fxLayout="row" fxLayoutAlign="start center">
-
-    <div class="dx-fieldset" fxFlex="60">
-      <dx-data-grid
-        id="gridContainer"
-        [dataSource]="lstQuincenas"
-        [showBorders]="true"
-        [height]="600"
-        (onExporting)="onExporting($event)"
-      >
-       <dxo-scrolling mode="virtual"></dxo-scrolling>
-       <dxo-load-panel [enabled]="true"></dxo-load-panel>
-       <dxo-filter-row [visible]="true"></dxo-filter-row>
-       <dxo-export [enabled]="true"></dxo-export>
-        <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
-        <dxi-column
-          dataField="descripcion"
-          caption="Nombre Periodo"
-          dataType="string"
-          [width]="'auto'"
-        ></dxi-column>
-        <dxi-column
-        dataField="semQuin"
-        caption="Periodo"
-        [visible]="true"
-        [width]="'auto'"
-      ></dxi-column>
-      <dxi-column
-      dataField="inicioPeriodo"
-      caption="Fecha inicio"
-      dataType="string"
-      [width]="'auto'"
-    ></dxi-column>
-        <dxi-column
-          dataField="fechasPaga"
-          caption="Fecha Paga"
-          dataType="string"
-          [width]="'auto'"
-        ></dxi-column>
-        <dxi-column
-          dataField="frecuencia"
-          caption="Frecuencia"
-          [visible]="false"
-        ></dxi-column>
-        <dxi-column
-          dataField="tipo"
-          caption="Tipo"
-          [visible]="false"
-        ></dxi-column>
-        <dxi-column type="buttons" caption="Consulta paga">
-          <dxi-button
-            hint="Consulta Paga"
-            icon="copy"
-            text="Consulta paga"
-            [onClick]="CerrarPaga"
-            [visible]="CerrarPagaDisabled"
-          ></dxi-button>
-        </dxi-column>
-        <dxo-paging [pageSize]="15"></dxo-paging>
-      </dx-data-grid>
-    </div>
-  </div>
-</div>
 
 </div>
 
 <!-- </div> -->
 
 <!-- POPUP -->
-<dx-popup
-  [width]="'auto'"
-  [height]="'auto'"
-  [showTitle]="true"
-  title="GENERANDO PÓLIZAS DE LA {{ tituloModal }} ESPERE POR FAVOR..."
-  [dragEnabled]="false"
-  [showCloseButton]="false"
-  container=".dx-viewport"
-  [(visible)]="popupVisible"
->
-  <div id="gauge-demo">
-    <div id="gauge-container">
-      <div class="left-section">
-        Generando póliza
-        <dx-circular-gauge [value]="speedValue">
-          <dxo-size [width]="100" [height]="100"></dxo-size>
-          <dxo-value-indicator color="#f05b41"> </dxo-value-indicator>
-          <dxo-geometry [startAngle]="180" [endAngle]="90"> </dxo-geometry>
-          <dxo-scale [startValue]="0" [endValue]="100" [tickInterval]="50">
-          </dxo-scale>
-        </dx-circular-gauge>
-      </div>
-      <div class="center-section">
-        <dx-circular-gauge id="speed-gauge" [value]="speedValue">
-          <dxo-size [width]="260"></dxo-size>
-          <dxo-value-indicator
-            type="twoColorNeedle"
-            color="none"
-            [secondFraction]="0.24"
-            secondColor="#f05b41"
-          >
-          </dxo-value-indicator>
-          <dxo-geometry [startAngle]="225" [endAngle]="315"> </dxo-geometry>
-          <dxo-scale
-            [startValue]="0"
-            [endValue]="100"
-            [tickInterval]="1"
-            [minorTickInterval]="1"
-          >
-          </dxo-scale>
-        </dx-circular-gauge>
-        <div class="speed-value">
-          <span>{{ speedValue }}</span>
+<dx-popup [width]="'auto'" [height]="'auto'" [showTitle]="true" title="{{ tituloModal }} ESPERE POR FAVOR..." [dragEnabled]="false" [showCloseButton]="false" container=".dx-viewport" [(visible)]="popupVisible">
+    <div id="gauge-demo">
+        <div id="gauge-container">
+            <div class="left-section">
+                Generando póliza
+                <dx-circular-gauge [value]="speedValue">
+                    <dxo-size [width]="100" [height]="100"></dxo-size>
+                    <dxo-value-indicator color="#f05b41"></dxo-value-indicator>
+                    <dxo-geometry [startAngle]="180" [endAngle]="90"></dxo-geometry>
+                    <dxo-scale [startValue]="0" [endValue]="100" [tickInterval]="50"></dxo-scale>
+                </dx-circular-gauge>
+            </div>
+            <div class="center-section">
+                <dx-circular-gauge id="speed-gauge" [value]="speedValue">
+                    <dxo-size [width]="260"></dxo-size>
+                    <dxo-value-indicator type="twoColorNeedle" color="none" [secondFraction]="0.24" secondColor="#f05b41"></dxo-value-indicator>
+                    <dxo-geometry [startAngle]="225" [endAngle]="315"></dxo-geometry>
+                    <dxo-scale [startValue]="0" [endValue]="100" [tickInterval]="1" [minorTickInterval]="1"></dxo-scale>
+                </dx-circular-gauge>
+                <div class="speed-value">
+                    <span>{{ speedValue }}</span>
+                </div>
+            </div>
+            <div class="right-section">
+                {{ sucursalProcesada }}
+                <dx-circular-gauge [value]="speedValue">
+                    <dxo-size [width]="100" [height]="100"></dxo-size>
+                    <dxo-value-indicator color="#f05b41"></dxo-value-indicator>
+                    <dxo-geometry [startAngle]="90" [endAngle]="0"></dxo-geometry>
+                    <dxo-scale [startValue]="100" [endValue]="0" [tickInterval]="50"></dxo-scale>
+                </dx-circular-gauge>
+            </div>
         </div>
-      </div>
-      <div class="right-section">
-        {{ sucursalProcesada }}
-        <dx-circular-gauge [value]="speedValue">
-          <dxo-size [width]="100" [height]="100"></dxo-size>
-          <dxo-value-indicator color="#f05b41"> </dxo-value-indicator>
-          <dxo-geometry [startAngle]="90" [endAngle]="0"> </dxo-geometry>
-          <dxo-scale [startValue]="100" [endValue]="0" [tickInterval]="50">
-          </dxo-scale>
-        </dx-circular-gauge>
-      </div>
     </div>
-  </div>
 
 
 </dx-popup>
 
-<dx-popup
-  [width]="550"
-  [height]="'auto'"
-  [showTitle]="true"
-  title="Agrega paga"
-  [dragEnabled]="false"
-  [showCloseButton]="true"
-  container=".dx-viewport"
-  [(visible)]="popupPagasVisible"
->
-<div fxLayout="row" fxLayoutAlign="center center">
-  <dx-form id="form" [formData]="formDataValidacion" [labelMode]="labelMode" [width]="'auto'">
-    <dxi-item itemType="group" caption="Datos de la paga" [colCount]="2">
-      <dxi-item dataField="periodoId" [visible]="true" [editorOptions]="positionEditorOptions" editorType="dxSelectBox"></dxi-item>
-      <dxi-item dataField="periodo"  [visible]="true"></dxi-item>
-      <dxi-item dataField="tipoNomina"  [visible]="true" [editorOptions]="positionEditorOptionsTipo" editorType="dxSelectBox" [colSpan]="2"></dxi-item>
-      <dxi-item dataField="fechaInicio"  [visible]="true" editorType="dxDateBox" [editorOptions]="positionEditorOptionsCalenda"></dxi-item>
-      <dxi-item dataField="fechaFin"  [visible]="true" editorType="dxDateBox" [editorOptions]="positionEditorOptionsCalenda"></dxi-item>
-    </dxi-item>
-  </dx-form>   
-</div>
-<div fxLayout="row" fxLayoutAlign="space-evenly center">
-  
-    
+<dx-popup [width]="550" [height]="'auto'" [showTitle]="true" title="Agrega paga" [dragEnabled]="false" [showCloseButton]="true" container=".dx-viewport" [(visible)]="popupPagasVisible">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <dx-form id="form" [formData]="formDataValidacion" [labelMode]="labelMode" [width]="'auto'">
+            <dxi-item itemType="group" caption="Datos de la paga" [colCount]="2">
+                <dxi-item dataField="periodoId" [visible]="true" [editorOptions]="positionEditorOptions" editorType="dxSelectBox"></dxi-item>
+                <dxi-item dataField="periodo" [visible]="true"></dxi-item>
+                <dxi-item dataField="tipoNomina" [visible]="true" [editorOptions]="positionEditorOptionsTipo" editorType="dxSelectBox" [colSpan]="2"></dxi-item>
+                <dxi-item dataField="fechaInicio" [visible]="true" editorType="dxDateBox" [editorOptions]="positionEditorOptionsCalenda"></dxi-item>
+                <dxi-item dataField="fechaFin" [visible]="true" editorType="dxDateBox" [editorOptions]="positionEditorOptionsCalenda"></dxi-item>
+            </dxi-item>
+        </dx-form>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-evenly center">
         <div>
             <dx-button stylingMode="contained" text="Agrega paga" type="default" [width]="'auto'" (onClick)="InsertaPaga(1)"></dx-button>
         </div>
-    
-    
-      <div>
-        <dx-button stylingMode="contained" text="Elimina paga" type="danger" [width]="'auto'" (onClick)="InsertaPaga(0)"></dx-button>
-      
+        <div>
+            <dx-button stylingMode="contained" text="Elimina paga" type="danger" [width]="'auto'" (onClick)="InsertaPaga(0)"></dx-button>
+        </div>
     </div>
-  
-</div>
 
 </dx-popup>
 
 
-<dx-popup
-  [width]="550"
-  [height]="650"
-  [showTitle]="true"
-  title="Selecciona la(s) empresa(s)"
-  [dragEnabled]="false"
-  [showCloseButton]="true"
-  container=".dx-viewport"
-  [(visible)]="popupCentrosTrabajoVisible"
->
-<div fxLayout="row" fxLayoutAlign="center center">
-  <dx-data-grid
-  id="grid-container"
-  [dataSource]="lstEmpresas"
-  keyExpr="Centro_ID"
-  [showBorders]="true"
-  [height]="500"
-  [(selectedRowKeys)]="empresasSeleccionadas"
->
-<dxo-selection
-      [selectAllMode]="allMode"
-      [showCheckBoxesMode]="checkBoxesMode"
-      mode="multiple"
-    ></dxo-selection>
-    <dxo-filter-row [visible]="true"></dxo-filter-row>
-    <dxi-column dataField="Centro_ID" caption="Centro id" [visible]="false"></dxi-column>
-    <dxi-column dataField="Descripcion" caption="Lugar trabajo"></dxi-column>
+<dx-popup [width]="550" [height]="650" [showTitle]="true" title="Selecciona la(s) empresa(s)" [dragEnabled]="false" [showCloseButton]="true" container=".dx-viewport" [(visible)]="popupCentrosTrabajoVisible">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <dx-data-grid id="grid-container" [dataSource]="lstEmpresas" keyExpr="Centro_ID" [showBorders]="true" [height]="500" [(selectedRowKeys)]="empresasSeleccionadas">
+            <dxo-selection [selectAllMode]="allMode" [showCheckBoxesMode]="checkBoxesMode" mode="multiple"></dxo-selection>
+            <dxo-filter-row [visible]="true"></dxo-filter-row>
+            <dxi-column dataField="Centro_ID" caption="Centro id" [visible]="false"></dxi-column>
+            <dxi-column dataField="Descripcion" caption="Lugar trabajo"></dxi-column>
 
-</dx-data-grid>
-</div>
-<div fxLayout="row" fxLayoutAlign="space-evenly center" style="padding-top: 15px;">
-     
-  <div>
-      <dx-button stylingMode="contained" text="Continuar" type="default" [width]="'auto'" (onClick)="PruebaSeleccion()"></dx-button>
-  </div>
-  
-</div>
+        </dx-data-grid>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-evenly center" style="padding-top: 15px;">
+
+        <div>
+            <dx-button stylingMode="contained" text="Continuar" type="default" [width]="'auto'" (onClick)="PruebaSeleccion()"></dx-button>
+        </div>
+
+    </div>
 
 </dx-popup>
 
+<dx-popup id="popNominaResumen" [height]="'95%'" [width]="'95%'" [dragEnabled]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="popupVistaPrevia">
+  <app-visualiza-poliza 
+  [peticionNomina]=true 
+  [gridBoxValueNomina]= empresasSeleccionadas 
+  [ejecutaProceso]="ejecutaProceso" 
+  [fechasPagaNomina]="fechaPagaSeleccionada"
+  [periodoIdNomina] = "periodoId"
+  [periodoNomina] = "periodo"
+  [tipoNominaNomina] = "tipoNomina"
+  >
+  </app-visualiza-poliza>
+</dx-popup>
 
-<dx-load-panel
-  #loadPanel
-  shadingColor="rgba(0,0,0,0.4)"
-  [position]="{ of: '#contenedor' }"
-  [(visible)]="loadingVisible"
-  [showIndicator]="true"
-  [showPane]="true"
-  [shading]="true"
-  (onShown)="onShown()"
-  (onHidden)="onHidden()"
->
-</dx-load-panel>
+
+<!-- <dx-load-panel 
+#loadPanel="loadPanel" 
+shadingColor="rgba(0,0,0,0.4)" 
+[position]="{ of: '#contenedor' }" 
+[(visible)]="loadingVisible" 
+[showIndicator]="true" 
+[showPane]="true" 
+[shading]="true" 
+(onShown)="onShown()" 
+(onHidden)="onHidden()">
+</dx-load-panel> -->

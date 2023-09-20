@@ -13,6 +13,7 @@ import { ExcelClass } from 'src/app/shared/services/excelClass.service';
 import { MesesServices } from 'src/app/shared/services/meses.service';
 import themes from 'devextreme/ui/themes';
 
+
 @Component({
   selector: 'app-nomina',
   templateUrl: './nomina.component.html',
@@ -67,6 +68,9 @@ export class NominaComponent implements OnInit {
   opcionSeleccionada:number = 0
   nombreSucursal:string = ''
 
+  popupVistaPrevia:boolean = false
+  ejecutaProceso:boolean = false
+
   constructor(
     private nominaService: ConsultaPolizaNominaService, 
     private catSicoss: CatalogosSicossService, 
@@ -101,6 +105,7 @@ export class NominaComponent implements OnInit {
 
     /**Relacionamos el evento clic con el metodo del mismo nombre */
     this.CerrarPaga = this.CerrarPaga.bind(this)
+    this.ConsultarPagas = this.ConsultarPagas.bind(this)
   }
 
   async ngOnInit(): Promise<void> {
@@ -129,9 +134,11 @@ export class NominaComponent implements OnInit {
 
   FechasPaga(anio:any, mes:any){
 
+    Loading.hourglass('Obteniendo fechas de paga, espere por favor...')
     this.catSicoss.FechasPagas(anio,mes).subscribe(resp =>{
       this.lstQuincenas = []
       this.lstQuincenas = resp
+      Loading.remove()
     })
   }
 
@@ -164,8 +171,9 @@ export class NominaComponent implements OnInit {
 
   CerrarPaga(e:any){
     console.log(e.row.data);
+    this.opcionSeleccionada = 1
     
-    this.tituloModal = e.row.data.paga
+    this.tituloModal = `GENERANDO PAGA ${e.row.data.paga}` 
 
     this.periodoId = e.row.data.frecuencia
     this.periodo = e.row.data.semQuin
@@ -175,12 +183,27 @@ export class NominaComponent implements OnInit {
     //this.frecuenciaSeleccionada = e.row.data.frecuencia
     //this.semQuin = e.row.data.semQuin
     //this.tipoPagaSeleccionada  = e.row.data.tipo
+    this.onHidden()
 
     this.loadingVisible = true;
     setTimeout(() => {
       this.loadingVisible = false;
     }, 3000);
 
+  }
+
+  ConsultarPagas(e:any){
+    this.empresasSeleccionadas = []
+    this.ejecutaProceso = false
+    this.tituloModal = `CONSULTANDO PAGA ${e.row.data.paga}` 
+
+    this.periodoId = e.row.data.frecuencia
+    this.periodo = e.row.data.semQuin
+    this.tipoNomina = e.row.data.tipo
+    this.fechaPagaSeleccionada = e.row.data.fechasPaga
+
+    this.opcionSeleccionada = 0
+    this.popupCentrosTrabajoVisible = true
   }
 
   CerrarPagaDisabled(e:any){
@@ -195,35 +218,36 @@ export class NominaComponent implements OnInit {
   }
 
   onHidden() {
-
-    Swal.fire({
-      title: '¿Qué deseas hacer?',
-      text: "Si cierras la paga se enviará la información a BPRO para generar la póliza",
-      icon: 'question',
-      showCancelButton: true,
-      showDenyButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      denyButtonColor: '#7066e0',
-      confirmButtonText: 'Generar póliza',
-      denyButtonText: `Consulta paga`,
-      cancelButtonText:'Cancelar',
-      allowOutsideClick: false
-    }).then((result) => {
-      if (result.isConfirmed) {
-        //this.CerrarPagas(1)
-        this.opcionSeleccionada = 1 
-        this.OpenListaEmpresas()
+    this.opcionSeleccionada = 1 
+    this.OpenListaEmpresas()
+    // Swal.fire({
+    //   title: '¿Qué deseas hacer?',
+    //   text: "Si cierras la paga se enviará la información a BPRO para generar la póliza",
+    //   icon: 'question',
+    //   showCancelButton: true,
+    //   showDenyButton: true,
+    //   confirmButtonColor: '#3085d6',
+    //   cancelButtonColor: '#d33',
+    //   denyButtonColor: '#7066e0',
+    //   confirmButtonText: 'Generar póliza',
+    //   denyButtonText: `Consulta paga`,
+    //   cancelButtonText:'Cancelar',
+    //   allowOutsideClick: false
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     //this.CerrarPagas(1)
+    //     this.opcionSeleccionada = 1 
+    //     this.OpenListaEmpresas()
        
-      }
+    //   }
 
-      if (result.isDenied) {
-        //this.CerrarPagas(2)
-        this.opcionSeleccionada = 0
-        this.OpenListaEmpresas()
+    //   if (result.isDenied) {
+    //     //this.CerrarPagas(2)
+    //     this.opcionSeleccionada = 0
+    //     this.OpenListaEmpresas()
         
-      }
-    })
+    //   }
+    // })
 
   }
 
@@ -233,7 +257,7 @@ export class NominaComponent implements OnInit {
   }
 
   PruebaSeleccion(){
-    console.log(this.empresasSeleccionadas);
+    
     this.popupCentrosTrabajoVisible = false
     this.CerrarPagas(this.opcionSeleccionada)
     
@@ -266,6 +290,8 @@ export class NominaComponent implements OnInit {
            if(this.speedValue === 100){
              setTimeout(() => {
                this.popupVisible = false;
+               this.popupVistaPrevia = true   
+                this.ejecutaProceso = true
              }, 2000);
            }
               

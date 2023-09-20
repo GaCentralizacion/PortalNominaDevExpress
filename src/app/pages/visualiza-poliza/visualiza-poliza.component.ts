@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit,  } from '@angular/core';
+import { Component, Input, OnChanges, OnInit,  } from '@angular/core';
 import { catchError, finalize, lastValueFrom, of } from 'rxjs';
 import { ConsultaPolizaNominaService } from 'src/app/shared/services/consulta-poliza-nomina.service';
 import { LugarTrabajoModel, Pagas, AsientoContable, campoPivote} from './visualiza-poliza.model';
@@ -9,6 +9,7 @@ import { CatalogosSicossService } from 'src/app/shared/services/catalogosSicoss.
 import { ExcelClass } from 'src/app/shared/services/excelClass.service';
 import { MesesServices } from 'src/app/shared/services/meses.service';
 import { ApiScreenService } from 'src/app/shared/services/apiScreen.service';
+import { Loading } from 'notiflix';
 
 type AOA = any[][];
 
@@ -17,7 +18,15 @@ type AOA = any[][];
   templateUrl: './visualiza-poliza.component.html',
   styleUrls: ['./visualiza-poliza.component.scss'],
 })
-export class VisualizaPolizaComponent implements OnInit {
+export class VisualizaPolizaComponent implements OnInit, OnChanges  {
+
+  @Input() peticionNomina: boolean = false;
+  @Input() gridBoxValueNomina:any[] = []
+  @Input() ejecutaProceso:boolean = false
+  @Input() fechasPagaNomina:string =''
+  @Input() periodoIdNomina:number = 0
+  @Input() periodoNomina:number = 0
+  @Input() tipoNominaNomina:number = 0
 
   lstMeses: { id: number; text: string }[];
   lstAnios: any = [];
@@ -26,7 +35,19 @@ export class VisualizaPolizaComponent implements OnInit {
   anioActual: number;
   mesActual: number;
   lstQuincenas: Pagas[] = [];
-  periodo: any;
+  periodo: any = {
+    anio: 0,
+    apagado: 0,
+    descripcion: "",
+    fechasPaga: "",
+    finPeriodo: "",
+    frecuencia: 0,
+    inicioPeriodo: "",
+    mes: 0,
+    paga: "",
+    semQuin: 0,
+    tipo: 0
+  };
   sucursal: string = '';
   lstAsientoContable: AsientoContable[] = [];
   loadingVisible: boolean = false;
@@ -64,19 +85,36 @@ export class VisualizaPolizaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-     
-
-    console.log(this._screen.sizes);
-    
 
     this.objUsuario = sessionStorage.getItem('login')
-    this.objUsuario = JSON.parse(this.objUsuario)
-
-    this.Anios();
+    this.objUsuario = JSON.parse(this.objUsuario)    
     this.LugaresTrabajo();
-    this.Pagas(this.anioActual, this.mesActual);
 
+    if(this.peticionNomina === false){
+
+      this.Anios();
+     
+      this.Pagas(this.anioActual, this.mesActual);
+
+    }
+     
   }
+
+  ngOnChanges(){
+    if(this.peticionNomina === true && this.ejecutaProceso === true){
+
+      console.log('desde prueba: ',this.gridBoxValueNomina);
+      
+      this.gridBoxValue = this.gridBoxValueNomina
+      this.periodo.fechasPaga = this.fechasPagaNomina
+      this.periodo.frecuencia = this.periodoIdNomina
+      this.periodo.semQuin = this.periodoNomina
+      this.periodo.tipo = this.tipoNominaNomina
+
+      this.AsientoContable()
+    }
+  }
+
   b64toBlob(b64Data:any, contentType='', sliceSize=512){
     const byteCharacters = atob(b64Data);
     const byteArrays = [];
@@ -99,9 +137,12 @@ export class VisualizaPolizaComponent implements OnInit {
 
   Pagas(anio: number, mes: number) {
 
+    Loading.hourglass('Obteniendo pagas, espere por favor...')
     this.catSicoss.FechasPagas(anio,mes).subscribe((resp:any) => {
       this.lstQuincenas = []
       this.lstQuincenas = resp
+
+      Loading.remove()
     })
 
     // this.nominaService.FechasPagas(anio, mes).subscribe((resp) => {
@@ -155,7 +196,7 @@ export class VisualizaPolizaComponent implements OnInit {
 
   PeriodoSelected(e: any) {
     this.periodo = this.lstQuincenas.filter((x) => x.paga === e.value)[0];
-    //console.log(this.periodo);
+    console.log(this.periodo);
     
   }
 

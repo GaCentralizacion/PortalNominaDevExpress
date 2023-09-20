@@ -1,0 +1,68 @@
+<app-titulo>
+    <span TitleNegritas="TitleNegritas">Alta y baja
+    </span>
+    <span TitleStd="TitleStd"> de fechas de paga</span>
+</app-titulo>
+<div class="content-block">
+    <div class="dx-card responsive-paddings" fxFlexAlign="center" id="P_AsientoContable">
+        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayout.md="column">
+            <div class="dx-fieldset" fxlflex="100">
+                <div class="dx-field">
+                    <div class="dx-field-value">
+                        <dx-select-box label="Año" [labelMode]="labelMode" [dataSource]="lstAnios" displayExpr="anio" valueExpr="anio" [value]="anioActual" placeholder="Seleciona año" [showClearButton]="false" (onValueChanged)="AnioSelect($event)"></dx-select-box>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dx-fieldset" fxlflex="100">
+                <div class="dx-field">
+                    <div class="dx-field-value">
+                        <dx-select-box label="Mes" [labelMode]="labelMode" [dataSource]="lstMeses" displayExpr="text" valueExpr="id" [value]="mesActual" placeholder="Seleciona mes" [showClearButton]="false" (onValueChanged)="MesSelect($event)"></dx-select-box>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" >
+            <div fxFlex="45%">
+                <dx-form id="form" [formData]="formDataValidacion" [labelMode]="labelMode" [width]="'auto'">
+                    <dxi-item itemType="group" caption="Datos de la fecha de paga" [colCount]="2">
+                      <dxi-item dataField="periodoId" [visible]="true" [editorOptions]="positionEditorOptions" editorType="dxSelectBox"></dxi-item>
+                      <dxi-item dataField="periodo"  [visible]="true"></dxi-item>
+                      <dxi-item dataField="tipoNomina"  [visible]="true" [editorOptions]="positionEditorOptionsTipo" editorType="dxSelectBox" [colSpan]="2"></dxi-item>
+                      <dxi-item dataField="fechaInicio"  [visible]="true" editorType="dxDateBox" [editorOptions]="positionEditorOptionsCalenda"></dxi-item>
+                      <dxi-item dataField="fechaFin"  [visible]="true" editorType="dxDateBox" [editorOptions]="positionEditorOptionsCalenda"></dxi-item>
+                    </dxi-item>
+                </dx-form> 
+                <div fxLayout="row" fxLayoutAlign="space-evenly center">
+                    <div>
+                        <dx-button stylingMode="contained" text="Agrega paga" type="default" [width]="'auto'" (onClick)="InsertaPaga(1)"></dx-button>
+                    </div>
+                
+                    <div>
+                        <dx-button stylingMode="contained" text="Elimina paga" type="danger" [width]="'auto'" (onClick)="InsertaPaga(0)"></dx-button>
+                    </div>
+                </div>
+            </div>
+            <div fxFlex="50%">
+                <dx-data-grid id="gridContainer" [dataSource]="lstQuincenas" [showBorders]="true" [height]="600">
+                    <dxo-scrolling mode="virtual"></dxo-scrolling>
+                    <dxo-load-panel [enabled]="true"></dxo-load-panel>
+                    <dxo-filter-row [visible]="true"></dxo-filter-row>
+                    <dxo-export [enabled]="true"></dxo-export>
+                    <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+                    <dxi-column dataField="descripcion" caption="Nombre Periodo" dataType="string" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="semQuin" caption="Periodo" [visible]="true" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="inicioPeriodo" caption="Fecha inicio" dataType="string" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="fechasPaga" caption="Fecha Paga" dataType="string" [width]="'auto'"></dxi-column>
+                    <dxi-column dataField="frecuencia" caption="Frecuencia" [visible]="false"></dxi-column>
+                    <dxi-column dataField="tipo" caption="Tipo" [visible]="false"></dxi-column>
+                    <dxo-paging [pageSize]="15"></dxo-paging>
+                </dx-data-grid>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>

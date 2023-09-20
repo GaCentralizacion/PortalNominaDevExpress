@@ -63,7 +63,7 @@
               <td style="text-align: center;">{{ pol.data.TipoPol }}</td>
               <td style="text-align: center;">{{ pol.data.ConsPol }}</td>
               <td style="text-align: center;">{{ pol.data.AnioPol }}</td>
-              <td style="text-align: center;">{{ pol.data.estatus }}</td>
+              <td style="text-align: center;">{{ pol.data.descEstatus }}</td>
               <td>{{ pol.data.error }}</td>
             </tr>
           </ng-container>
@@ -73,10 +73,10 @@
           <dxi-column dataField="semQuin" caption="Periodo" [width]="'125'" [alignment]="'center'"></dxi-column>
           <dxi-column dataField="fechaProceso" caption="Fecha de ejecución" [width]="'auto'" dataType="date"></dxi-column>
           <dxi-column dataField="docto" caption="Documento" [width]="'auto'"></dxi-column>
-          <dxi-column dataField="TipoPol" caption="TipoPol" [alignment]="'center'" [width]="'auto'"></dxi-column>
-          <dxi-column dataField="ConsPol" caption="ConsPol" [alignment]="'center'" [width]="'auto'"></dxi-column>
-          <dxi-column dataField="AnioPol" caption="AnioPol" [alignment]="'center'" [width]="'auto'"></dxi-column>
-          <dxi-column dataField="estatus" caption="Estatus conta" [width]="'auto'" [alignment]="'center'"></dxi-column>
+          <dxi-column dataField="TipoPol" caption="Tipo póliza" [alignment]="'center'" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="ConsPol" caption="Número póliza" [alignment]="'center'" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="AnioPol" caption="Año póliza" [alignment]="'center'" [width]="'auto'"></dxi-column>
+          <dxi-column dataField="descEstatus" caption="Estatus conta" [width]="'auto'" [alignment]="'center'"></dxi-column>
           <dxi-column dataField="error" caption="Mensaje error" [width]="'auto'"></dxi-column>
 
           <dxo-paging [pageSize]="12"></dxo-paging>
