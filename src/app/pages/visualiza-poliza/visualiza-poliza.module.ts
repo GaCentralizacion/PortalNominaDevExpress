@@ -32,6 +32,9 @@ import {  } from 'devextreme-angular/ui/load-indicator';
   ],
   providers:[
     CurrencyPipe
+  ],
+  exports:[
+    VisualizaPolizaComponent
   ]
 })
 export class VisualizaPolizaModule { }

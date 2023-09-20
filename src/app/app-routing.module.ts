@@ -46,6 +46,10 @@ const routes: Routes = [
     loadChildren:() => import('./pages/comi-flotillas/comi-flotillas.module').then(module => module.ComiFlotillasModule)
   },
   {
+    path:'nomina',
+    loadChildren:() => import('./pages/conf-pagas/conf-pagas.module').then(module => module.confPagasModule)
+  },
+  {
     path: 'login-form',
     component: LoginFormComponent,
     canActivate: [ AuthGuardService ]

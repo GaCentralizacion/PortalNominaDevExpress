@@ -6,7 +6,7 @@
 
 <div class="content-block">
     <div class="dx-card responsive-paddings"  fxFlexAlign="center" id="P_AsientoContable">
-        <div fxLayout="row" fxLayoutAlign="space-around center" fxLayout.xs="column" fxLayout.sm="column" fxLayoutGap="10px" >
+        <div fxLayout="row" fxLayoutAlign="space-around center" fxLayout.xs="column" fxLayout.sm="column" fxLayoutGap="10px" *ngIf="!peticionNomina" >
                  
           <div fxFlex="10%" fxHide.lt-xl>
             <dx-select-box label="Año" [dataSource]="lstAnios"  displayExpr="anio" valueExpr="anio"  placeholder="Seleciona año" [value]="anioActual" [showClearButton]="false" (onValueChanged)="AnioSelect($event)" width="'auto'"></dx-select-box>      
