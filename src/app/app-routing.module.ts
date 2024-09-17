@@ -50,6 +50,10 @@ const routes: Routes = [
     loadChildren:() => import('./pages/conf-pagas/conf-pagas.module').then(module => module.confPagasModule)
   },
   {
+    path:'nomina',
+    loadChildren:() => import('./pages/conf-prorrateo-nomina/conf-prorrateo-nomina.module').then(module => module.ConfProrrateoNominaModule)
+  },
+  {
     path: 'login-form',
     component: LoginFormComponent,
     canActivate: [ AuthGuardService ]

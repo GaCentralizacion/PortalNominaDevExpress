@@ -163,8 +163,9 @@ export class SideNavigationMenuComponent implements OnInit, AfterViewInit, OnDes
         opcion.icon = element.icon
         opcion.items = this.itemDetalle
         this.OpcionesMenu.push(opcion)
-
+        
       }
+     
 
       
         resolve(JSON.stringify(this.OpcionesMenu))  

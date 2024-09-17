@@ -268,8 +268,8 @@ export class NominaComponent implements OnInit {
    * @param opcion 1: se envia a bpro, 2 consulta pagas abiertas
    */
   CerrarPagas(opcion: number){
-    this.popupVisible = true;
-    //Loading.hourglass(`Espere por favor, obteniendo datos`);
+    //this.popupVisible = true;
+    Loading.hourglass(`Espere por favor, obteniendo datos...`);
     let polizaProcesada
     this.speedValue = 0
     this.sucursalProcesada = 'En proceso'
@@ -289,7 +289,7 @@ export class NominaComponent implements OnInit {
         
            if(this.speedValue === 100){
              setTimeout(() => {
-               this.popupVisible = false;
+               //this.popupVisible = false;
                this.popupVistaPrevia = true   
                 this.ejecutaProceso = true
              }, 2000);
@@ -302,7 +302,7 @@ export class NominaComponent implements OnInit {
     //let values = await Promise.all(values_response)
 
     this.FechasPaga(this.anioActual, this.mesActual);
-   // Loading.remove()
+    Loading.remove()
 
     }, 1000);
   }

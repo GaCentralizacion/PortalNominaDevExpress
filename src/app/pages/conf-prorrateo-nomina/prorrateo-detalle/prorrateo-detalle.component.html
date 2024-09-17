@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="col-sm-12">
+   <dx-data-grid [dataSource]="tasksDataSource" [showBorders]="true" [columnAutoWidth]="true" [height]="'auto'" >
+    <dxo-export [enabled]="true"></dxo-export>
+    <dxi-column dataField="id_unidadOrganizativaLey" caption="Departamento SICOSS" dataType="string"></dxi-column>
+    <dxi-column dataField="sucursal" caption="Sucursal o agencia" dataType="string"></dxi-column>
+    <dxi-column dataField="CentroCosto" caption="Centro de costos" dataType="string"></dxi-column>
+    <dxi-column dataField="Descripcion" caption="Descripción" dataType="string"></dxi-column>
+    <dxi-column dataField="porcentaje" dataType="string"></dxi-column>
+    <dxi-column type="buttons" caption="Eliminar" name="EliminarProrrateo">
+      <dxi-button hint="Eliminar" icon="trash" text="Eliminar" [onClick]="EliminaProrrateo"></dxi-button>
+  </dxi-column>
+  <dxo-paging [pageSize]="10"></dxo-paging>
+  </dx-data-grid> 
+  </div>
+</div>

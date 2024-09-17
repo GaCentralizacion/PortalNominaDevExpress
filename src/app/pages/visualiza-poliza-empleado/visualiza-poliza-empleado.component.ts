@@ -7,6 +7,7 @@ import { ConsultaPolizaNominaService } from "src/app/shared/services/consulta-po
 import { ConsultaPolizaSicossService } from "src/app/shared/services/consulta-poliza-sicoss.service";
 import { CurrencyPipe } from "@angular/common";
 import { ExcelClass } from 'src/app/shared/services/excelClass.service';
+import { Loading, Report } from "notiflix";
 
 @Component({
     selector: 'app-visualiza-poliza-empleado',
@@ -40,12 +41,13 @@ import { ExcelClass } from 'src/app/shared/services/excelClass.service';
   searchExprOption: any = 'paga';
 
   objUsuario:any={}
+  gridBoxPagaValue: any[]=[];
 
     constructor(private nominaService: ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService){
       let fecha = new Date();
       this.anioActual = fecha.getFullYear();
       this.mesActual = fecha.getMonth() + 1;
-  
+      this.Pagas(this.anioActual, this.mesActual);
       this.lstMeses = [
         {
           id: 1,
@@ -104,7 +106,7 @@ import { ExcelClass } from 'src/app/shared/services/excelClass.service';
       
       this.Anios();
       this.LugaresTrabajo();
-      this.Pagas(this.anioActual, this.mesActual);
+      
         
     }
 
@@ -128,9 +130,11 @@ import { ExcelClass } from 'src/app/shared/services/excelClass.service';
 
     Pagas(anio: number, mes: number) {
 
+      Loading.hourglass('Obteniendo pagas, espere por favor...')
       this.catSicoss.FechasPagas(anio,mes).subscribe((resp:any) => {
         this.lstQuincenas = []
         this.lstQuincenas = resp
+        Loading.remove()
       })
 
     }
@@ -162,11 +166,35 @@ import { ExcelClass } from 'src/app/shared/services/excelClass.service';
       this.gridAsientoFinal = [];
       this.verAsiento = false;
       this.generaPivote = false
+
+      console.log(this.gridBoxPagaValue);
+      
+      if(this.gridBoxValue.length === 0){
+        Report.warning('Aviso','Selecciona por lo menos una sucursal','Ok',()=>{this.loadingVisible = false;})
+
+        return
+      }
   
       for (let i = 0; i < this.gridBoxValue.length; i++) {
         const idSucursal = this.gridBoxValue[i];
   
-          let respuesta:any = await this.ConsultaAsiento(idSucursal)
+          let respuesta:any=[]
+          let con:any = []
+
+          if(this.gridBoxPagaValue.length === 0){
+            Report.warning('Aviso','Selecciona por lo menos una fecha de paga','Ok',()=>{this.loadingVisible = false;})
+    
+            return
+          }
+
+          for (let i = 0; i < this.gridBoxPagaValue.length; i++) {
+            const paga = this.gridBoxPagaValue[i];
+            
+            con=await this.ConsultaAsiento(idSucursal, paga.fechasPaga, paga.frecuencia, paga.tipo)
+            respuesta =respuesta.concat(con)
+          }
+          
+          
           
           if(respuesta !== null){
             
@@ -199,10 +227,26 @@ import { ExcelClass } from 'src/app/shared/services/excelClass.service';
       this.verAsiento = true;
     }
 
-    ConsultaAsiento(idSucursal:number){
+    // ConsultaAsiento(idSucursal:number){
+    //   return new Promise((resolve, reject) =>{
+  
+    //     this.sicoss.ConsultaAsientoPolizaBproEmpleadoSicoss(idSucursal, this.periodo.fechasPaga, this.periodo.frecuencia, this.periodo.tipo, this.esAbierta  )
+    //     .pipe(
+    //       catchError((err) =>{
+    //         this.loadingVisible = false
+    //         throw `${err}`
+    //       })
+    //     )
+    //     .subscribe((resp:any) =>{
+    //       resolve(resp)
+    //     })
+    //   })
+    // }
+
+    ConsultaAsiento(idSucursal:number, fechasPaga:string, frecuencia:number, tipo:number){
       return new Promise((resolve, reject) =>{
   
-        this.sicoss.ConsultaAsientoPolizaBproEmpleadoSicoss(idSucursal, this.periodo.fechasPaga, this.periodo.frecuencia, this.periodo.tipo, this.esAbierta  )
+        this.sicoss.ConsultaAsientoPolizaBproEmpleadoSicoss(idSucursal, fechasPaga, frecuencia, tipo, this.esAbierta  )
         .pipe(
           catchError((err) =>{
             this.loadingVisible = false
@@ -331,14 +375,14 @@ import { ExcelClass } from 'src/app/shared/services/excelClass.service';
     onExporting(e:any){
 
       let excel = new ExcelClass()
-      let msj = excel.onExporting(e,'datos', `Pólizas por empleado ${this.periodo.descripcion} periodo ${this.periodo.semQuin} mes ${this.periodo.mes}`)
+      let msj = excel.onExporting(e,'datos', `Pólizas por empleado mes ${this.mesActual} año ${this.anioActual}`)
   
      }
 
     onExportingPivot(e:any){
 
       let excel = new ExcelClass()
-      let msj = excel.onExportingPivot(e,'datos', `Pólizas pivote por empleado ${this.periodo.descripcion} periodo ${this.periodo.semQuin} mes ${this.periodo.mes}`)
+      let msj = excel.onExportingPivot(e,'datos', `Pólizas pivote por empleado mes ${this.periodo.mes}`)
   
      }
 

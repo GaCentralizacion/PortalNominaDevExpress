@@ -27,6 +27,8 @@ export class VisualizaPolizaComponent implements OnInit, OnChanges  {
   @Input() periodoIdNomina:number = 0
   @Input() periodoNomina:number = 0
   @Input() tipoNominaNomina:number = 0
+  @Input() mesNomina:number = 0
+  @Input() esPrevia:number = 0
 
   lstMeses: { id: number; text: string }[];
   lstAnios: any = [];
@@ -110,6 +112,8 @@ export class VisualizaPolizaComponent implements OnInit, OnChanges  {
       this.periodo.frecuencia = this.periodoIdNomina
       this.periodo.semQuin = this.periodoNomina
       this.periodo.tipo = this.tipoNominaNomina
+      this.mesActual = this.mesNomina
+      this.periodo.mes = this.mesNomina
 
       this.AsientoContable()
     }
@@ -436,6 +440,26 @@ export class VisualizaPolizaComponent implements OnInit, OnChanges  {
     console.log('valor: ',valor);
     
     return valor
+  }
+
+  customizeTexEnvioBpro(data: any) {
+
+    let valor:string =''
+
+    if(data.value > 0){
+      valor = 'Si'
+    }
+
+    if(data.value < 1){
+      valor = 'No'
+    }
+
+    if(data.value === undefined || data.value === null){
+      valor = 'No'
+    }
+
+    return valor;
+    //return data.value === true ? 'Existe' : 'No existe';
   }
 
 

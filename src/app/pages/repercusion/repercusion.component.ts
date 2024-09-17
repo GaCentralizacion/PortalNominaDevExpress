@@ -151,8 +151,8 @@ export class RepercusionComponent implements OnInit {
 
       this.fechaSolicitudFacturacion = await this.ConsultaFechaSolicitudFactura(this.mesActual, this.anioActual, 1,0)
       console.log(this.fechaSolicitudFacturacion);
-      this.ConsultarFacturas()
-
+      //this.ConsultarFacturas()
+      
     }
     
   }
@@ -161,8 +161,25 @@ export class RepercusionComponent implements OnInit {
     this.anioActual = e.value;
   }
 
+  LimpiaValores(){
+    this.formDataValidacion = {
+      subTotalResumen: '$0.00',
+      cargoBalanza: '$0.00',
+      abonoBalanza: '$0.00',
+      totalBalanza: '$0.00',
+      totalComisiones: '$0.00',
+      totalBonos: '$0.00',
+      diferencia: '$0.00',
+    };
+    this.lstResumenBalanzaCentralizado = []
+    this.lstBalanza = []
+    this.lstComisiones = []
+    this.lstOrdenesCompra = []
+  }
+
   async MesSelect(e: any) {
     this.mesActual = e.value;
+    this.LimpiaValores()
     this.dataMes = this.lstMeses.find((x) => x.id === this.mesActual);
     this.lstFechasRepercusion = await this.FechasRepercusion();
 
@@ -222,15 +239,21 @@ export class RepercusionComponent implements OnInit {
 
   async ProrrateoBalanza(numero:number){
 
-    /**SE COMENTA PARA PROBAR EN LA SEGUNDA EJECUCION */
+    return new Promise(async (resolve, reject) => {
+          /**SE COMENTA PARA PROBAR EN LA SEGUNDA EJECUCION */
     let respuesta = await this.EjecutaProrrateo(numero)
 
-    let valor:any = numero === 23 ? 1 : 2
-    
-    Report.success(
-      'Prorrateo de balanza',
-      `Prorrateo de la quincena ${valor} ejecutado, puedes avanzar al paso 2`,
-      'OK')
+      let valor:any = numero === 23 ? 1 : 2
+      
+      Report.success(
+        'Prorrateo de balanza',
+        `Prorrateo de la quincena ${valor} ejecutado, se realizara la validación de cálculo`,
+        'OK')
+
+        resolve(true)
+    })
+
+
   }
 
   EjecutaProrrateo(numero:number){
@@ -242,7 +265,7 @@ export class RepercusionComponent implements OnInit {
       dia = this.objUltimaRepercusion.dia 
     }
     else{
-      dia = this.currentValue
+      dia = this.currentValue.getDate()
     }
 
     return new Promise((resolve, reject) => {
@@ -253,6 +276,17 @@ export class RepercusionComponent implements OnInit {
   }
 
   async GetResumenBalanza() {
+    console.log(this.quincenaSelected);
+    let respuestaBalanza: any = false
+
+    if(this.quincenaSelected === 1){
+      respuestaBalanza = await this.ProrrateoBalanza(23)
+    }
+
+    if(this.quincenaSelected === 2){
+      respuestaBalanza =  await this.ProrrateoBalanza(26)
+    }
+    
     if (this.quincenaSelected === undefined || this.quincenaSelected === null) {
       // Swal.fire({
       //   title: 'Oops...',
@@ -403,7 +437,7 @@ export class RepercusionComponent implements OnInit {
         Loading.remove()
         Swal.fire({
           icon: 'success',
-          html: 'Se dejaron los datos para la generación de OC <br/> En el paso 3 podras visualizar el avance de las OC',
+          html: 'Se dejaron los datos para la generación de OC',
           showConfirmButton: true,
           confirmButtonText:'Continuar',
           showCancelButton: false,
@@ -715,7 +749,7 @@ export class RepercusionComponent implements OnInit {
           if(ocError.length > 0){
             this.NotificaSistemas(ocError)
           }
-
+          this.SolicitaFacturacion()
         }
 
       });
@@ -806,9 +840,9 @@ export class RepercusionComponent implements OnInit {
   }
 
   async OrdenCompraApi(){
-    let AuthToken;
-    AuthToken = await this.GetTokenAutenticacion()
-    console.log(AuthToken);
+    // let AuthToken;
+    // AuthToken = await this.GetTokenAutenticacion()
+    // console.log(AuthToken);
     
   }
 

@@ -8,7 +8,7 @@
 <div class="content-block">
   <div class="dx-card responsive-paddings" fxFlexAlign="center" id="P_AsientoContable">
     <div class="alert alert-primary">
-      Esta pantalla te guiará en la ejecución del proceso de repercusión de gasto, por favor sigue los pasos y no te saltes ninguno
+      Esta pantalla te guiará en la ejecución del proceso de repercusión de gasto, por favor sigue los pasos y no te saltes ninguno. <strong>Selecciona la quincena que deseas ejecutar</strong> 
     </div>
     <div fxLayout="row" fxLayoutAlign="start center">
       <div class="dx-fieldset" fxFlex="100">
@@ -102,7 +102,7 @@
 
       <dxi-item title="PASO 1 Reporte de departamentos, sucursales y creación de OC">
           <div class="alert alert-primary">
-            Es necesario validar la información obtenida y verificar que la diferencia es mínima  
+           Da clic en "Consultar" <strong>Es necesario validar la información obtenida y verificar que la diferencia es mínima </strong>, si la información es correcta, de clic en "Ver detalles" y descarga el reporte 
           </div>
 
           <!-- SECCION SELECCION DE PARAMETROS DE CONSULTA -->
@@ -165,7 +165,7 @@
                   stylingMode="contained"
                   text="Generar OC"
                   type="danger"
-                  (onClick)="OrdenCompraApi()">
+                  (onClick)="OrdenesCompra()">
                   </dx-button>
                 </div>
               </div>
@@ -375,8 +375,8 @@
       </dxi-item>
       
       <dxi-item title="PASO 2 Consulta de ordenes de compra">
-          <div class="alert alert-info">
-            Este paso mostrar las ordenes creadas para la ultima fecha de ejecución de repercusión de gastos del mes seleccionado en el paso 2
+          <div class="alert alert-primary">
+            Este paso mostrar las ordenes creadas para la ultima fecha de ejecución de repercusión de gastos del mes seleccionado
           </div>
           
           <!-- SECCION DE BOTONES -->
@@ -393,7 +393,7 @@
                 </div>
               </div>
             </div>
-            <div class="dx-fieldset" fxFlex="30">
+            <div class="dx-fieldset" fxFlex="30" hidden>
               <div class="dx-field">
                 <div class="dx-field-value">
                   <dx-button
@@ -414,6 +414,7 @@
             [dataSource]="lstOrdenesCompra"
             [showBorders]="true"
             width="100%"
+            height="400px"
             [wordWrapEnabled]="true"
             >
             <dxo-pager
@@ -424,6 +425,7 @@
               [showPageSizeSelector]="true"
             >
             </dxo-pager>
+              <dxo-scrolling mode="infinite"></dxo-scrolling>
               <dxo-filter-row [visible]="true"></dxo-filter-row>
               <dxi-column dataField="sucursal" caption="SUCURSAL" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
               <dxi-column dataField="odm_ordencompra" caption="ORDEN COMPRA" dataType="string" [width]="'auto'" [fixed]="true"></dxi-column>
