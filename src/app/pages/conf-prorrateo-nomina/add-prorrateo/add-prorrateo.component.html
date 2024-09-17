@@ -1,0 +1,23 @@
+<div class="content-block">
+
+    <div class="dx-card responsive-paddings" fxFlexAlign="center" id="P_AsientoContable">
+
+        <div class="row">
+            <dx-form id="form" [formData]="formDataValidacion" [labelMode]="labelMode" [width]="'auto'">
+                <dxi-item itemType="group" caption="Datos de la paga" [colCount]="2">
+                    <dxi-item dataField="idRH" [visible]="true"></dxi-item>
+                    <dxi-item dataField="centro_ID" [visible]="true" [editorOptions]="positionEditorOptions" editorType="dxSelectBox"></dxi-item>
+                    <dxi-item dataField="idDepto" [visible]="true" [editorOptions]="positionEditorOptionsDepartamento" editorType="dxSelectBox"></dxi-item>
+                    <dxi-item dataField="porcentaje" [visible]="true"></dxi-item>
+                    <dxi-item>
+                        <dx-button text="Guardar prorrateo" type="success" (onClick)="InsertaProrrateo()"></dx-button>
+                    </dxi-item>
+                </dxi-item>
+            </dx-form>    
+        </div>
+        <div class="row" *ngIf="mostrarProrrateo">
+            <app-prorrateo-detalle [key]="formDataValidacion.idRH" (greetingEvent)="ActualizaPantallaAbuelo()"></app-prorrateo-detalle>
+        </div>
+
+    </div>
+</div>

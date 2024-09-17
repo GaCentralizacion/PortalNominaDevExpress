@@ -52,4 +52,41 @@ export class CatalogosSicossService{
         return this.http.get(`${environment.apiNomina}api/catalogosSICOSS/RelacionWSFCentralizacion`)
     }
 
+    EmpleadosProrrateados(){
+        return this.http.get(`${environment.apiNomina}api/nominaSICOSS/ObtieneProrrateoNomina`)
+    }
+
+    EmpleadosProrrateadosDetalle(idEmpleado:number){
+
+        const params = new HttpParams()
+        .set('idEmpleado',idEmpleado)
+        return this.http.post(`${environment.apiNomina}api/nominaSICOSS/ObtieneProrrateoNominaDetalle`,params)
+    }
+
+    DepartamentoSicoss(centroId:number){
+
+        const params = new HttpParams()
+        .set('centroId',centroId)
+        return this.http.post(`${environment.apiNomina}api/nominaSICOSS/DepartamentoSicoss`,params)
+    }
+
+    InsertaProrrateoNomina(idRh:number, idDepto:string, porcentaje:number){
+
+        const params = new HttpParams()
+        .set('idRh',idRh)
+        .set('idDepto',idDepto)
+        .set('porcentaje',porcentaje)
+
+        return this.http.post(`${environment.apiNomina}api/nominaSICOSS/InsertaProrrateoSicoss`,params)
+    }
+  
+    EliminaProrrateoNomina(idRh:number, idDepto:string){
+
+        const params = new HttpParams()
+        .set('idRh',idRh)
+        .set('idDepto',idDepto)
+
+        return this.http.post(`${environment.apiNomina}api/nominaSICOSS/EliminaProrrateo`,params)
+    }
+
 }

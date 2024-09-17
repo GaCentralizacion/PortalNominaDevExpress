@@ -1,0 +1,70 @@
+<app-titulo>
+    <span TitleNegritas>Empleados prorrateados </span>
+    <span TitleStd>solo se mostrarán prorrateos activos</span>
+</app-titulo>
+
+<div class="content-block">
+
+    <div class="dx-card responsive-paddings" fxFlexAlign="center" id="P_AsientoContable">
+
+        <div class="row" fxLayoutAlign="center center">
+            <div class="col-6">
+                <div class="dx-field">
+                    <div class="dx-field-value">
+                        <dx-button stylingMode="contained" text="Agregar" type="default" [width]="220"
+                            (onClick)="Agrega()">
+                        </dx-button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="dx-field">
+                    <div class="dx-field-value">
+                        <dx-button stylingMode="contained" text="consultar" type="default" [width]="220"
+                            (onClick)="Consulta()">
+                        </dx-button>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        <div class="row">
+        <div class="dx-fieldset">
+            <dx-data-grid id="gridContainer" [showBorders]="true" [height]="600" [dataSource]="lstEmpleadosProrrateo">
+                <dxo-scrolling mode="virtual"></dxo-scrolling>
+                <dxo-load-panel [enabled]="true"></dxo-load-panel>
+                <dxo-filter-row [visible]="true"></dxo-filter-row>
+                <dxo-export [enabled]="true"></dxo-export>
+                <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+                <dxi-column dataField="id_empleado" caption="id RH" dataType="string"></dxi-column>
+                <dxi-column dataField="nombre_empleado" caption="Nombre empleado" dataType="string"></dxi-column>
+                <!-- <dxi-column type="buttons" caption="Editar" name="EditarProrrateo">
+                    <dxi-button hint="Edita Prorrateo" icon="edit" text="Edita Prorrateo" [onClick]=""></dxi-button>
+                </dxi-column> -->
+                <dxo-master-detail [enabled]="true" template="detail"></dxo-master-detail>
+                <div *dxTemplate="let employee of 'detail'">
+                    <div class="master-detail-caption">{{
+                        employee.data.nombre_empleado + " esta prorrateado en:"
+                        }}</div>
+                    <app-prorrateo-detalle [key]="employee.data.id_empleado"
+                        (greetingEvent)="ActualizaPantalla()"></app-prorrateo-detalle>
+                </div>
+                <dxo-paging [pageSize]="15"></dxo-paging>
+            </dx-data-grid>
+        </div>    
+        </div>
+        
+    </div>
+</div>
+
+<dx-popup id="popNominaResumen" [height]="'auto'" [width]="'70%'" [dragEnabled]="true" [showCloseButton]="true"
+    container=".dx-viewport" [(visible)]="popupVistaPrevia" [showTitle]="true" title="Prorratear nómina de empleado">
+    <div class="row">
+        <div class="col-sm-12">
+            <app-add-prorrateo #addProrrateo (greetingEvent)="ActualizaPantalla()"></app-add-prorrateo>
+        </div>
+    </div>
+
+</dx-popup>

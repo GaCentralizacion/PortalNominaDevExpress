@@ -62,7 +62,7 @@ export class VistaPreviaComponent implements OnInit {
     catalogoConceptos!:any
 
     objUsuario:any ={}
-
+    searchExprOption: any = 'paga';
     constructor(private nominaService : ConsultaPolizaNominaService, private catSicoss: CatalogosSicossService, private sicoss:ConsultaPolizaSicossService) {
       //this.catalogoConceptos = 
       this.CatalogoConceptos()
@@ -182,7 +182,8 @@ export class VistaPreviaComponent implements OnInit {
 
     LugaresTrabajo() {
 
-        this.catSicoss.LugaresTrabajoUsuario(this.objUsuario.idUsuario).subscribe((resp) => {
+        //this.catSicoss.LugaresTrabajoUsuario(this.objUsuario.idUsuario).subscribe((resp) => {
+        this.catSicoss.LugaresTrabajoUsuario(5653).subscribe((resp) => {
             let source$ = of(resp)
             this.lstEmpresasPagadoras =  new CustomStore({
               loadMode: 'raw',

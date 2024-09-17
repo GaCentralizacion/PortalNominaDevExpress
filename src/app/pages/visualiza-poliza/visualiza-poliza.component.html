@@ -197,6 +197,8 @@
                     <dxi-column dataField="debe"               caption="Debe (Cargo)"  dataType="number" [width]="200" [customizeText]="customizeCurrency"></dxi-column>
                     <dxi-column dataField="haber"              caption="Haber (Abono)" dataType="number" [customizeText]="customizeCurrency" [width]="200"></dxi-column>
                     <dxi-column dataField="id_persona_empresa" caption="Persona" dataType="number" [width]="120"></dxi-column>
+                    <dxi-column dataField="DSBPEncInfoEnc" caption="Enviada a BPRO" dataType="number" [width]="120" [customizeText]="customizeTexEnvioBpro"></dxi-column>
+
                     <dxo-summary>
                       <dxi-group-item
                         column="debe"
